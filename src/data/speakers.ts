@@ -1,0 +1,98 @@
+import type { Locale, Messages } from "@/i18n/LanguageProvider";
+
+type Localized<T = string> = Record<Locale, T>;
+
+export type Speaker = {
+  slug: string;
+  name: string;
+  affiliation: Localized<string[]>; // one line each, as on the poster
+  photo: string;
+  bio: Localized<string[]>;
+  links: Partial<Record<"profile" | "scholar" | "scopus" | "orcid" | "wos", string>>;
+};
+
+export const linkNames: Record<keyof Speaker["links"], string> = {
+  profile: "Profile",
+  scholar: "Google Scholar",
+  scopus: "Scopus",
+  orcid: "ORCID",
+  wos: "Web of Science",
+};
+
+export const speakers: Speaker[] = [
+  {
+    slug: "ilker-unal",
+    name: "Prof. Dr. İlker Ünal",
+    affiliation: {
+      en: ["Çukurova University", "Faculty of Medicine, Dept. of Biostatistics"],
+      tr: ["Çukurova Üniversitesi", "Tıp Fakültesi, Biyoistatistik Anabilim Dalı"],
+    },
+    photo: "/images/speakers/ilker-unal.webp",
+    bio: { en: [], tr: [] },
+    links: {
+      profile: "https://avesis.cu.edu.tr/ilkerun",
+      scholar: "https://scholar.google.com.tr/citations?user=wOEHmyIAAAAJ",
+      scopus: "https://www.scopus.com/authid/detail.uri?authorId=23480797700",
+      orcid: "https://orcid.org/0000-0002-9485-3295",
+      wos: "https://publons.com/researcher/E-5071-2018",
+    },
+  },
+  {
+    slug: "silvan-schwaller",
+    name: "Silvan Schwaller",
+    affiliation: {
+      en: ["FİGES", "Academic Planning and Development Engineer"],
+      tr: ["FİGES", "Akademik Planlama ve Geliştirme Mühendisi"],
+    },
+    photo: "/images/speakers/silvan-schwaller.webp",
+    bio: { en: [], tr: [] },
+    links: {},
+  },
+  {
+    slug: "recep-erol",
+    name: "Dr. Recep Erol",
+    affiliation: {
+      en: ["Rice University", "Center for Research and Computing"],
+      tr: ["Rice Üniversitesi", "Center for Research and Computing"],
+    },
+    photo: "/images/speakers/recep-erol.webp",
+    bio: {
+      en: [
+        "Dr. Recep Erol works in high-performance computing (HPC), machine learning and artificial intelligence at the Center for Research Computing at Rice University. He received his PhD from the University of Arkansas at Little Rock in 2024. For more than ten years he has worked on machine learning, deep learning and the optimization of computing systems.",
+        "His research interests include the compression of machine learning models and the evaluation of quantization methods, energy-efficient computing, and scientific computing on heterogeneous hardware. His work focuses on achieving high performance with limited computing resources and on making artificial intelligence applications more efficient in terms of compute, memory and storage.",
+        "In his professional role he helps researchers make effective use of high-performance computing infrastructure and AI/machine learning methods, and he runs technical trainings and hands-on workshops for researchers and students. As an NVIDIA Deep Learning Institute (DLI) certified instructor, he contributes to training on hardware acceleration and generative AI. He also takes part in the conferences and organizing work of the supercomputing and research computing communities, supporting academic collaboration and knowledge sharing.",
+      ],
+      tr: [
+        "Dr. Recep Erol, Rice Üniversitesi Araştırma ve Hesaplama Merkezi’nde (Center for Research Computing) yüksek başarımlı hesaplama (HPC), makine öğrenmesi ve yapay zekâ alanlarında görev yapmaktadır. Doktora derecesini 2024 yılında University of Arkansas at Little Rock’tan almıştır. On yılı aşkın süredir makine öğrenmesi, derin öğrenme ve hesaplama sistemlerinin optimizasyonu alanlarında çalışmalar yürütmektedir.",
+        "Araştırma ilgi alanları; makine öğrenmesi modellerinin sıkıştırılması ve niceleme yöntemlerinin değerlendirilmesi, enerji verimli hesaplama ve heterojen donanımlar üzerinde bilimsel hesaplamadır. Çalışmaları, sınırlı hesaplama kaynaklarıyla yüksek performans elde edilmesine ve yapay zekâ uygulamalarının hesaplama, bellek ve depolama kaynakları açısından daha verimli hâle getirilmesine odaklanmaktadır.",
+        "Mesleki çalışmaları kapsamında araştırmacıların yüksek başarımlı hesaplama altyapılarından ve yapay zekâ/makine öğrenmesi yöntemlerinden etkin biçimde yararlanmalarını desteklemekte; araştırmacılara ve öğrencilere yönelik teknik eğitimler ve uygulamalı atölyeler düzenlemektedir. NVIDIA Deep Learning Institute (DLI) sertifikalı eğitmen olarak donanım hızlandırma ve üretken yapay zekâ konularında eğitim faaliyetlerine katkı sunmaktadır. Ayrıca süperbilgisayar ve araştırma bilişimi topluluklarının konferans ve organizasyon çalışmalarına katılarak akademik iş birliğini ve bilgi paylaşımını desteklemektedir.",
+      ],
+    },
+    links: {
+      profile: "https://researchcomputing.rice.edu/staff",
+      orcid: "https://orcid.org/0000-0002-3131-4999",
+    },
+  },
+];
+
+export const speakerBySlug = Object.fromEntries(speakers.map((s) => [s.slug, s]));
+
+// The speaker's talks, taken from the program so titles and times live in one place.
+export function talksOf(slug: string, program: Messages["program"]) {
+  return program.days.flatMap((day) =>
+    day.sessions.filter((session) => session.speaker === slug).map((session) => ({ day: day.n, ...session })),
+  );
+}
+
+// "Day 1 · 10:15" or "Day 1 & 2 · 14:00", like the badges on the poster.
+export function slotLabel(slug: string, m: Messages) {
+  const talks = talksOf(slug, m.program);
+  const days = [...new Set(talks.map((talk) => talk.day))];
+  const start = talks[0]?.time.split("–")[0] ?? "";
+  const dayText =
+    days.length === 1
+      ? m.speakers.dayOne.replace("{n}", String(days[0]))
+      : m.speakers.dayMany.replace("{a}", String(days[0])).replace("{b}", String(days[1]));
+  const sameTime = talks.every((talk) => talk.time.startsWith(start));
+  return sameTime ? `${dayText} · ${start}` : dayText;
+}

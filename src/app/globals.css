@@ -1,0 +1,37 @@
+@import "tailwindcss";
+
+/* Colors taken from the DSA Talks poster */
+@theme {
+  --color-brand: #d7182a;
+  --color-brand-dark: #a90f20;
+  --color-brand-soft: #ff6b7a; /* red that stays readable on navy */
+  --color-navy: #1e2b4f;
+  --color-ink: #13224b; /* the poster's speaker band */
+  --color-ink-deep: #0b1533;
+  --color-surface: #f5f7fa;
+  --color-line: #e4e8ef;
+  --color-muted: #5b6478;
+
+  --shadow-card: 0 18px 50px -24px rgba(11, 21, 51, 0.35);
+
+  --animate-spin-slow: spin 60s linear infinite;
+}
+
+@theme inline {
+  --font-sans: var(--font-poppins), ui-sans-serif, system-ui, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: #ffffff;
+  color: var(--color-navy);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}

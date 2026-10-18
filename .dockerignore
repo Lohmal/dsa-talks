@@ -1,0 +1,15 @@
+# Keep the build context small and free of local artifacts
+node_modules
+.next
+out
+.git
+.gitignore
+.claude
+logo
+Dockerfile
+docker-compose.yml
+.dockerignore
+npm-debug.log*
+*.tsbuildinfo
+.env*
+!.env.example

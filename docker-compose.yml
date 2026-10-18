@@ -1,0 +1,8 @@
+services:
+  web:
+    build: .
+    image: dsa-talks-web
+    container_name: dsa-talks-web
+    ports:
+      - "3000:3000"
+    restart: unless-stopped

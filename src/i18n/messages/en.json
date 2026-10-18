@@ -1,0 +1,145 @@
+{
+  "meta": {
+    "name": "DSA Talks",
+    "slogan": "Where data turns into decisions.",
+    "university": "Adana Alparslan Türkeş Science and Technology University",
+    "universityShort": "ATÜ",
+    "department": "Department of Data Science and Analytics",
+    "dateRange": "4–5 November 2026",
+    "weekdays": "Wednesday – Thursday",
+    "venue": "ATÜ Library",
+    "venueDetail": "Conference Hall · Adana",
+    "venueFull": "ATÜ Library Conference Hall",
+    "address": "ATÜ Library Conference Hall, Adana"
+  },
+  "nav": {
+    "about": "About",
+    "speakers": "Speakers",
+    "program": "Program",
+    "venue": "Venue",
+    "menu": "Menu",
+    "closeMenu": "Close menu",
+    "language": "Language"
+  },
+  "hero": {
+    "line1": "Where data turns",
+    "line2": "into",
+    "highlight": "decisions.",
+    "intro": "Two days of talks on data science, biostatistics, machine learning and artificial intelligence, given by speakers from academia and industry.",
+    "ctaSpeakers": "Meet the speakers",
+    "ctaProgram": "View the program",
+    "badgeMonth": "Nov 2026",
+    "badgeDays": "Wed – Thu"
+  },
+  "info": {
+    "date": "Date",
+    "venue": "Venue",
+    "start": "Doors open",
+    "startValue": "Opening remarks"
+  },
+  "about": {
+    "eyebrow": "About",
+    "title": "Talks that turn data into decisions",
+    "text": [
+      "DSA Talks brings researchers, students and practitioners together at Adana Alparslan Türkeş Science and Technology University for two days of talks on how data is collected, analysed and turned into decisions.",
+      "From healthcare data and clinical decision making to MATLAB for data scientists, from the history of data science to the latest trends in its lifecycle, each talk looks at a different side of working with data."
+    ],
+    "organizersTitle": "Organized by",
+    "organizers": [
+      "Adana Alparslan Türkeş Science and Technology University",
+      "Department of Data Science and Analytics",
+      "ATÜ CoreTech"
+    ],
+    "themes": [
+      "Biostatistics",
+      "Machine Learning",
+      "Artificial Intelligence",
+      "MATLAB",
+      "Data Science Lifecycle"
+    ]
+  },
+  "speakers": {
+    "eyebrow": "Speakers",
+    "title": "Meet the speakers",
+    "text": "Invited speakers from academia and industry.",
+    "dayOne": "Day {n}",
+    "dayMany": "Day {a} & {b}",
+    "readBio": "Biography",
+    "close": "Close",
+    "talks": "Talks",
+    "profiles": "Academic profiles"
+  },
+  "program": {
+    "eyebrow": "Program",
+    "title": "Two days, four talks",
+    "day": "Day",
+    "lunch": "Lunch break",
+    "opening": "Opening remarks",
+    "days": [
+      {
+        "n": 1,
+        "date": "Wednesday, 4 November 2026",
+        "sessions": [
+          {
+            "time": "09:30–10:00",
+            "kind": "opening",
+            "title": "Opening remarks"
+          },
+          {
+            "time": "10:15–12:00",
+            "speaker": "ilker-unal",
+            "title": "From Healthcare Data to Clinical Decisions: Data Science at the Intersection of Biostatistics and Machine Learning"
+          },
+          {
+            "time": "12:00–13:30",
+            "kind": "break",
+            "title": "Lunch break"
+          },
+          {
+            "time": "14:00–15:00",
+            "speaker": "recep-erol",
+            "title": "Data Science from Yesterday to Tomorrow"
+          }
+        ]
+      },
+      {
+        "n": 2,
+        "date": "Thursday, 5 November 2026",
+        "sessions": [
+          {
+            "time": "10:15–12:00",
+            "speaker": "silvan-schwaller",
+            "title": "Mastering the Matrix: MATLAB for Data Scientists"
+          },
+          {
+            "time": "12:00–13:30",
+            "kind": "break",
+            "title": "Lunch break"
+          },
+          {
+            "time": "14:00–15:00",
+            "speaker": "recep-erol",
+            "title": "Steps Into the Data Science Lifecycle and New Trends"
+          }
+        ]
+      }
+    ]
+  },
+  "venue": {
+    "eyebrow": "Venue",
+    "title": "See you at the ATÜ Library",
+    "addressLabel": "Address",
+    "dateLabel": "Dates",
+    "directions": "Get directions",
+    "mapTitle": "Map of the venue",
+    "emailLabel": "E-mail",
+    "websiteLabel": "Website"
+  },
+  "footer": {
+    "tagline": "For a Better Future",
+    "explore": "Explore",
+    "contact": "Contact",
+    "organizer": "Organized by",
+    "rights": "All rights reserved."
+  }
+}
