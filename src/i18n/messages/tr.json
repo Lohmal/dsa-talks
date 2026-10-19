@@ -73,27 +73,15 @@
     "eyebrow": "Program",
     "title": "İki gün, dört konuşma",
     "day": "Gün",
-    "lunch": "Öğle arası",
-    "opening": "Açılış konuşmaları",
     "days": [
       {
         "n": 1,
         "date": "4 Kasım 2026, Çarşamba",
         "sessions": [
           {
-            "time": "09:30–10:00",
-            "kind": "opening",
-            "title": "Açılış konuşmaları"
-          },
-          {
             "time": "10:15–12:00",
             "speaker": "ilker-unal",
             "title": "Sağlık Verilerinden Klinik Kararlara: Biyoistatistik ve Makine Öğrenmesinin Kesişiminde Veri Bilimi"
-          },
-          {
-            "time": "12:00–13:30",
-            "kind": "break",
-            "title": "Öğle arası"
           },
           {
             "time": "14:00–15:00",
@@ -110,11 +98,6 @@
             "time": "10:15–12:00",
             "speaker": "silvan-schwaller",
             "title": "Matrisi Çözmek: Veri Bilimciler İçin MATLAB"
-          },
-          {
-            "time": "12:00–13:30",
-            "kind": "break",
-            "title": "Öğle arası"
           },
           {
             "time": "14:00–15:00",

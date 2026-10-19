@@ -73,27 +73,15 @@
     "eyebrow": "Program",
     "title": "Two days, four talks",
     "day": "Day",
-    "lunch": "Lunch break",
-    "opening": "Opening remarks",
     "days": [
       {
         "n": 1,
         "date": "Wednesday, 4 November 2026",
         "sessions": [
           {
-            "time": "09:30–10:00",
-            "kind": "opening",
-            "title": "Opening remarks"
-          },
-          {
             "time": "10:15–12:00",
             "speaker": "ilker-unal",
             "title": "From Healthcare Data to Clinical Decisions: Data Science at the Intersection of Biostatistics and Machine Learning"
-          },
-          {
-            "time": "12:00–13:30",
-            "kind": "break",
-            "title": "Lunch break"
           },
           {
             "time": "14:00–15:00",
@@ -110,11 +98,6 @@
             "time": "10:15–12:00",
             "speaker": "silvan-schwaller",
             "title": "Mastering the Matrix: MATLAB for Data Scientists"
-          },
-          {
-            "time": "12:00–13:30",
-            "kind": "break",
-            "title": "Lunch break"
           },
           {
             "time": "14:00–15:00",
