@@ -4,7 +4,8 @@ import { ArrowLeft, Download, ExternalLink, Mail, Trash2 } from "lucide-react";
 import { db } from "@/lib/db";
 import { responseAverage, scopeLabel } from "@/lib/stats";
 import { formatDateTime, formatRange } from "@/lib/time";
-import { ActionForm, Badge, Card, PageHeader, SubmitButton, buttonClass } from "@/components/admin/ui";
+import { Badge, Card, PageHeader, buttonClass } from "@/components/admin/ui";
+import { ActionForm, SubmitButton } from "@/components/admin/forms";
 import { deleteResponse, resendCertificate } from "@/app/admin/actions";
 
 export const metadata = { title: "Yanıt" };

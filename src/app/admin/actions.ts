@@ -9,7 +9,7 @@ import { db } from "@/lib/db";
 import { requireAdmin } from "@/lib/admin";
 import { fromIstanbul } from "@/lib/time";
 import { mailCertificate } from "@/lib/certificates";
-import type { ActionState } from "@/components/admin/ui";
+import type { ActionState } from "@/components/admin/forms";
 
 // Every action re-checks the admin session first; the forms live in src/app/admin/(panel).
 

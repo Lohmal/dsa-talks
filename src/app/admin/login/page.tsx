@@ -23,7 +23,7 @@ export default async function LoginPage({ searchParams }: PageProps<"/admin/logi
         aria-hidden
         className="absolute inset-0 opacity-[0.06] bg-[radial-gradient(circle,white_1px,transparent_1px)] bg-size-[22px_22px]"
       />
-      <svg aria-hidden viewBox="0 0 600 600" className="absolute -right-56 -top-56 size-[44rem]">
+      <svg aria-hidden viewBox="0 0 600 600" className="absolute -right-56 -top-56 size-176">
         {[140, 220, 300].map((r) => (
           <circle key={r} cx="300" cy="300" r={r} fill="none" stroke="white" strokeOpacity="0.07" />
         ))}

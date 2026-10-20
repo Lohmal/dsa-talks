@@ -3,7 +3,8 @@ import { db } from "@/lib/db";
 import { requireAdmin } from "@/lib/admin";
 import { DEFAULT_ADMIN } from "@/lib/bootstrap";
 import { formatDateTime } from "@/lib/time";
-import { ActionForm, Badge, Card, Field, PageHeader, SubmitButton, inputClass } from "@/components/admin/ui";
+import { Badge, Card, Field, PageHeader, inputClass } from "@/components/admin/ui";
+import { ActionForm, SubmitButton } from "@/components/admin/forms";
 import { createUser, deleteUser, updateUser } from "@/app/admin/actions";
 
 export const metadata = { title: "Yöneticiler" };

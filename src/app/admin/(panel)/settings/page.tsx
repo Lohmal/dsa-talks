@@ -6,7 +6,8 @@ import { formatRange, toIstanbulParts, windowStatus } from "@/lib/time";
 import { speakers } from "@/data/speakers";
 import en from "@/i18n/messages/en.json";
 import tr from "@/i18n/messages/tr.json";
-import { ActionForm, Badge, Card, Field, PageHeader, SubmitButton, inputClass } from "@/components/admin/ui";
+import { Badge, Card, Field, PageHeader, inputClass } from "@/components/admin/ui";
+import { ActionForm, SubmitButton } from "@/components/admin/forms";
 import {
   createSession,
   deleteSession,

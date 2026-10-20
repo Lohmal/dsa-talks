@@ -1,7 +1,8 @@
 import { ArrowDown, ArrowUp, Pencil, Plus, Trash2 } from "lucide-react";
 import type { Question } from "@prisma/client";
 import { getQuestions } from "@/lib/survey";
-import { ActionForm, Badge, Card, EmptyState, Field, PageHeader, SubmitButton, inputClass } from "@/components/admin/ui";
+import { Badge, Card, EmptyState, Field, PageHeader, inputClass } from "@/components/admin/ui";
+import { ActionForm, SubmitButton } from "@/components/admin/forms";
 import { createQuestion, deleteQuestion, moveQuestion, updateQuestion } from "@/app/admin/actions";
 
 export const metadata = { title: "Sorular" };
