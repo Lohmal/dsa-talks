@@ -178,7 +178,7 @@ function Kpi({
         accent ? "bg-ink text-white ring-ink" : "bg-white text-ink ring-ink/5"
       }`}
     >
-      {accent && <span aria-hidden className="absolute -right-8 -top-8 size-28 rounded-full border-[16px] border-brand/70" />}
+      {accent && <span aria-hidden className="absolute -right-8 -top-8 size-28 rounded-full border-16 border-brand/70" />}
       <span
         className={`relative grid size-9 place-items-center rounded-lg ${accent ? "bg-white/10" : "bg-brand/10 text-brand"}`}
       >

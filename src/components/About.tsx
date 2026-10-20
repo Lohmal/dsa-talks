@@ -31,7 +31,7 @@ export default function About() {
 
         <FadeIn delay={0.12}>
           <aside className="relative overflow-hidden rounded-3xl bg-ink p-8 text-white shadow-card sm:p-10">
-            <div aria-hidden className="absolute -right-16 -top-16 size-56 rounded-full border-[28px] border-brand/80" />
+            <div aria-hidden className="absolute -right-16 -top-16 size-56 rounded-full border-28 border-brand/80" />
             <div
               aria-hidden
               className="absolute inset-0 opacity-[0.07] bg-[radial-gradient(circle,white_1px,transparent_1px)] bg-size-[18px_18px]"

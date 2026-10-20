@@ -28,7 +28,7 @@ export default function SurveyView(props: SurveyProps) {
       </header>
 
       <section className="relative overflow-hidden bg-[linear-gradient(115deg,#e41f35_0%,#d7182a_45%,#ab1022_100%)] pb-28 pt-12 text-white sm:pt-16">
-        <svg aria-hidden viewBox="0 0 600 600" className="absolute -right-48 -top-40 size-[38rem] opacity-60">
+        <svg aria-hidden viewBox="0 0 600 600" className="absolute -right-48 -top-40 size-152 opacity-60">
           {[120, 200, 280].map((r) => (
             <circle key={r} cx="300" cy="300" r={r} fill="none" stroke="white" strokeOpacity="0.14" />
           ))}
@@ -143,7 +143,7 @@ function SurveyForm({
       {/* Honeypot: hidden from people, filled in by bots. */}
       <input type="text" name="website" tabIndex={-1} autoComplete="off" aria-hidden className="hidden" />
 
-      <Card className="!p-0 overflow-hidden">
+      <Card className="p-0! overflow-hidden">
         <dl className="divide-y divide-line">
           {rows.map(({ label, value }) => (
             <div key={label} className="grid gap-1 px-6 py-4 sm:grid-cols-[13rem_1fr] sm:gap-6 sm:px-8">
@@ -263,7 +263,7 @@ function RatingRow({ index, question, invalid }: { index: number; question: Surv
   const text = locale === "en" ? question.textEn : question.textTr;
 
   return (
-    <li className={`py-5 transition-colors ${invalid ? "-mx-3 rounded-xl bg-brand/[0.05] px-3" : ""}`}>
+    <li className={`py-5 transition-colors ${invalid ? "-mx-3 rounded-xl bg-brand/5 px-3" : ""}`}>
       <div className="grid gap-4 md:grid-cols-[1fr_auto] md:items-center md:gap-8">
         <p id={`label_${question.id}`} className="flex gap-3 font-semibold leading-snug text-ink">
           <span className={`w-6 shrink-0 font-black tabular-nums ${invalid ? "text-brand" : "text-brand/80"}`}>{index}</span>

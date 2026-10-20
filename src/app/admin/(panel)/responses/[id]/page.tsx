@@ -94,7 +94,7 @@ export default async function ResponsePage({ params }: PageProps<"/admin/respons
               {details.map(({ label, value }) => (
                 <div key={label} className="px-5 py-3">
                   <dt className="text-xs font-bold uppercase tracking-wider text-muted">{label}</dt>
-                  <dd className="mt-0.5 break-words font-semibold text-ink">{value}</dd>
+                  <dd className="mt-0.5 wrap-break-word font-semibold text-ink">{value}</dd>
                 </div>
               ))}
             </dl>
@@ -111,7 +111,7 @@ export default async function ResponsePage({ params }: PageProps<"/admin/respons
               )}
               {response.emailSentAt && <span className="text-sm text-muted">{formatDateTime(response.emailSentAt)}</span>}
             </div>
-            {response.emailError && <p className="mt-3 break-words text-xs text-brand">{response.emailError}</p>}
+            {response.emailError && <p className="mt-3 wrap-break-word text-xs text-brand">{response.emailError}</p>}
             <ActionForm action={resendCertificate} className="mt-4">
               <input type="hidden" name="id" value={response.id} />
               <SubmitButton tone="navy" className="w-full">

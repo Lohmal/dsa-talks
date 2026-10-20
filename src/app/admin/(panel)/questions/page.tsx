@@ -117,7 +117,7 @@ function QuestionForm({
             type="checkbox"
             name="required"
             defaultChecked={question?.required ?? true}
-            className="size-4 accent-[#d7182a]"
+            className="size-4 accent-brand"
           />
           Zorunlu soru
         </label>

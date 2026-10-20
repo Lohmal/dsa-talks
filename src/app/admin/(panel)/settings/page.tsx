@@ -95,7 +95,7 @@ export default async function SettingsPage() {
               ].map((option) => (
                 <label
                   key={option.value}
-                  className="relative cursor-pointer rounded-xl p-4 ring-1 ring-line transition has-[:checked]:bg-ink has-[:checked]:text-white has-[:checked]:ring-ink"
+                  className="relative cursor-pointer rounded-xl p-4 ring-1 ring-line transition has-checked:bg-ink has-checked:text-white has-checked:ring-ink"
                 >
                   <input
                     type="radio"

@@ -89,7 +89,7 @@ export default async function ResponsesPage({ searchParams }: PageProps<"/admin/
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[56rem] text-left text-sm">
+            <table className="w-full min-w-4xl text-left text-sm">
               <thead className="bg-surface text-xs font-bold uppercase tracking-wider text-muted">
                 <tr>
                   <th className="px-6 py-3">Tarih</th>
