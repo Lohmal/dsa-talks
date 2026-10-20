@@ -2,8 +2,8 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "DSA Talks – Data Science and Analytics",
-    short_name: "DSA Talks",
+    name: "DSATalks – Data Science and Analytics",
+    short_name: "DSATalks",
     description:
       "Two days of talks on data science, biostatistics, machine learning and AI. 4–5 November 2026, ATÜ Library Conference Hall, Adana.",
     start_url: "/",

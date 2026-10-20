@@ -7,11 +7,11 @@ export function Container({ children, className = "" }: { children: React.ReactN
   return <div className={`mx-auto w-full max-w-7xl px-5 sm:px-8 ${className}`}>{children}</div>;
 }
 
-// "DSA Talks" set in the poster's colors; stands in for a logo until there is one.
+// "DSATalks" set in the poster's colors; stands in for a logo until there is one.
 export function Wordmark({ light = false, className = "" }: { light?: boolean; className?: string }) {
   return (
     <span className={`font-black tracking-[-0.04em] ${className}`}>
-      <span className={light ? "text-white" : "text-brand"}>DSA</span>{" "}
+      <span className={light ? "text-white" : "text-brand"}>DSA</span>
       <span className={light ? "text-brand" : "text-ink"}>Talks</span>
     </span>
   );

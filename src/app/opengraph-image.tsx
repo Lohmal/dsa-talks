@@ -4,7 +4,7 @@ import { join } from "node:path";
 
 // Link preview for WhatsApp, LinkedIn, X…: the poster's red band in 1200×630.
 
-export const alt = "DSA Talks – Data Science and Analytics · 4–5 November 2026 · ATÜ Library Conference Hall, Adana";
+export const alt = "DSATalks – Data Science and Analytics · 4–5 November 2026 · ATÜ Library Conference Hall, Adana";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -55,7 +55,7 @@ export default async function Image() {
         <div style={{ display: "flex", flexDirection: "column" }}>
           <div style={{ display: "flex", fontSize: 190, fontWeight: 900, lineHeight: 0.9, letterSpacing: -10 }}>
             <span>DSA</span>
-            <span style={{ color: "#13224b", marginLeft: 40 }}>Talks</span>
+            <span style={{ color: "#13224b" }}>Talks</span>
           </div>
           <div style={{ width: 170, height: 12, borderRadius: 6, background: "#13224b", marginTop: 34 }} />
           <div style={{ display: "flex", alignItems: "center", fontSize: 50, fontWeight: 700, marginTop: 30 }}>

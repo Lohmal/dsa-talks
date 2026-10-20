@@ -29,7 +29,7 @@ const place = {
 const eventJsonLd = {
   "@context": "https://schema.org",
   "@type": "Event",
-  name: "DSA Talks",
+  name: "DSATalks",
   description: en.hero.intro,
   url: siteUrl,
   image: `${siteUrl}/opengraph-image`,

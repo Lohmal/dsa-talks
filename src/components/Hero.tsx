@@ -13,7 +13,7 @@ const rise = {
   show: { opacity: 1, y: 0, transition: { duration: 0.8, ease: EASE } },
 };
 
-// Red invitation band from the poster: giant "DSA Talks", the slogan with its navy
+// Red invitation band from the poster: giant "DSATalks", the slogan with its navy
 // highlight, a live node network on the right and the round date badge.
 export default function Hero() {
   const { m } = useLanguage();
@@ -50,7 +50,7 @@ export default function Hero() {
               variants={rise}
               className="text-[clamp(4.6rem,14vw,12rem)] font-black leading-[0.86] tracking-[-0.055em] lg:whitespace-nowrap lg:text-[clamp(6rem,min(10vw,18svh),11rem)]"
             >
-              <span className="text-white">DSA</span> <span className="text-ink">Talks</span>
+              <span className="text-white">DSA</span><span className="text-ink">Talks</span>
             </motion.h1>
 
             <motion.span

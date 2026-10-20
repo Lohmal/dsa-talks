@@ -1,6 +1,6 @@
 {
   "meta": {
-    "name": "DSA Talks",
+    "name": "DSATalks",
     "slogan": "Where data turns into decisions.",
     "university": "Adana Alparslan Türkeş Science and Technology University",
     "universityShort": "ATÜ",
@@ -41,7 +41,7 @@
     "eyebrow": "About",
     "title": "Talks that turn data into decisions",
     "text": [
-      "DSA Talks brings researchers, students and practitioners together at Adana Alparslan Türkeş Science and Technology University for two days of talks on how data is collected, analysed and turned into decisions.",
+      "DSATalks brings researchers, students and practitioners together at Adana Alparslan Türkeş Science and Technology University for two days of talks on how data is collected, analysed and turned into decisions.",
       "From healthcare data and clinical decision making to MATLAB for data scientists, from the history of data science to the latest trends in its lifecycle, each talk looks at a different side of working with data."
     ],
     "organizersTitle": "Organized by",

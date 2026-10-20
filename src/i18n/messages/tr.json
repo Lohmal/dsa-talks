@@ -1,6 +1,6 @@
 {
   "meta": {
-    "name": "DSA Talks",
+    "name": "DSATalks",
     "slogan": "Verinin karara dönüştüğü yer.",
     "university": "Adana Alparslan Türkeş Bilim ve Teknoloji Üniversitesi",
     "universityShort": "ATÜ",
@@ -41,7 +41,7 @@
     "eyebrow": "Hakkında",
     "title": "Veriyi karara dönüştüren konuşmalar",
     "text": [
-      "DSA Talks; araştırmacıları, öğrencileri ve sektör profesyonellerini, verinin nasıl toplandığını, analiz edildiğini ve karara dönüştüğünü konuşmak üzere iki gün boyunca Adana Alparslan Türkeş Bilim ve Teknoloji Üniversitesi’nde bir araya getiriyor.",
+      "DSATalks; araştırmacıları, öğrencileri ve sektör profesyonellerini, verinin nasıl toplandığını, analiz edildiğini ve karara dönüştüğünü konuşmak üzere iki gün boyunca Adana Alparslan Türkeş Bilim ve Teknoloji Üniversitesi’nde bir araya getiriyor.",
       "Sağlık verilerinden klinik kararlara, veri bilimciler için MATLAB’den veri biliminin dünü ve yarınına, veri bilimi yaşam döngüsünden yeni trendlere uzanan her konuşma, veriyle çalışmanın farklı bir yüzünü ele alıyor."
     ],
     "organizersTitle": "Düzenleyenler",

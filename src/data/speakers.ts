@@ -45,7 +45,14 @@ export const speakers: Speaker[] = [
       tr: ["FİGES", "Akademik Planlama ve Geliştirme Mühendisi"],
     },
     photo: "/images/speakers/silvan-schwaller.webp",
-    bio: { en: [], tr: [] },
+    bio: {
+      en: [
+        "After graduating from the Department of Aerospace Engineering at Middle East Technical University (METU) in 2019, he completed a master’s degree in Engineering Management at Galatasaray University. He currently works as a Customer Success Engineer at FİGES A.Ş., where he supports academics, researchers and students working on a wide range of topics at universities with MATLAB & Simulink.",
+      ],
+      tr: [
+        "ODTÜ Havacılık ve Uzay Mühendisliği bölümünden 2019 yılında mezun olduktan sonra Galatasaray Üniversitesi’nde Mühendislik Yönetimi üstüne yüksek lisans yaptı. Şu anda FİGES A.Ş.’de Müşteri Başarı Mühendisi olarak çalışmakta ve bu kapsamda üniversitelerdeki farklı konularda çalışan akademisyen, araştırmacı ve öğrencilere MATLAB & Simulink ile ilgili konularda destek olmaktadır.",
+      ],
+    },
     links: {},
   },
   {

@@ -12,7 +12,7 @@ const poppins = Poppins({
   weight: ["300", "400", "500", "600", "700", "800", "900"],
 });
 
-const title = "DSA Talks – Data Science and Analytics";
+const title = "DSATalks – Data Science and Analytics";
 const description =
   "Two days of talks on data science, biostatistics, machine learning and AI. 4–5 November 2026, ATÜ Library Conference Hall, Adana.";
 
@@ -22,8 +22,9 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title,
   description,
-  applicationName: "DSA Talks",
+  applicationName: "DSATalks",
   keywords: [
+    "DSATalks",
     "DSA Talks",
     "data science",
     "data analytics",
@@ -43,7 +44,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     url: "/",
-    siteName: "DSA Talks",
+    siteName: "DSATalks",
     title,
     description,
     locale: "en_US",

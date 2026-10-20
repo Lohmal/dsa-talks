@@ -1,6 +1,6 @@
-# DSA Talks
+# DSATalks
 
-One-page site for DSA Talks (Adana Alparslan Türkeş Science and Technology University, 4–5 November 2026, ATÜ Library Conference Hall).
+One-page site for DSATalks (Adana Alparslan Türkeş Science and Technology University, 4–5 November 2026, ATÜ Library Conference Hall).
 
 ```bash
 npm install
