@@ -3,18 +3,24 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { motion } from "motion/react";
 import { Menu } from "lucide-react";
-import MobileMenu, { type SectionId } from "./MobileMenu";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import MobileMenu, { sectionHref, type SectionId } from "./MobileMenu";
 import { Container, LanguageSwitcher, Wordmark } from "./ui";
 import { useLanguage } from "@/i18n/LanguageProvider";
 
-const sections: readonly SectionId[] = ["about", "speakers", "program", "venue"];
+const sections: readonly SectionId[] = ["about", "speakers", "program", "committees", "venue"];
 
 // White bar with the poster's red top line. Highlights the section currently in view.
 export default function Header() {
   const { m } = useLanguage();
+  const pathname = usePathname();
+  const onHome = pathname === "/";
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [current, setCurrent] = useState<string | null>(null);
+  const [spied, setSpied] = useState<string | null>(null);
+  // On the home page the section in view is highlighted; on /kurullar, the committees link.
+  const current = onHome ? spied : pathname.startsWith("/kurullar") ? "committees" : null;
   const menuButtonRef = useRef<HTMLButtonElement>(null);
 
   const closeMenu = useCallback(() => {
@@ -28,7 +34,7 @@ export default function Header() {
 
     const observer = new IntersectionObserver(
       (entries) => {
-        for (const entry of entries) if (entry.isIntersecting) setCurrent(entry.target.id);
+        for (const entry of entries) if (entry.isIntersecting) setSpied(entry.target.id);
       },
       { rootMargin: "-45% 0px -50% 0px" },
     );
@@ -49,15 +55,15 @@ export default function Header() {
       }`}
     >
       <Container className="flex h-16 items-center justify-between gap-6 sm:h-18">
-        <a href="#top" className="text-2xl sm:text-[1.7rem]">
+        <Link href={onHome ? "#top" : "/"} className="text-2xl sm:text-[1.7rem]">
           <Wordmark />
-        </a>
+        </Link>
 
         <nav aria-label="Main" className="hidden items-center gap-1 md:flex">
           {sections.map((id) => (
-            <a
+            <Link
               key={id}
-              href={`#${id}`}
+              href={sectionHref(id, onHome)}
               aria-current={current === id ? "true" : undefined}
               className={`relative rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
                 current === id ? "text-brand" : "text-ink/75 hover:text-ink"
@@ -71,7 +77,7 @@ export default function Header() {
                   className="absolute inset-x-4 -bottom-0.5 h-0.5 rounded-full bg-brand"
                 />
               )}
-            </a>
+            </Link>
           ))}
           <span aria-hidden className="mx-3 h-6 w-px bg-line" />
           <LanguageSwitcher />
@@ -91,7 +97,7 @@ export default function Header() {
         </button>
       </Container>
 
-      <MobileMenu open={open} onClose={closeMenu} sections={sections} current={current} />
+      <MobileMenu open={open} onClose={closeMenu} sections={sections} current={current} onHome={onHome} />
     </header>
   );
 }

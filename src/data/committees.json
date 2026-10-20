@@ -1,0 +1,380 @@
+{
+  "honoraryChairs": [
+    {
+      "given": "Adnan",
+      "surname": "Sözen",
+      "title": {
+        "en": "Prof. Dr.",
+        "tr": "Prof. Dr."
+      },
+      "affiliation": {
+        "en": "Rector, Adana Alparslan Türkeş Science and Technology University",
+        "tr": "Rektör, Adana Alparslan Türkeş Bilim ve Teknoloji Üniversitesi"
+      },
+      "photo": "/images/people/adnan-sozen.webp"
+    },
+    {
+      "given": "Başak",
+      "surname": "Doğru Mert",
+      "title": {
+        "en": "Prof. Dr.",
+        "tr": "Prof. Dr."
+      },
+      "affiliation": {
+        "en": "Vice Rector, Adana Alparslan Türkeş Science and Technology University",
+        "tr": "Rektör Yardımcısı, Adana Alparslan Türkeş Bilim ve Teknoloji Üniversitesi"
+      },
+      "photo": "/images/people/basak-dogru-mert.webp"
+    },
+    {
+      "given": "Selma Ayşe",
+      "surname": "Özel",
+      "title": {
+        "en": "Prof. Dr.",
+        "tr": "Prof. Dr."
+      },
+      "affiliation": {
+        "en": "Dean, Faculty of Computer and Informatics, ATÜ",
+        "tr": "Dekan, Bilgisayar ve Bilişim Fakültesi, ATÜ"
+      },
+      "photo": "/images/people/selma-ayse-ozel.webp"
+    }
+  ],
+  "coChairs": [
+    {
+      "given": "H. Esin",
+      "surname": "Ünal",
+      "title": {
+        "en": "Asst. Prof. Dr.",
+        "tr": "Dr. Öğr. Üyesi"
+      },
+      "affiliation": {
+        "en": "Department of Data Science and Analytics, ATÜ",
+        "tr": "Veri Bilimi ve Analitiği Bölümü, ATÜ"
+      },
+      "photo": "/images/people/h-esin-unal.webp"
+    },
+    {
+      "given": "Begüm",
+      "surname": "Çığşar",
+      "title": {
+        "en": "Asst. Prof. Dr.",
+        "tr": "Dr. Öğr. Üyesi"
+      },
+      "affiliation": {
+        "en": "Department of Data Science and Analytics, ATÜ",
+        "tr": "Veri Bilimi ve Analitiği Bölümü, ATÜ"
+      },
+      "photo": "/images/people/begum-cigsar.webp"
+    },
+    {
+      "given": "Hakan",
+      "surname": "Yılmazer",
+      "title": {
+        "en": "Asst. Prof. Dr.",
+        "tr": "Dr. Öğr. Üyesi"
+      },
+      "affiliation": {
+        "en": "Department of Data Science and Analytics, ATÜ",
+        "tr": "Veri Bilimi ve Analitiği Bölümü, ATÜ"
+      },
+      "photo": "/images/people/hakan-yilmazer.webp"
+    }
+  ],
+  "programCommittee": [
+    {
+      "given": "Lucia",
+      "surname": "Vilčeková",
+      "title": {
+        "en": "Assoc. Prof. Dr.",
+        "tr": "Doç. Dr."
+      },
+      "affiliation": {
+        "en": "Faculty of Management, Comenius University Bratislava, Slovakia",
+        "tr": "Yönetim Fakültesi, Comenius Üniversitesi, Bratislava, Slovakya"
+      },
+      "foreign": true
+    },
+    {
+      "given": "Arusa",
+      "surname": "Khalid",
+      "title": {
+        "en": "Asst. Prof. Dr.",
+        "tr": "Dr. Öğr. Üyesi"
+      },
+      "affiliation": {
+        "en": "Faculty of Management, Comenius University Bratislava, Slovakia",
+        "tr": "Yönetim Fakültesi, Comenius Üniversitesi, Bratislava, Slovakya"
+      },
+      "foreign": true
+    },
+    {
+      "given": "İlker",
+      "surname": "Ünal",
+      "title": {
+        "en": "Prof. Dr.",
+        "tr": "Prof. Dr."
+      },
+      "affiliation": {
+        "en": "Department of Biostatistics, Faculty of Medicine, Çukurova University",
+        "tr": "Çukurova Üniversitesi Tıp Fakültesi Biyoistatistik Anabilim Dalı"
+      },
+      "photo": "/images/people/ilker-unal.webp"
+    },
+    {
+      "given": "Recep",
+      "surname": "Erol",
+      "title": {
+        "en": "Dr.",
+        "tr": "Dr."
+      },
+      "affiliation": {
+        "en": "Center for Research Computing, Rice University, USA",
+        "tr": "Araştırma Hesaplama Merkezi, Rice Üniversitesi, ABD"
+      }
+    },
+    {
+      "given": "Güzin",
+      "surname": "Yüksel",
+      "title": {
+        "en": "Prof. Dr.",
+        "tr": "Prof. Dr."
+      },
+      "affiliation": {
+        "en": "Faculty of Arts and Sciences, Çukurova University",
+        "tr": "Çukurova Üniversitesi Fen-Edebiyat Fakültesi"
+      },
+      "photo": "/images/people/guzin-yuksel.webp"
+    },
+    {
+      "given": "Deniz",
+      "surname": "Ünal",
+      "title": {
+        "en": "Prof. Dr.",
+        "tr": "Prof. Dr."
+      },
+      "affiliation": {
+        "en": "Faculty of Management, Comenius University Bratislava, Slovakia",
+        "tr": "Yönetim Fakültesi, Comenius Üniversitesi, Bratislava, Slovakya"
+      }
+    },
+    {
+      "given": "Mümine",
+      "surname": "Kaya Keleş",
+      "title": {
+        "en": "Assoc. Prof. Dr.",
+        "tr": "Doç. Dr."
+      },
+      "affiliation": {
+        "en": "Department of Computer Engineering, ATÜ",
+        "tr": "ATÜ Bilgisayar Mühendisliği Bölümü"
+      },
+      "photo": "/images/people/mumine-kaya-keles.webp"
+    },
+    {
+      "given": "Esra",
+      "surname": "Saraç",
+      "title": {
+        "en": "Assoc. Prof. Dr.",
+        "tr": "Doç. Dr."
+      },
+      "affiliation": {
+        "en": "Department of Computer Engineering, ATÜ",
+        "tr": "ATÜ Bilgisayar Mühendisliği Bölümü"
+      },
+      "photo": "/images/people/esra-sarac.webp"
+    },
+    {
+      "given": "İpek",
+      "surname": "Abasıkeleş Turgut",
+      "title": {
+        "en": "Assoc. Prof. Dr.",
+        "tr": "Doç. Dr."
+      },
+      "affiliation": {
+        "en": "Department of Computer Engineering, İskenderun Technical University",
+        "tr": "İskenderun Teknik Üniversitesi Bilgisayar Mühendisliği Bölümü"
+      }
+    },
+    {
+      "given": "Çiğdem",
+      "surname": "Acı",
+      "title": {
+        "en": "Assoc. Prof. Dr.",
+        "tr": "Doç. Dr."
+      },
+      "affiliation": {
+        "en": "Department of Computer Engineering, Mersin University",
+        "tr": "Mersin Üniversitesi Bilgisayar Mühendisliği Bölümü"
+      },
+      "photo": "/images/people/cigdem-aci.webp"
+    },
+    {
+      "given": "Esin Ayşe",
+      "surname": "Zaimoğlu",
+      "title": {
+        "en": "Asst. Prof. Dr.",
+        "tr": "Dr. Öğr. Üyesi"
+      },
+      "affiliation": {
+        "en": "Department of Information Systems Engineering, Sakarya University",
+        "tr": "Sakarya Üniversitesi Bilişim Sistemleri Mühendisliği Bölümü"
+      },
+      "photo": "/images/people/esin-ayse-zaimoglu.webp"
+    },
+    {
+      "given": "Ezgi",
+      "surname": "Zorarpacı",
+      "title": {
+        "en": "Assoc. Prof. Dr.",
+        "tr": "Doç. Dr."
+      },
+      "affiliation": {
+        "en": "Department of Computer Engineering, İstanbul University",
+        "tr": "İstanbul Üniversitesi Bilgisayar Mühendisliği Bölümü"
+      }
+    },
+    {
+      "given": "Mehmet",
+      "surname": "Sarıgül",
+      "title": {
+        "en": "Assoc. Prof. Dr.",
+        "tr": "Doç. Dr."
+      },
+      "affiliation": {
+        "en": "Department of Computer Engineering, Çukurova University",
+        "tr": "Çukurova Üniversitesi Bilgisayar Mühendisliği Bölümü"
+      },
+      "photo": "/images/people/mehmet-sarigul.webp"
+    },
+    {
+      "given": "Barış",
+      "surname": "Ata",
+      "title": {
+        "en": "Asst. Prof. Dr.",
+        "tr": "Dr. Öğr. Üyesi"
+      },
+      "affiliation": {
+        "en": "Department of Computer Engineering, Çukurova University",
+        "tr": "Çukurova Üniversitesi Bilgisayar Mühendisliği Bölümü"
+      },
+      "photo": "/images/people/baris-ata.webp"
+    }
+  ],
+  "localCommittee": [
+    {
+      "given": "Mümine",
+      "surname": "Kaya Keleş",
+      "title": {
+        "en": "Assoc. Prof. Dr.",
+        "tr": "Doç. Dr."
+      },
+      "affiliation": {
+        "en": "Department of Computer Engineering, ATÜ",
+        "tr": "Bilgisayar Mühendisliği Bölümü, ATÜ"
+      },
+      "photo": "/images/people/mumine-kaya-keles.webp"
+    },
+    {
+      "given": "Esra",
+      "surname": "Saraç",
+      "title": {
+        "en": "Assoc. Prof. Dr.",
+        "tr": "Doç. Dr."
+      },
+      "affiliation": {
+        "en": "Department of Computer Engineering, ATÜ",
+        "tr": "Bilgisayar Mühendisliği Bölümü, ATÜ"
+      },
+      "photo": "/images/people/esra-sarac.webp"
+    },
+    {
+      "given": "Duran",
+      "surname": "Duman",
+      "title": {
+        "en": "Res. Asst.",
+        "tr": "Arş. Gör."
+      },
+      "affiliation": {
+        "en": "Department of Data Science and Analytics, ATÜ",
+        "tr": "Veri Bilimi ve Analitiği Bölümü, ATÜ"
+      },
+      "photo": "/images/people/duran-duman.webp"
+    },
+    {
+      "given": "Züleyha",
+      "surname": "Irmak",
+      "title": {
+        "en": "Res. Asst.",
+        "tr": "Arş. Gör."
+      },
+      "affiliation": {
+        "en": "Department of Computer Engineering, ATÜ",
+        "tr": "Bilgisayar Mühendisliği Bölümü, ATÜ"
+      },
+      "photo": "/images/people/zuleyha-irmak.webp"
+    },
+    {
+      "given": "Onur",
+      "surname": "Özbey",
+      "title": {
+        "en": "Res. Asst.",
+        "tr": "Arş. Gör."
+      },
+      "affiliation": {
+        "en": "Department of Computer Engineering, ATÜ",
+        "tr": "Bilgisayar Mühendisliği Bölümü, ATÜ"
+      },
+      "photo": "/images/people/onur-ozbey.webp"
+    },
+    {
+      "given": "Elif",
+      "surname": "Kavak",
+      "title": {
+        "en": "Res. Asst.",
+        "tr": "Arş. Gör."
+      },
+      "affiliation": {
+        "en": "Department of Computer Engineering, ATÜ",
+        "tr": "Bilgisayar Mühendisliği Bölümü, ATÜ"
+      },
+      "photo": "/images/people/elif-kavak.webp"
+    },
+    {
+      "given": "Ahmet",
+      "surname": "Evci"
+    },
+    {
+      "given": "Alkın",
+      "surname": "Turpçu"
+    },
+    {
+      "given": "Zeynep Beren",
+      "surname": "Özdemir"
+    },
+    {
+      "given": "Nursena",
+      "surname": "Eşkil"
+    },
+    {
+      "given": "Volkan",
+      "surname": "Kıvanç"
+    },
+    {
+      "given": "Enver",
+      "surname": "Kaynak"
+    },
+    {
+      "given": "Nesrin",
+      "surname": "Adıgüzel"
+    },
+    {
+      "given": "Badesu",
+      "surname": "Özkan"
+    },
+    {
+      "given": "Mehmet Can",
+      "surname": "Onan"
+    }
+  ]
+}

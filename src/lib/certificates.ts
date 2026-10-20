@@ -4,6 +4,8 @@ import type { Response } from "@prisma/client";
 import { db } from "./db";
 import { renderCertificatePdf, type CertificateData } from "./certificate";
 import { sendCertificateMail } from "./mail";
+import { publicOrigin, verifyUrl } from "./origin";
+import { responseTalks, talkTitles } from "./talks";
 
 const ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // no 0/O or 1/I look-alikes
 
@@ -16,13 +18,13 @@ export function newCertificateNo() {
 // The secret part of the download link; long enough that links cannot be guessed.
 export const newCertificateToken = () => randomBytes(24).toString("base64url");
 
-export function certificateDataOf(response: Response): CertificateData {
+export function certificateDataOf(response: Response, origin: string): CertificateData {
   return {
     name: response.name,
     certificateNo: response.certificateNo,
     certificateDate: response.certificateDate,
-    speaker: response.speaker,
-    talkTitle: response.talkTitleEn || response.talkTitleTr,
+    talks: responseTalks(response).map((talk) => ({ speaker: talk.speaker, title: talk.titleEn || talk.titleTr })),
+    verifyUrl: verifyUrl(origin, response.certificateNo),
   };
 }
 
@@ -30,13 +32,13 @@ export function certificateDataOf(response: Response): CertificateData {
 // cannot undo a saved survey.
 export async function mailCertificate(response: Response) {
   try {
-    const pdf = await renderCertificatePdf(certificateDataOf(response));
+    const pdf = await renderCertificatePdf(certificateDataOf(response, await publicOrigin()));
     await sendCertificateMail({
       to: response.email,
       name: response.name,
       locale: response.locale,
       certificateNo: response.certificateNo,
-      talk: response.locale === "en" ? response.talkTitleEn : response.talkTitleTr,
+      talk: talkTitles(responseTalks(response), response.locale) || null,
       pdf,
     });
     await db.response.update({

@@ -1,6 +1,9 @@
 "use client";
 
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Globe, Mail } from "lucide-react";
+import { sectionHref } from "./MobileMenu";
 import { Container, LanguageSwitcher, Wordmark } from "./ui";
 import { site } from "@/config/site";
 import { useLanguage } from "@/i18n/LanguageProvider";
@@ -15,7 +18,7 @@ function InstagramIcon({ className = "size-5" }: { className?: string }) {
   );
 }
 
-const sections = ["about", "speakers", "program", "venue"] as const;
+const sections = ["about", "speakers", "program", "committees", "venue"] as const;
 
 function ColumnTitle({ children }: { children: React.ReactNode }) {
   return <h2 className="text-xs font-extrabold uppercase tracking-[0.3em] text-brand-soft">{children}</h2>;
@@ -25,6 +28,7 @@ function ColumnTitle({ children }: { children: React.ReactNode }) {
 // organizer, then a bottom row with the copyright, the poster's closing line and the language switch.
 export default function Footer() {
   const { m } = useLanguage();
+  const onHome = usePathname() === "/";
   const contacts = [
     { href: `mailto:${site.email}`, icon: Mail, label: site.email },
     { href: site.websiteUrl, icon: Globe, label: site.websiteUrl.replace("https://", "") },
@@ -57,9 +61,9 @@ export default function Footer() {
             <ul className="mt-5 space-y-3">
               {sections.map((id) => (
                 <li key={id}>
-                  <a href={`#${id}`} className="font-medium text-white/75 transition-colors hover:text-white">
+                  <Link href={sectionHref(id, onHome)} className="font-medium text-white/75 transition-colors hover:text-white">
                     {m.nav[id]}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>

@@ -2,11 +2,12 @@ import Link from "next/link";
 import { ArrowRight, CircleDot, Mail, MessageSquareText, Star } from "lucide-react";
 import { db } from "@/lib/db";
 import { getQuestions, getSurveyState } from "@/lib/survey";
-import { countSince, overallAverage, ratingStats, responseAverage, scopeLabel, scopeWhere } from "@/lib/stats";
+import { choiceStats, countSince, overallAverage, ratingStats, responseAverage, scopeLabel, scopeWhere } from "@/lib/stats";
+import { sessionTalks, speakerNames, talkTitles } from "@/lib/talks";
 import { readScope, scopeSelectOptions } from "@/lib/scopes";
 import { formatDateTime, formatRange } from "@/lib/time";
 import { Badge, Card, EmptyState, PageHeader, buttonClass } from "@/components/admin/ui";
-import { AverageChart, DistributionChart } from "@/components/admin/Charts";
+import { AverageChart, ChoiceChart, DistributionChart } from "@/components/admin/Charts";
 import ScopeSelect from "@/components/admin/ScopeSelect";
 import DownloadButton from "@/components/admin/DownloadButton";
 
@@ -23,6 +24,7 @@ export default async function Dashboard({ searchParams }: PageProps<"/admin">) {
   ]);
 
   const stats = ratingStats(responses, questions);
+  const choices = choiceStats(responses, questions);
   const average = overallAverage(stats);
   const sent = responses.filter((r) => r.emailStatus === "sent").length;
   const failed = responses.filter((r) => r.emailStatus === "failed").length;
@@ -89,6 +91,29 @@ export default async function Dashboard({ searchParams }: PageProps<"/admin">) {
         </div>
       )}
 
+      {responses.length > 0 &&
+        choices.map((choice) => (
+          <Card
+            key={choice.questionId}
+            title={choice.text}
+            description={`${choice.respondents} kişi yanıtladı · birden fazla seçim yapılabildiği için oranlar toplamı %100’ü geçebilir`}
+          >
+            <ChoiceChart stat={choice} />
+            {choice.others.length > 0 && (
+              <div className="mt-5 border-t border-line pt-4">
+                <p className="text-xs font-bold uppercase tracking-wider text-muted">“Diğer” olarak yazılanlar</p>
+                <ul className="mt-2 flex flex-wrap gap-2">
+                  {choice.others.map((other, i) => (
+                    <li key={i} className="rounded-full bg-surface px-3 py-1.5 text-sm text-ink ring-1 ring-line">
+                      {other}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </Card>
+        ))}
+
       <div className="grid gap-6 xl:grid-cols-[1.2fr_1fr]">
         <Card title="Konuşmacı oturumları" description="Konuşmacı bazında moddaki zaman aralıkları" padded={false}>
           {bySession.length === 0 ? (
@@ -100,9 +125,9 @@ export default async function Dashboard({ searchParams }: PageProps<"/admin">) {
               {bySession.map(({ session, count, average }) => (
                 <li key={session.id} className="flex items-center justify-between gap-4 px-5 py-4 sm:px-6">
                   <div className="min-w-0">
-                    <p className="truncate font-bold text-ink">{session.titleTr}</p>
+                    <p className="truncate font-bold text-ink">{talkTitles(sessionTalks(session), "tr")}</p>
                     <p className="mt-0.5 truncate text-sm text-muted">
-                      {session.speaker} · {formatRange(session.startsAt, session.endsAt, "tr")}
+                      {speakerNames(sessionTalks(session))} · {formatRange(session.startsAt, session.endsAt, "tr")}
                     </p>
                   </div>
                   <div className="shrink-0 text-right">
@@ -203,13 +228,13 @@ function StatusBanner({ state }: { state: Awaited<ReturnType<typeof getSurveySta
     tone = "green";
     title = "Anket açık – yanıt alınıyor";
     detail = state.session
-      ? `${state.session.speaker} · ${state.session.titleTr} (${formatRange(state.session.startsAt, state.session.endsAt, "tr")})`
+      ? `${speakerNames(sessionTalks(state.session))} · ${talkTitles(sessionTalks(state.session), "tr")} (${formatRange(state.session.startsAt, state.session.endsAt, "tr")})`
       : "Her e-posta adresi anketi bir kez doldurabilir.";
   } else if (state.status === "waiting") {
     tone = "amber";
     title = "Anket açık, ancak şu anda aktif oturum yok";
     detail = state.next
-      ? `Sıradaki: ${state.next.speaker} · ${formatRange(state.next.startsAt, state.next.endsAt, "tr")}`
+      ? `Sıradaki: ${speakerNames(sessionTalks(state.next))} · ${formatRange(state.next.startsAt, state.next.endsAt, "tr")}`
       : "Gelecek bir oturum tanımlı değil. Anket Ayarları’ndan oturum ekleyin.";
   }
 

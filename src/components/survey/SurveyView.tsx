@@ -1,9 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import { useRef, useState, useTransition } from "react";
-import { AlertCircle, CalendarClock, CheckCircle2, Download, Loader2, Lock, Mail, Send } from "lucide-react";
-import { Container, LanguageSwitcher, Wordmark } from "@/components/ui";
+import { AlertCircle, CalendarClock, Check, CheckCircle2, Download, Loader2, Lock, Mail, Send } from "lucide-react";
+import PublicShell from "@/components/PublicShell";
 import { useLanguage, type Messages } from "@/i18n/LanguageProvider";
 import { submitSurvey } from "@/app/anket/actions";
 import type { SubmitResult, SurveyProps, SurveyQuestion } from "./types";
@@ -17,50 +16,15 @@ export default function SurveyView(props: SurveyProps) {
   const [done, setDone] = useState<Extract<SubmitResult, { status: "success" }> | null>(null);
 
   return (
-    <div className="flex min-h-svh flex-col bg-surface">
-      <header className="border-t-4 border-brand bg-white">
-        <Container className="flex h-16 items-center justify-between">
-          <Link href="/" className="text-2xl">
-            <Wordmark />
-          </Link>
-          <LanguageSwitcher />
-        </Container>
-      </header>
-
-      <section className="relative overflow-hidden bg-[linear-gradient(115deg,#e41f35_0%,#d7182a_45%,#ab1022_100%)] pb-28 pt-12 text-white sm:pt-16">
-        <svg aria-hidden viewBox="0 0 600 600" className="absolute -right-48 -top-40 size-152 opacity-60">
-          {[120, 200, 280].map((r) => (
-            <circle key={r} cx="300" cy="300" r={r} fill="none" stroke="white" strokeOpacity="0.14" />
-          ))}
-        </svg>
-        <Container className="relative max-w-3xl">
-          <p className="flex items-center gap-3 text-xs font-bold uppercase tracking-[0.38em] text-white/85">
-            <span aria-hidden className="h-0.5 w-8 bg-white" />
-            DSATalks
-          </p>
-          <h1 className="mt-4 text-3xl font-black tracking-[-0.02em] sm:text-5xl">{m.survey.title}</h1>
-          <p className="mt-4 max-w-2xl text-white/85 sm:text-lg">{m.survey.intro}</p>
-        </Container>
-      </section>
-
-      <main className="relative -mt-16 flex-1 pb-16">
-        <Container className="max-w-3xl">
-          {done ? (
-            <Success result={done} />
-          ) : props.status === "open" ? (
-            <SurveyForm {...props} onDone={setDone} />
-          ) : (
-            <Notice {...props} />
-          )}
-        </Container>
-      </main>
-
-      <footer className="border-t border-line bg-white py-6 text-center text-sm text-muted">
-        <Link href="/" className="font-semibold text-ink hover:text-brand">
-          {m.survey.backHome}
-        </Link>
-      </footer>
-    </div>
+    <PublicShell title={m.survey.title} intro={m.survey.intro}>
+      {done ? (
+        <Success result={done} />
+      ) : props.status === "open" ? (
+        <SurveyForm {...props} onDone={setDone} />
+      ) : (
+        <Notice {...props} />
+      )}
+    </PublicShell>
   );
 }
 
@@ -87,10 +51,13 @@ function Notice(props: Extract<SurveyProps, { status: "closed" | "waiting" }>) {
       {props.status === "waiting" && props.next && (
         <div className="mx-auto mt-8 max-w-md rounded-2xl bg-surface p-5 text-left ring-1 ring-line">
           <p className="text-xs font-extrabold uppercase tracking-[0.28em] text-brand">{m.survey.next}</p>
-          <p className="mt-2 font-bold text-ink">{props.next.talk[locale]}</p>
-          <p className="mt-1 text-sm text-muted">
-            {props.next.speaker} · {props.next.dateTime[locale]}
-          </p>
+          {props.next.talks.map((talk) => (
+            <p key={talk.speaker + talk.title.tr} className="mt-2">
+              <span className="block font-bold text-ink">{talk.title[locale]}</span>
+              <span className="block text-sm text-muted">{talk.speaker}</span>
+            </p>
+          ))}
+          <p className="mt-3 text-sm font-semibold text-ink">{props.next.dateTime[locale]}</p>
         </div>
       )}
     </Card>
@@ -110,12 +77,30 @@ function SurveyForm({
   const errorRef = useRef<HTMLDivElement>(null);
   const invalid = new Set(error?.fields ?? []);
   const ratingQuestions = questions.filter((q) => q.type === "RATING");
-  const textQuestions = questions.filter((q) => q.type === "TEXT");
+  const otherQuestions = questions.filter((q) => q.type !== "RATING");
 
-  const rows = [
+  const rows: { label: string; value: React.ReactNode }[] = [
     { label: m.survey.info.eventName, value: info.eventName },
     { label: m.survey.info.speaker, value: info.speaker },
-    ...(info.talk ? [{ label: m.survey.info.talk, value: info.talk[locale] }] : []),
+    ...(info.talks.length
+      ? [
+          {
+            label: m.survey.info.talk,
+            value:
+              info.talks.length === 1 ? (
+                info.talks[0].title[locale]
+              ) : (
+                <ul className="space-y-1.5">
+                  {info.talks.map((talk) => (
+                    <li key={talk.speaker + talk.title.tr}>
+                      {talk.title[locale]} <span className="font-normal text-muted">· {talk.speaker}</span>
+                    </li>
+                  ))}
+                </ul>
+              ),
+          },
+        ]
+      : []),
     { label: m.survey.info.dateTime, value: info.dateTime[locale] },
     { label: m.survey.info.venue, value: info.venue[locale] },
   ];
@@ -225,7 +210,10 @@ function SurveyForm({
         </Card>
       )}
 
-      {textQuestions.map((question) => (
+      {otherQuestions.map((question) =>
+        question.type === "CHOICE" ? (
+          <ChoiceCard key={question.id} question={question} invalid={invalid.has(question.id)} />
+        ) : (
         <Card key={question.id}>
           <label htmlFor={`q_${question.id}`} className="block">
             <SectionTitle>{locale === "en" ? question.textEn : question.textTr}</SectionTitle>
@@ -241,7 +229,8 @@ function SurveyForm({
             className={`${inputClass(invalid.has(question.id))} mt-5 resize-y`}
           />
         </Card>
-      ))}
+        ),
+      )}
 
       <div className="flex flex-col items-center gap-4 pt-2 text-center">
         <p className="max-w-lg text-sm text-muted">{m.survey.privacy}</p>
@@ -342,6 +331,45 @@ function Success({ result }: { result: Extract<SubmitResult, { status: "success"
       <p className="mt-4 text-sm text-muted">
         {m.survey.certificateNo} <span className="font-bold text-ink">{result.certificateNo}</span>
       </p>
+    </Card>
+  );
+}
+
+function ChoiceCard({ question, invalid }: { question: SurveyQuestion; invalid: boolean }) {
+  const { m, locale } = useLanguage();
+  const name = `q_${question.id}`;
+
+  return (
+    <Card className={invalid ? "ring-2 ring-brand/40" : ""}>
+      <SectionTitle>{locale === "en" ? question.textEn : question.textTr}</SectionTitle>
+      <p className="mt-1 text-sm text-muted">
+        {m.survey.multiHint}
+        {!question.required && ` · ${m.survey.optional}`}
+      </p>
+      <div role="group" aria-label={locale === "en" ? question.textEn : question.textTr} className="mt-5 grid gap-2 sm:grid-cols-2">
+        {question.options.map((option, index) => (
+          <label key={option.tr} className="group relative cursor-pointer">
+            <input type="checkbox" name={name} value={index} className="peer sr-only" />
+            <span className="flex h-full items-center gap-3 rounded-xl bg-white px-4 py-3 text-sm font-semibold text-ink ring-1 ring-line transition group-hover:ring-ink/40 peer-checked:bg-ink peer-checked:text-white peer-checked:ring-ink peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-brand">
+              <span className="grid size-5 shrink-0 place-items-center rounded-md ring-1 ring-current/40">
+                <Check className="size-3.5 opacity-0 transition-opacity group-has-checked:opacity-100" />
+              </span>
+              {option[locale]}
+            </span>
+          </label>
+        ))}
+      </div>
+      {question.allowOther && (
+        <label className="mt-4 block">
+          <span className="text-sm font-bold text-ink">{m.survey.otherLabel}</span>
+          <input
+            name={`${name}_other`}
+            maxLength={300}
+            placeholder={m.survey.otherPlaceholder}
+            className={`${inputClass(false)} mt-2`}
+          />
+        </label>
+      )}
     </Card>
   );
 }

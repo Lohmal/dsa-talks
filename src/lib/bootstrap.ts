@@ -21,7 +21,38 @@ const DEFAULT_SETTINGS = {
 };
 
 // The questions of the printed "Etkinlik Memnuniyet Anketi" form.
-type DefaultQuestion = { type: "RATING" | "TEXT"; textTr: string; textEn: string; required: boolean };
+type DefaultQuestion = {
+  type: "RATING" | "TEXT" | "CHOICE";
+  textTr: string;
+  textEn: string;
+  required: boolean;
+  options?: { tr: string; en: string }[];
+  allowOther?: boolean;
+};
+
+// Topics participants can pick for future events (multiple choice, plus "other").
+export const TOPICS_QUESTION: DefaultQuestion = {
+  type: "CHOICE",
+  textTr: "İlerleyen etkinliklerde hangi konuların ele alınmasını istersiniz?",
+  textEn: "Which topics would you like to see covered in future events?",
+  required: false,
+  allowOther: true,
+  options: [
+    ["Biyoinformatik için Veri Bilimi", "Data Science for Bioinformatics"],
+    ["Adli Bilimler için Veri Bilimi", "Data Science for Forensics"],
+    ["İstatistiksel Veri Analizi", "Statistical Data Analysis"],
+    ["Veri Madenciliği", "Data Mining"],
+    ["Büyük Veri Uygulamaları", "Big Data Applications"],
+    ["Veri Ön İşleme ve Örnekleme", "Data Preprocessing and Sampling"],
+    ["Olasılık ve İstatistik Kuramları", "Probabilistic and Statistical Theories"],
+    ["Veri Görselleştirme ve Hikâye Anlatımı", "Data Visualization and Storytelling"],
+    ["İş İnovasyonu için Veri Bilimi", "Data Science for Business Innovation"],
+    ["Makine Öğrenmesi", "Machine Learning"],
+    ["Derin Öğrenme", "Deep Learning"],
+    ["Veri Gizliliği ve Güvenliği", "Data Privacy and Security"],
+    ["Yapay Zekâ ve Etik", "AI and Ethics"],
+  ].map(([tr, en]) => ({ tr, en })),
+};
 
 const DEFAULT_QUESTIONS: DefaultQuestion[] = [
   ["Etkinliğin duyuru kanalları yeterlidir.", "The event's announcement channels were sufficient."],
@@ -38,7 +69,7 @@ const DEFAULT_QUESTIONS: DefaultQuestion[] = [
   ["Etkinlikten genel olarak memnunum.", "Overall, I am satisfied with the event."],
 ]
   .map(([textTr, textEn]): DefaultQuestion => ({ type: "RATING", textTr, textEn, required: true }))
-  .concat({
+  .concat(TOPICS_QUESTION, {
     type: "TEXT",
     textTr: "Etkinlikle ilgili diğer görüş ve önerileriniz",
     textEn: "Other comments and suggestions about the event",
@@ -64,7 +95,9 @@ async function run() {
     });
 
   if ((await db.question.count()) === 0) {
-    await db.question.createMany({ data: DEFAULT_QUESTIONS.map((q, order) => ({ ...q, order })) });
+    await db.question.createMany({
+      data: DEFAULT_QUESTIONS.map((q, order) => ({ ...q, options: q.options ?? [], allowOther: q.allowOther ?? false, order })),
+    });
   }
 }
 

@@ -16,6 +16,7 @@
     "about": "About",
     "speakers": "Speakers",
     "program": "Program",
+    "committees": "Committees",
     "venue": "Venue",
     "menu": "Menu",
     "closeMenu": "Close menu",
@@ -177,6 +178,38 @@
     "emailFailed": "We could not e-mail it right now, but you can download it below.",
     "download": "Download certificate (PDF)",
     "certificateNo": "Certificate no.",
-    "backHome": "Back to the DSATalks website"
+    "backHome": "Back to the DSATalks website",
+    "multiHint": "You can choose more than one.",
+    "otherLabel": "Other topics",
+    "otherPlaceholder": "Write any other topics you would like to see…"
+  },
+  "verify": {
+    "metaTitle": "Certificate Verification",
+    "title": "CERTIFICATE VERIFICATION",
+    "intro": "Enter the number printed at the bottom left of a DSATalks certificate to check that it is genuine.",
+    "label": "Certificate number",
+    "placeholder": "DSAT-2026-XXXXXX",
+    "submit": "Verify",
+    "checking": "Checking…",
+    "validTitle": "Valid certificate",
+    "validText": "This certificate was issued by DSATalks.",
+    "invalidTitle": "Certificate not found",
+    "invalidText": "No certificate with this number was found. Check the number and try again.",
+    "name": "Presented to",
+    "number": "Certificate no.",
+    "event": "Event",
+    "date": "Date",
+    "talks": "Talks",
+    "issued": "Issued on"
+  },
+  "committees": {
+    "title": "COMMITTEES",
+    "intro": "The committees behind DSATalks.",
+    "honorary": "Honorary Committee",
+    "program": "Program Committee",
+    "organizing": "Organizing Committee",
+    "coChairs": "Co-Chairs",
+    "members": "Members",
+    "count": "members"
   }
 }

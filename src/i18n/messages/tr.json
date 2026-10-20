@@ -16,6 +16,7 @@
     "about": "Hakkında",
     "speakers": "Konuşmacılar",
     "program": "Program",
+    "committees": "Kurullar",
     "venue": "Ulaşım",
     "menu": "Menü",
     "closeMenu": "Menüyü kapat",
@@ -177,6 +178,38 @@
     "emailFailed": "Sertifikanızı şu anda e-postayla gönderemedik; aşağıdan indirebilirsiniz.",
     "download": "Sertifikayı indir (PDF)",
     "certificateNo": "Sertifika no.",
-    "backHome": "DSATalks web sitesine dön"
+    "backHome": "DSATalks web sitesine dön",
+    "multiHint": "Birden fazla seçebilirsiniz.",
+    "otherLabel": "Diğer konular",
+    "otherPlaceholder": "Görmek istediğiniz başka konular varsa yazın…"
+  },
+  "verify": {
+    "metaTitle": "Sertifika Doğrulama",
+    "title": "SERTİFİKA DOĞRULAMA",
+    "intro": "Bir DSATalks sertifikasının geçerli olup olmadığını görmek için sol altta yazan sertifika numarasını girin.",
+    "label": "Sertifika numarası",
+    "placeholder": "DSAT-2026-XXXXXX",
+    "submit": "Doğrula",
+    "checking": "Kontrol ediliyor…",
+    "validTitle": "Geçerli sertifika",
+    "validText": "Bu sertifika DSATalks tarafından verilmiştir.",
+    "invalidTitle": "Sertifika bulunamadı",
+    "invalidText": "Bu numaraya ait bir sertifika bulunamadı. Numarayı kontrol edip tekrar deneyin.",
+    "name": "Sertifika sahibi",
+    "number": "Sertifika no.",
+    "event": "Etkinlik",
+    "date": "Tarih",
+    "talks": "Konuşmalar",
+    "issued": "Veriliş tarihi"
+  },
+  "committees": {
+    "title": "KURULLAR",
+    "intro": "DSATalks’u hazırlayan kurullar.",
+    "honorary": "Onur Kurulu",
+    "program": "Program Kurulu",
+    "organizing": "Düzenleme Kurulu",
+    "coChairs": "Eş Başkanlar",
+    "members": "Kurul Üyeleri",
+    "count": "üye"
   }
 }

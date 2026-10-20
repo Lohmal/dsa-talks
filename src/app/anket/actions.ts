@@ -5,6 +5,7 @@ import { db } from "@/lib/db";
 import { getQuestions, getSettings, GRACE_MS, tidyName } from "@/lib/survey";
 import { formatDate } from "@/lib/time";
 import { mailCertificate, newCertificateNo, newCertificateToken } from "@/lib/certificates";
+import { sessionTalks } from "@/lib/talks";
 import type { SubmitResult } from "@/components/survey/types";
 
 const details = z.object({
@@ -58,11 +59,22 @@ export async function submitSurvey(formData: FormData): Promise<SubmitResult> {
         const rating = Number(raw);
         const valid = Number.isInteger(rating) && rating >= 1 && rating <= 5;
         if (!valid && question.required) fields.push(question.id);
-        return { ...base, rating: valid ? rating : null, text: null };
+        return { ...base, rating: valid ? rating : null, text: null, choices: [] };
+      }
+      if (question.type === "CHOICE") {
+        // Ticked options arrive as their index; the answer keeps the option texts themselves.
+        const choices = [...new Set(formData.getAll(`q_${question.id}`).map(Number))]
+          .filter((i) => Number.isInteger(i) && question.options[i])
+          .map((i) => ({ tr: question.options[i].tr, en: question.options[i].en }));
+        const other = question.allowOther
+          ? String(formData.get(`q_${question.id}_other`) ?? "").trim().slice(0, 300)
+          : "";
+        if (!choices.length && !other && question.required) fields.push(question.id);
+        return { ...base, rating: null, text: other || null, choices };
       }
       const text = String(raw ?? "").trim().slice(0, 3000);
       if (!text && question.required) fields.push(question.id);
-      return { ...base, rating: null, text: text || null };
+      return { ...base, rating: null, text: text || null, choices: [] };
     });
 
     if (fields.length || !parsed.success) return { status: "error", code: "invalid", fields: [...new Set(fields)] };
@@ -82,9 +94,7 @@ export async function submitSurvey(formData: FormData): Promise<SubmitResult> {
       scope,
       mode: settings.mode,
       sessionId: session?.id ?? null,
-      speaker: session?.speaker ?? null,
-      talkTitleTr: session?.titleTr ?? null,
-      talkTitleEn: session?.titleEn ?? null,
+      talks: session ? sessionTalks(session) : [],
       sessionStartsAt: session?.startsAt ?? null,
       sessionEndsAt: session?.endsAt ?? null,
       answers,

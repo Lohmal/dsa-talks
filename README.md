@@ -24,15 +24,21 @@ e-mails) on http://localhost:8025. The site reads `.env`; the database is MongoD
   - *Yanıtlar*: search, details, certificate download, resend e-mail, delete, Excel export (`/admin/export`).
   - *Anket Ayarları*: open/close registration; mode
     - **Toplantı bazında** – open until closed, one response per e-mail;
-    - **Konuşmacı bazında** – open only inside the speaker time windows (entered in Türkiye time, UTC+3),
-      one response per e-mail per window; a form opened in a window can still be sent 15 minutes after it ends.
-  - *Sorular*: add, edit, reorder and delete questions (5-point or text). Answers store the question text,
-    so editing questions never changes earlier results.
+    - **Konuşmacı bazında** – open only inside the time windows (entered in Türkiye time, UTC+3). A window can
+      hold several talks (speakers); one response and one certificate (listing all its talks) per e-mail per
+      window. A form opened in a window can still be sent 15 minutes after it ends.
+  - *Sorular*: add, edit, reorder and delete questions — 5-point, multiple choice (with an optional
+    “other” field; used for the topics participants would like to see) or text. Answers store the question
+    text, so editing questions never changes earlier results.
   - *Yöneticiler*: add, edit and remove admins (the last admin cannot be removed).
   - *QR Kod*: PNG of the survey link, plain or as a printable poster.
 
 Certificates are drawn on request from `src/lib/certificate.tsx` (fonts and logos in `src/assets`), so nothing is
-stored but the response. The download link contains a long random token.
+stored but the response. The download link contains a long random token. Each certificate carries its number and a
+QR code for **`/dogrula`**, where anyone can check a certificate number (only what is printed on it is shown).
+The QR code and links use `NEXT_PUBLIC_SITE_URL` when set, otherwise the address the site was opened with.
+
+**`/kurullar`** lists the committees (data in `src/data/committees.json`, shared with the CONFDSA site).
 
 E-mail: set `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `SMTP_PASS`, `MAIL_FROM` in `.env`
 (and, with Docker, remove the two SMTP lines under `environment` in `docker-compose.yml`). If sending fails the

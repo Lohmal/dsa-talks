@@ -58,19 +58,25 @@ export async function saveEventInfo(_: ActionState, formData: FormData) {
 
 // ── Speaker time windows (SESSION mode) ─────────────────────────────────────────────
 
+// A window has one or more talks; the form sends one speaker/titleTr/titleEn triple per talk.
 async function readSession(formData: FormData) {
-  const speaker = text(formData, "speaker");
-  const titleTr = text(formData, "titleTr");
-  const titleEn = text(formData, "titleEn");
+  const all = (key: string) => formData.getAll(key).map((value) => String(value).trim());
+  const [speakers, titlesTr, titlesEn] = [all("speaker"), all("titleTr"), all("titleEn")];
+  const talks = speakers
+    .map((speaker, i) => ({ speaker, titleTr: titlesTr[i] ?? "", titleEn: titlesEn[i] ?? "" }))
+    .filter((talk) => talk.speaker || talk.titleTr || talk.titleEn)
+    .map((talk) => ({ ...talk, titleTr: talk.titleTr || talk.titleEn, titleEn: talk.titleEn || talk.titleTr }));
   const startsAt = fromIstanbul(text(formData, "date"), text(formData, "start"));
   const endsAt = fromIstanbul(text(formData, "date"), text(formData, "end"));
 
-  if (speaker.length < 2) return { error: "Konuşmacı adı gerekli." };
-  if (!titleTr && !titleEn) return { error: "Konuşma başlığı gerekli." };
+  if (talks.length === 0) return { error: "En az bir konuşmacı ekleyin." };
+  if (talks.some((talk) => talk.speaker.length < 2)) return { error: "Her konuşmanın konuşmacı adını yazın." };
+  if (talks.some((talk) => !talk.titleTr)) return { error: "Her konuşmanın başlığını yazın." };
   if (!startsAt || !endsAt) return { error: "Tarih ve saatleri eksiksiz girin." };
   if (endsAt <= startsAt) return { error: "Bitiş saati başlangıçtan sonra olmalı." };
 
-  return { data: { speaker, titleTr: titleTr || titleEn, titleEn: titleEn || titleTr, startsAt, endsAt } };
+  // Clearing the old single-talk fields moves a window saved in the old format to `talks`.
+  return { data: { talks, speaker: null, titleTr: null, titleEn: null, startsAt, endsAt } };
 }
 
 async function overlaps(startsAt: Date, endsAt: Date, exceptId?: string) {
@@ -115,11 +121,24 @@ export async function deleteSession(_: ActionState, formData: FormData) {
 // ── Survey questions ────────────────────────────────────────────────────────────────
 
 const question = z.object({
-  type: z.enum(["RATING", "TEXT"]),
+  type: z.enum(["RATING", "TEXT", "CHOICE"]),
   textTr: z.string().min(3, "Soru metni (TR) gerekli.").max(500),
   textEn: z.string().max(500),
   required: z.boolean(),
+  allowOther: z.boolean(),
 });
+
+// Choice options are written one per line as "Türkçe | English" (English optional).
+function readOptions(raw: string) {
+  return raw
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .map((line) => {
+      const [tr, en] = line.split("|").map((part) => part.trim());
+      return { tr, en: en || tr };
+    });
+}
 
 function readQuestion(formData: FormData) {
   const parsed = question.safeParse({
@@ -127,9 +146,20 @@ function readQuestion(formData: FormData) {
     textTr: text(formData, "textTr"),
     textEn: text(formData, "textEn"),
     required: formData.get("required") === "on",
+    allowOther: formData.get("allowOther") === "on",
   });
   if (!parsed.success) return { error: firstError(parsed.error) };
-  return { data: { ...parsed.data, textEn: parsed.data.textEn || parsed.data.textTr } };
+  const choice = parsed.data.type === "CHOICE";
+  const options = choice ? readOptions(text(formData, "options")) : [];
+  if (choice && options.length < 2) return { error: "Çoklu seçim sorusuna en az iki seçenek yazın." };
+  return {
+    data: {
+      ...parsed.data,
+      textEn: parsed.data.textEn || parsed.data.textTr,
+      options,
+      allowOther: choice && parsed.data.allowOther,
+    },
+  };
 }
 
 export async function createQuestion(_: ActionState, formData: FormData) {

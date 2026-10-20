@@ -1,11 +1,25 @@
 import { ArrowDown, ArrowUp, Pencil, Plus, Trash2 } from "lucide-react";
 import type { Question } from "@prisma/client";
 import { getQuestions } from "@/lib/survey";
-import { Badge, Card, EmptyState, Field, PageHeader, inputClass } from "@/components/admin/ui";
+import { Badge, Card, EmptyState, PageHeader } from "@/components/admin/ui";
+import QuestionForm from "@/components/admin/QuestionForm";
 import { ActionForm, SubmitButton } from "@/components/admin/forms";
 import { createQuestion, deleteQuestion, moveQuestion, updateQuestion } from "@/app/admin/actions";
 
 export const metadata = { title: "Sorular" };
+
+const TYPE_LABEL = { RATING: "5’li puan", TEXT: "Yazılı cevap", CHOICE: "Çoklu seçim" } as const;
+
+// Only the fields the form needs, as plain data for the client component.
+const editable = (q: Question) => ({
+  id: q.id,
+  type: q.type,
+  textTr: q.textTr,
+  textEn: q.textEn,
+  required: q.required,
+  options: q.options.map(({ tr, en }) => ({ tr, en })),
+  allowOther: q.allowOther,
+});
 
 export default async function QuestionsPage() {
   const questions = await getQuestions();
@@ -32,9 +46,11 @@ export default async function QuestionsPage() {
                     <p className="font-bold text-ink">{question.textTr}</p>
                     <p className="mt-0.5 text-sm text-muted">{question.textEn}</p>
                     <div className="mt-2 flex flex-wrap gap-2">
-                      <Badge tone={question.type === "RATING" ? "navy" : "gray"}>
-                        {question.type === "RATING" ? "5’li puan" : "Yazılı cevap"}
+                      <Badge tone={question.type === "TEXT" ? "gray" : "navy"}>
+                        {TYPE_LABEL[question.type]}
+                        {question.type === "CHOICE" && ` · ${question.options.length} seçenek`}
                       </Badge>
+                      {question.type === "CHOICE" && question.allowOther && <Badge>“Diğer” alanı var</Badge>}
                       <Badge tone={question.required ? "red" : "gray"}>{question.required ? "Zorunlu" : "İsteğe bağlı"}</Badge>
                     </div>
                   </div>
@@ -54,7 +70,7 @@ export default async function QuestionsPage() {
                   <summary className="inline-flex cursor-pointer list-none items-center gap-1.5 text-sm font-bold text-brand hover:underline">
                     <Pencil className="size-3.5" /> Düzenle
                   </summary>
-                  <QuestionForm action={updateQuestion} question={question} submit="Kaydet" />
+                  <QuestionForm action={updateQuestion} question={editable(question)} submit="Kaydet" />
                 </details>
               </li>
             ))}
@@ -80,53 +96,11 @@ function MoveButton({ id, direction, disabled }: { id: string; direction: "up" |
           <Icon className="size-4" />
         </span>
       ) : (
-        <SubmitButton tone="ghost" size="sm" className="size-8 !p-0">
+        <SubmitButton tone="ghost" size="sm" className="size-8 p-0!">
           <Icon className="size-4" />
           <span className="sr-only">{direction === "up" ? "Yukarı taşı" : "Aşağı taşı"}</span>
         </SubmitButton>
       )}
-    </ActionForm>
-  );
-}
-
-function QuestionForm({
-  action,
-  question,
-  submit,
-}: {
-  action: typeof createQuestion;
-  question?: Question;
-  submit: string;
-}) {
-  return (
-    <ActionForm action={action} className="mt-4">
-      {question && <input type="hidden" name="id" value={question.id} />}
-      <div className="grid gap-4 sm:grid-cols-2">
-        <Field label="Soru (TR)">
-          <textarea name="textTr" required rows={2} defaultValue={question?.textTr} className={inputClass} />
-        </Field>
-        <Field label="Soru (EN)" hint="Boş bırakılırsa Türkçe metin kullanılır.">
-          <textarea name="textEn" rows={2} defaultValue={question?.textEn} className={inputClass} />
-        </Field>
-        <Field label="Soru tipi">
-          <select name="type" defaultValue={question?.type ?? "RATING"} className={inputClass}>
-            <option value="RATING">5’li puan (Kesinlikle katılıyorum … Kesinlikle katılmıyorum)</option>
-            <option value="TEXT">Yazılı cevap</option>
-          </select>
-        </Field>
-        <label className="flex items-center gap-3 self-end rounded-xl px-1 py-2.5 text-sm font-semibold text-ink">
-          <input
-            type="checkbox"
-            name="required"
-            defaultChecked={question?.required ?? true}
-            className="size-4 accent-brand"
-          />
-          Zorunlu soru
-        </label>
-      </div>
-      <SubmitButton tone="navy" className="mt-4">
-        {submit}
-      </SubmitButton>
     </ActionForm>
   );
 }

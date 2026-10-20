@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 import { siteUrl } from "@/config/url";
 import { speakers } from "@/data/speakers";
 
-// One page; the speaker photos are listed so image search can pick them up.
+// The event page (with the speaker photos, so image search can pick them up) and the committees.
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
     {
@@ -11,6 +11,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "weekly",
       priority: 1,
       images: speakers.map((speaker) => `${siteUrl}${speaker.photo}`),
+    },
+    {
+      url: `${siteUrl}/kurullar`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.6,
     },
   ];
 }

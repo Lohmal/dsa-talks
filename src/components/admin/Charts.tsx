@@ -121,3 +121,47 @@ export function DistributionChart({ stats }: { stats: Stat[] }) {
     </div>
   );
 }
+
+type Choice = { respondents: number; options: { label: string; count: number }[] };
+
+// Topic preferences: how many people ticked each option, most picked first.
+export function ChoiceChart({ stat }: { stat: Choice }) {
+  const { ref, axisWidth, maxChars } = useLabelAxis();
+  const data = stat.options.map((option) => ({
+    name: short(option.label, maxChars),
+    full: option.label,
+    count: option.count,
+    share: stat.respondents ? Math.round((option.count / stat.respondents) * 100) : 0,
+  }));
+
+  return (
+    <div ref={ref} style={{ height: height(data.length) }}>
+      <ResponsiveContainer width="100%" height="100%">
+        <BarChart data={data} layout="vertical" margin={{ left: 8, right: 48, top: 4, bottom: 4 }}>
+          <CartesianGrid horizontal={false} stroke="#e4e8ef" />
+          <XAxis type="number" allowDecimals={false} tick={{ fontSize: 12, fill: "#5b6478" }} />
+          <YAxis
+            type="category"
+            dataKey="name"
+            width={axisWidth}
+            tick={{ fontSize: axisWidth < 200 ? 11 : 12, fill: "#13224b" }}
+            tickLine={false}
+            axisLine={false}
+          />
+          <Tooltip
+            cursor={{ fill: "rgba(19,34,75,0.04)" }}
+            labelFormatter={(_, payload) => payload?.[0]?.payload?.full ?? ""}
+            formatter={(value, _name, item) => [`${value} kişi (%${item.payload.share})`, "Seçen"]}
+          />
+          <Bar
+            dataKey="count"
+            fill="#13224b"
+            radius={[0, 6, 6, 0]}
+            barSize={20}
+            label={{ position: "right", fontSize: 12, fontWeight: 700, fill: "#13224b" }}
+          />
+        </BarChart>
+      </ResponsiveContainer>
+    </div>
+  );
+}

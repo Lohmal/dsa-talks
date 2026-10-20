@@ -3,17 +3,24 @@
 import { useEffect, useRef, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
 import { AnimatePresence, MotionConfig, motion } from "motion/react";
-import { CalendarDays, Globe, Info, Mail, MapPin, Mic, X, type LucideIcon } from "lucide-react";
+import { CalendarDays, Globe, Info, Mail, MapPin, Mic, Users, X, type LucideIcon } from "lucide-react";
 import { LanguageSwitcher, Wordmark } from "./ui";
 import { site } from "@/config/site";
 import { useLanguage } from "@/i18n/LanguageProvider";
 
-export type SectionId = "about" | "speakers" | "program" | "venue";
+export type SectionId = "about" | "speakers" | "program" | "committees" | "venue";
+
+// Sections of the home page are anchors (#id there, /#id elsewhere); the committees have a page.
+export function sectionHref(id: SectionId, onHome: boolean) {
+  if (id === "committees") return "/kurullar";
+  return onHome ? `#${id}` : `/#${id}`;
+}
 
 const icons: Record<SectionId, LucideIcon> = {
   about: Info,
   speakers: Mic,
   program: CalendarDays,
+  committees: Users,
   venue: MapPin,
 };
 
@@ -27,11 +34,13 @@ export default function MobileMenu({
   onClose,
   sections,
   current,
+  onHome,
 }: {
   open: boolean;
   onClose: () => void;
   sections: readonly SectionId[];
   current: string | null;
+  onHome: boolean;
 }) {
   // false during server render and hydration, true afterwards (portals need document).
   const mounted = useSyncExternalStore(noop, () => true, () => false);
@@ -55,7 +64,7 @@ export default function MobileMenu({
   return createPortal(
     <MotionConfig reducedMotion="user">
       <AnimatePresence>
-        {open && <Drawer key="drawer" onClose={onClose} sections={sections} current={current} />}
+        {open && <Drawer key="drawer" onClose={onClose} sections={sections} current={current} onHome={onHome} />}
       </AnimatePresence>
     </MotionConfig>,
     document.body,
@@ -66,10 +75,12 @@ function Drawer({
   onClose,
   sections,
   current,
+  onHome,
 }: {
   onClose: () => void;
   sections: readonly SectionId[];
   current: string | null;
+  onHome: boolean;
 }) {
   const { m } = useLanguage();
   const closeRef = useRef<HTMLButtonElement>(null);
@@ -138,7 +149,7 @@ function Drawer({
                   transition={{ delay: 0.08 + index * 0.035, duration: 0.3, ease: EASE }}
                 >
                   <a
-                    href={`#${id}`}
+                    href={sectionHref(id, onHome)}
                     aria-current={active ? "true" : undefined}
                     className={`group flex items-center gap-3 rounded-xl px-2.5 py-2 font-semibold transition-colors ${
                       active ? "bg-white/10 text-white" : "text-white/85 hover:bg-white/6 hover:text-white"

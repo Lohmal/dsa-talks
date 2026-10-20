@@ -1,6 +1,7 @@
 import "server-only";
 import type { Prisma, Question, Response } from "@prisma/client";
 import { db } from "./db";
+import { responseTalks, speakerNames, talkTitles } from "./talks";
 
 // Which responses an admin page, chart or Excel export looks at:
 // "all", "event" (EVENT mode) or a speaker window id.
@@ -74,8 +75,49 @@ export function overallAverage(stats: QuestionStat[]) {
   return count ? sum / count : null;
 }
 
-export function scopeLabel(response: Pick<Response, "scope" | "speaker" | "talkTitleTr">) {
-  return response.scope === "event" ? "Tüm etkinlik" : `${response.speaker ?? "Konuşmacı"} – ${response.talkTitleTr ?? ""}`;
+export function scopeLabel(response: Pick<Response, "scope" | "talks" | "speaker" | "talkTitleTr" | "talkTitleEn">) {
+  if (response.scope === "event") return "Tüm etkinlik";
+  const talks = responseTalks(response);
+  return talks.length ? `${speakerNames(talks)} – ${talkTitles(talks, "tr")}` : "Konuşmacı oturumu";
+}
+
+export type ChoiceStat = {
+  questionId: string;
+  text: string;
+  respondents: number; // people who answered the question at all
+  options: { label: string; count: number }[]; // most picked first
+  others: string[]; // free-text "other" answers
+};
+
+// How often each option of a multiple-choice question was ticked.
+export function choiceStats(responses: Pick<Response, "answers">[], questions: Question[]): ChoiceStat[] {
+  const stats = new Map<string, ChoiceStat & { counts: Map<string, number> }>();
+  const ensure = (questionId: string, text: string) => {
+    let stat = stats.get(questionId);
+    if (!stat) {
+      stat = { questionId, text, respondents: 0, options: [], others: [], counts: new Map() };
+      stats.set(questionId, stat);
+    }
+    return stat;
+  };
+  for (const q of questions) {
+    if (q.type !== "CHOICE") continue;
+    const stat = ensure(q.id, q.textTr);
+    for (const option of q.options) stat.counts.set(option.tr, 0);
+  }
+  for (const response of responses) {
+    for (const answer of response.answers) {
+      if (answer.type !== "CHOICE") continue;
+      const stat = ensure(answer.questionId, answer.textTr);
+      if (answer.choices.length || answer.text) stat.respondents += 1;
+      for (const choice of answer.choices) stat.counts.set(choice.tr, (stat.counts.get(choice.tr) ?? 0) + 1);
+      if (answer.text) stat.others.push(answer.text);
+    }
+  }
+  return [...stats.values()].map(({ counts, ...stat }) => ({
+    ...stat,
+    options: [...counts.entries()].map(([label, count]) => ({ label, count })).sort((a, b) => b.count - a.count),
+  }));
 }
 
 // How many responses arrived in the last `hours` hours.

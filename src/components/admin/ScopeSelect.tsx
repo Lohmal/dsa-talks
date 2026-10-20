@@ -2,8 +2,7 @@
 
 import { useTransition } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { Loader2 } from "lucide-react";
-import { inputClass } from "./ui";
+import Select from "./Select";
 
 // Filters a page by "all", "event" or a speaker window; keeps the other query parameters
 // and shows a spinner while the filtered page loads.
@@ -20,31 +19,21 @@ export default function ScopeSelect({
   const [pending, startTransition] = useTransition();
 
   return (
-    <div className="relative min-w-0 md:w-72">
-      <select
-        aria-label="Kapsam"
-        aria-busy={pending}
-        value={value}
-        disabled={pending}
-        onChange={(event) => {
-          const params = new URLSearchParams(searchParams);
-          if (event.target.value === "all") params.delete("scope");
-          else params.set("scope", event.target.value);
-          params.delete("page");
-          const query = params.toString();
-          startTransition(() => router.push(query ? `${pathname}?${query}` : pathname));
-        }}
-        className={`${inputClass} w-full truncate pr-9 font-semibold disabled:opacity-70`}
-      >
-        {options.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </select>
-      {pending && (
-        <Loader2 className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 animate-spin text-brand" />
-      )}
-    </div>
+    <Select
+      label="Kapsam"
+      value={value}
+      options={options}
+      loading={pending}
+      disabled={pending}
+      className="min-w-0 md:w-80"
+      onChange={(next) => {
+        const params = new URLSearchParams(searchParams);
+        if (next === "all") params.delete("scope");
+        else params.set("scope", next);
+        params.delete("page");
+        const query = params.toString();
+        startTransition(() => router.push(query ? `${pathname}?${query}` : pathname));
+      }}
+    />
   );
 }

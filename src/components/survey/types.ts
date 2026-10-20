@@ -4,23 +4,27 @@ type Bilingual = { tr: string; en: string };
 
 export type SurveyQuestion = {
   id: string;
-  type: "RATING" | "TEXT";
+  type: "RATING" | "TEXT" | "CHOICE";
   textTr: string;
   textEn: string;
   required: boolean;
+  options: Bilingual[]; // CHOICE
+  allowOther: boolean; // CHOICE
 };
+
+export type SurveyTalk = { speaker: string; title: Bilingual };
 
 export type SurveyInfo = {
   eventName: string;
-  speaker: string;
-  talk: Bilingual | null;
+  speaker: string; // all speakers of the window, or the event's speakers in EVENT mode
+  talks: SurveyTalk[]; // empty in EVENT mode
   dateTime: Bilingual;
   venue: Bilingual;
 };
 
 export type SurveyProps =
   | { status: "closed" }
-  | { status: "waiting"; next: { speaker: string; talk: Bilingual; dateTime: Bilingual } | null }
+  | { status: "waiting"; next: { talks: SurveyTalk[]; dateTime: Bilingual } | null }
   | {
       status: "open";
       mode: "EVENT" | "SESSION";

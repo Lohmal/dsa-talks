@@ -1,4 +1,5 @@
 import "server-only";
+import { cache } from "react";
 import type { Settings, SurveySession } from "@prisma/client";
 import { db } from "./db";
 import { ensureDefaults } from "./bootstrap";
@@ -12,33 +13,27 @@ export type SurveyState =
   | { status: "waiting"; settings: Settings; next: SurveySession | null }
   | { status: "open"; settings: Settings; session: SurveySession | null };
 
-export async function getSettings() {
+// cache(): pages, layouts and helpers asking for the same data in one request share one query.
+export const getSettings = cache(async () => {
   await ensureDefaults();
   return db.settings.findUniqueOrThrow({ where: { key: "main" } });
-}
+});
 
-// Is the survey taking answers right now, and for which speaker window?
+// Is the survey taking answers right now, and for which speaker window? The three lookups
+// run together (one database round trip instead of three in a row).
 export async function getSurveyState(now = new Date()): Promise<SurveyState> {
-  const settings = await getSettings();
+  const [settings, session, next] = await Promise.all([
+    getSettings(),
+    db.surveySession.findFirst({ where: { startsAt: { lte: now }, endsAt: { gt: now } }, orderBy: { startsAt: "asc" } }),
+    db.surveySession.findFirst({ where: { startsAt: { gt: now } }, orderBy: { startsAt: "asc" } }),
+  ]);
   if (!settings.isOpen) return { status: "closed", settings };
   if (settings.mode === "EVENT") return { status: "open", settings, session: null };
-
-  const session = await db.surveySession.findFirst({
-    where: { startsAt: { lte: now }, endsAt: { gt: now } },
-    orderBy: { startsAt: "asc" },
-  });
   if (session) return { status: "open", settings, session };
-
-  const next = await db.surveySession.findFirst({
-    where: { startsAt: { gt: now } },
-    orderBy: { startsAt: "asc" },
-  });
   return { status: "waiting", settings, next };
 }
 
-export function getQuestions() {
-  return db.question.findMany({ orderBy: { order: "asc" } });
-}
+export const getQuestions = cache(() => db.question.findMany({ orderBy: { order: "asc" } }));
 
 // "volkan KIVANÇ" → "Volkan Kıvanç": words typed all in lower or upper case get a capital
 // first letter; words with their own mixed casing (e.g. "McDonald") are kept as typed.

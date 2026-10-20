@@ -3,6 +3,7 @@ import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { ImageResponse } from "next/og";
 import { PDFDocument } from "pdf-lib";
+import QRCode from "qrcode";
 
 // The participation certificate (English only), drawn after the approved design:
 // red/navy frame with corner stripes, the three logos, the participant's name and the event.
@@ -11,8 +12,8 @@ export type CertificateData = {
   name: string;
   certificateNo: string;
   certificateDate: string; // "4–5 November 2026"
-  speaker?: string | null; // SESSION mode: the talk that was attended
-  talkTitle?: string | null;
+  talks?: { speaker: string; title: string }[]; // SESSION mode: the talks of the attended window
+  verifyUrl: string; // the verification page for this certificate (printed and as a QR code)
 };
 
 const W = 2000;
@@ -21,6 +22,7 @@ const NAVY = "#13224b";
 const RED = "#c8102e";
 const MUTED = "#4a5578";
 const UNIVERSITY = "Adana Alparslan Türkeş Science and Technology University";
+const ORGANIZER = `the Department of Data Science and Analytics at ${UNIVERSITY}`;
 
 const assets = join(process.cwd(), "src/assets");
 
@@ -77,22 +79,24 @@ function sentence(data: CertificateData): Token[] {
       .filter(Boolean)
       .map((word) => ({ text: word, tone }));
 
-  if (data.talkTitle) {
-    return [
-      ...words("for attending the talk"),
-      ...words(`“${data.talkTitle}”`, "talk"),
-      // The speaker stays on one line ("Prof. Dr. …" never splits).
-      ...(data.speaker ? [...words("by"), { text: data.speaker }] : []),
-      ...words("at"),
-      { text: "DSATalks", tone: "brand", suffix: "," },
-      ...words(`held on ${data.certificateDate} and organized by ${UNIVERSITY}.`),
-    ];
-  }
-  return [
-    ...words("for participating in"),
-    { text: "DSATalks", tone: "brand", suffix: "," },
-    ...words(`held on ${data.certificateDate} and organized by ${UNIVERSITY}.`),
+  const ending = [
+    { text: "DSATalks", tone: "brand" as const, suffix: "," },
+    ...words(`held on ${data.certificateDate} and organized by ${ORGANIZER}.`),
   ];
+
+  const talks = data.talks ?? [];
+  if (talks.length) {
+    // “A” by X · “A” by X and “B” by Y · “A” by X, “B” by Y and “C” by Z
+    const list = talks.flatMap((talk, i) => [
+      ...(i === 0 ? [] : words(i === talks.length - 1 ? "and" : "")),
+      ...words(`“${talk.title}”`, "talk"),
+      ...words("by"),
+      // The speaker stays on one line ("Prof. Dr. …" never splits).
+      { text: talk.speaker, suffix: i < talks.length - 2 ? "," : undefined },
+    ]);
+    return [...words(`in recognition of attending the ${talks.length > 1 ? "talks" : "talk"}`), ...list, ...words("at"), ...ending];
+  }
+  return [...words("in recognition of participation in"), ...ending];
 }
 
 function Corner({ flip = false }: { flip?: boolean }) {
@@ -109,7 +113,9 @@ function Corner({ flip = false }: { flip?: boolean }) {
   );
 }
 
-function Certificate({ data, logos }: { data: CertificateData; logos: string[] }) {
+function Certificate({ data, logos, qr }: { data: CertificateData; logos: string[]; qr: string }) {
+  const tokens = sentence(data);
+  const long = tokens.length > 38; // several talks: a slightly smaller, wider paragraph
   const nameSize = Math.max(56, Math.min(86, Math.round((86 * 26) / Math.max(26, data.name.length))));
 
   return (
@@ -161,7 +167,7 @@ function Certificate({ data, logos }: { data: CertificateData; logos: string[] }
           OF PARTICIPATION
         </div>
 
-        <div style={{ marginTop: 52, fontSize: 31, color: MUTED }}>This certificate is proudly presented to</div>
+        <div style={{ marginTop: 52, fontSize: 31, color: MUTED }}>This certificate is presented to</div>
 
         <div
           style={{
@@ -184,15 +190,15 @@ function Certificate({ data, logos }: { data: CertificateData; logos: string[] }
         <div
           style={{
             marginTop: 44,
-            width: 1260,
+            width: long ? 1360 : 1260,
             display: "flex",
             flexWrap: "wrap",
             justifyContent: "center",
-            fontSize: 32,
+            fontSize: long ? 29 : 32,
             lineHeight: 1.6,
           }}
         >
-          {sentence(data).map((token, index) => (
+          {tokens.map((token, index) => (
             <span key={index} style={{ display: "flex", marginRight: 10 }}>
               <span
                 style={{
@@ -242,16 +248,36 @@ function Certificate({ data, logos }: { data: CertificateData; logos: string[] }
         </div>
       </div>
 
-      <div style={{ position: "absolute", left: 110, bottom: 104, fontSize: 18, color: MUTED, letterSpacing: 1 }}>
-        {`Certificate No: ${data.certificateNo}`}
+      {/* Verification: QR code and the certificate number, bottom left. */}
+      <div
+        style={{
+          position: "absolute",
+          left: 104,
+          bottom: 100,
+          display: "flex",
+          alignItems: "flex-end",
+          gap: 20,
+          color: MUTED,
+          fontSize: 18,
+        }}
+      >
+        {/* eslint-disable-next-line @next/next/no-img-element -- Satori renders plain <img> */}
+        <img src={qr} width={112} height={112} alt="" />
+        <div style={{ display: "flex", flexDirection: "column", gap: 4, paddingBottom: 2 }}>
+          <span style={{ fontWeight: 600, color: NAVY, letterSpacing: 1 }}>{`Certificate No: ${data.certificateNo}`}</span>
+          <span>{`Verify at ${data.verifyUrl.replace(/^https?:\/\//, "").replace(/\?.*$/, "")}`}</span>
+        </div>
       </div>
     </div>
   );
 }
 
 export async function renderCertificatePng(data: CertificateData) {
-  const { fonts, logos } = await loadAssets();
-  const image = new ImageResponse(<Certificate data={data} logos={logos} />, { width: W, height: H, fonts });
+  const [{ fonts, logos }, qr] = await Promise.all([
+    loadAssets(),
+    QRCode.toDataURL(data.verifyUrl, { margin: 0, width: 224, errorCorrectionLevel: "M", color: { dark: NAVY, light: "#ffffff" } }),
+  ]);
+  const image = new ImageResponse(<Certificate data={data} logos={logos} qr={qr} />, { width: W, height: H, fonts });
   return new Uint8Array(await image.arrayBuffer());
 }
 

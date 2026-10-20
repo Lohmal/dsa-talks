@@ -79,6 +79,25 @@ export default async function ResponsePage({ params }: PageProps<"/admin/respons
                     <span className="font-bold text-ink">{answer.rating ?? "–"}</span>
                     <span className="text-muted">{answer.rating ? RATING_LABEL[answer.rating] : "Yanıtlanmadı"}</span>
                   </p>
+                ) : answer.type === "CHOICE" ? (
+                  <div className="mt-2">
+                    {answer.choices.length === 0 && !answer.text ? (
+                      <p className="text-sm text-muted">Seçim yapılmadı.</p>
+                    ) : (
+                      <ul className="flex flex-wrap gap-2">
+                        {answer.choices.map((choice) => (
+                          <li key={choice.tr} className="rounded-full bg-ink px-3 py-1 text-xs font-bold text-white">
+                            {choice.tr}
+                          </li>
+                        ))}
+                        {answer.text && (
+                          <li className="rounded-full bg-surface px-3 py-1 text-xs font-semibold text-ink ring-1 ring-line">
+                            Diğer: {answer.text}
+                          </li>
+                        )}
+                      </ul>
+                    )}
+                  </div>
                 ) : (
                   <p className="mt-2 whitespace-pre-wrap rounded-xl bg-surface p-3 text-sm text-ink">
                     {answer.text || <span className="text-muted">Yanıt yazılmadı.</span>}

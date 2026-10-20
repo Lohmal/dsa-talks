@@ -1,8 +1,9 @@
 import "server-only";
 import ExcelJS from "exceljs";
+import type { QuestionType } from "@prisma/client";
 import { db } from "./db";
 import { getQuestions } from "./survey";
-import { ratingStats, responseAverage, scopeLabel, scopeWhere } from "./stats";
+import { choiceStats, ratingStats, responseAverage, scopeLabel, scopeWhere } from "./stats";
 import { formatDateTime, formatRange } from "./time";
 
 const NAVY = "FF13224B";
@@ -16,7 +17,7 @@ export async function buildResponsesWorkbook(scope: string) {
   ]);
 
   // Columns: current questions in their order, then questions that were deleted later.
-  const columns = new Map<string, { text: string; type: "RATING" | "TEXT" }>();
+  const columns = new Map<string, { text: string; type: QuestionType }>();
   for (const q of questions) columns.set(q.id, { text: q.textTr, type: q.type });
   for (const r of responses) {
     for (const a of r.answers) if (!columns.has(a.questionId)) columns.set(a.questionId, { text: a.textTr, type: a.type });
@@ -42,7 +43,7 @@ export async function buildResponsesWorkbook(scope: string) {
     ...questionColumns.map(([id, q], index) => ({
       header: `${index + 1}. ${q.text}`,
       key: `q_${id}`,
-      width: q.type === "TEXT" ? 60 : 16,
+      width: q.type === "RATING" ? 16 : q.type === "CHOICE" ? 50 : 60,
     })),
   ];
 
@@ -60,7 +61,14 @@ export async function buildResponsesWorkbook(scope: string) {
       locale: r.locale.toUpperCase(),
       average: average === null ? null : Math.round(average * 100) / 100,
     };
-    for (const a of r.answers) row[`q_${a.questionId}`] = a.type === "RATING" ? a.rating : (a.text ?? "");
+    for (const a of r.answers) {
+      row[`q_${a.questionId}`] =
+        a.type === "RATING"
+          ? a.rating
+          : a.type === "CHOICE"
+            ? [...a.choices.map((c) => c.tr), ...(a.text ? [`Diğer: ${a.text}`] : [])].join("; ")
+            : (a.text ?? "");
+    }
     sheet.addRow(row);
   }
 
@@ -101,6 +109,30 @@ export async function buildResponsesWorkbook(scope: string) {
   summary.addRow([]);
   summary.addRow([`Toplam yanıt: ${responses.length}`]).font = { bold: true };
   summary.addRow([`Oluşturulma: ${formatDateTime(new Date())} (TSİ)`]).font = { italic: true, color: { argb: "FF5B6478" } };
+
+  // Sheet 3 – how often each option of the multiple-choice questions was picked.
+  const choices = choiceStats(responses, questions);
+  if (choices.length) {
+    const sheet3 = workbook.addWorksheet("Konu tercihleri");
+    sheet3.columns = [
+      { header: "Soru / seçenek", key: "label", width: 60 },
+      { header: "Seçen kişi", key: "count", width: 14 },
+      { header: "Oran", key: "share", width: 10 },
+    ];
+    styleHeader(sheet3.getRow(1));
+    for (const stat of choices) {
+      sheet3.addRow({ label: stat.text, count: stat.respondents }).font = { bold: true, color: { argb: NAVY } };
+      for (const option of stat.options) {
+        sheet3.addRow({
+          label: `   ${option.label}`,
+          count: option.count,
+          share: stat.respondents ? `%${Math.round((option.count / stat.respondents) * 100)}` : "",
+        });
+      }
+      for (const other of stat.others) sheet3.addRow({ label: `   Diğer: ${other}` });
+      sheet3.addRow({});
+    }
+  }
 
   return workbook.xlsx.writeBuffer();
 }
