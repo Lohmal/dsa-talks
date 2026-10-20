@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import SpeakerPhoto from "./SpeakerPhoto";
 import { Container, FadeIn, SectionHeading } from "./ui";
 import { speakerBySlug } from "@/data/speakers";
 import { useLanguage } from "@/i18n/LanguageProvider";
@@ -49,7 +49,7 @@ export default function Program() {
                         </p>
                         <div className="flex items-center gap-4 md:col-start-2 lg:col-start-auto">
                           <div className="relative size-14 shrink-0 overflow-hidden rounded-full ring-[3px] ring-brand/80">
-                            <Image src={speaker.photo} alt="" fill sizes="56px" unoptimized className="object-cover" />
+                            <SpeakerPhoto speaker={speaker} sizes="56px" />
                           </div>
                           <div className="min-w-0">
                             <p className="font-extrabold leading-tight text-ink">{speaker.name}</p>

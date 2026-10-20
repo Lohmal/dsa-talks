@@ -7,6 +7,9 @@ export type Speaker = {
   name: string;
   affiliation: Localized<string[]>; // one line each, as on the poster
   photo: string;
+  // For a portrait photo: how it sits in the round frame (sizes in % of the frame) and the
+  // backdrop around it. Without it the photo covers the frame (square photos).
+  frame?: { photoWidth: number; photoHeight: number; width: number; left: number; top: number; backdrop: string };
   bio: Localized<string[]>;
   links: Partial<Record<"profile" | "scholar" | "scopus" | "orcid" | "wos", string>>;
 };
@@ -28,6 +31,9 @@ export const speakers: Speaker[] = [
       tr: ["Çukurova Üniversitesi", "Tıp Fakültesi, Biyoistatistik Anabilim Dalı"],
     },
     photo: "/images/speakers/ilker-unal.webp",
+    // Original 768×1181 portrait: shown from the hair to the shoulders, face in the middle,
+    // with the dark wall of the photo continued on both sides.
+    frame: { photoWidth: 768, photoHeight: 1181, width: 85.3, left: 8.9, top: -3.3, backdrop: "linear-gradient(to right, #262321, #3a3532 60%, #423d3b)" },
     bio: { en: [], tr: [] },
     links: {
       profile: "https://avesis.cu.edu.tr/ilkerun",
