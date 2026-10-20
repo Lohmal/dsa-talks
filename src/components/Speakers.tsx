@@ -50,7 +50,7 @@ function SpeakerCard({ speaker, onOpen }: { speaker: Speaker; onOpen: () => void
   return (
     <article className="group flex h-full flex-col items-center rounded-4xl bg-white/4 px-6 pb-8 pt-10 text-center ring-1 ring-white/10 transition-all duration-300 hover:-translate-y-1.5 hover:bg-white/[0.07] hover:ring-white/20">
       <div className="relative">
-        <div className="relative size-44 overflow-hidden rounded-full bg-navy ring-[5px] ring-brand/80 transition-shadow duration-300 group-hover:ring-brand">
+        <div className="relative size-44 overflow-hidden rounded-full border-[5px] border-white bg-white shadow-xl shadow-black/40 ring-4 ring-brand">
           <Image src={speaker.photo} alt={speaker.name} fill sizes="176px" unoptimized className="object-cover" />
         </div>
         <span className="absolute -bottom-4 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-brand px-5 py-1.5 text-sm font-extrabold uppercase tracking-[0.12em] shadow-lg shadow-black/25">
@@ -119,7 +119,7 @@ function BioDialog({ speaker, onClose }: { speaker: Speaker | null; onClose: () 
         <div className="flex max-h-[88svh] flex-col">
           <div className="relative flex items-center gap-5 bg-ink px-6 py-6 text-white sm:px-8">
             <span aria-hidden className="absolute inset-x-0 bottom-0 h-1 bg-brand" />
-            <div className="relative size-20 shrink-0 overflow-hidden rounded-full ring-4 ring-brand/80">
+            <div className="relative size-20 shrink-0 overflow-hidden rounded-full border-[3px] border-white bg-white ring-[3px] ring-brand">
               <Image src={speaker.photo} alt="" fill sizes="80px" unoptimized className="object-cover" />
             </div>
             <div className="min-w-0 flex-1">
