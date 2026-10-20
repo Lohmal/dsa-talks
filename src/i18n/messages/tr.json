@@ -124,5 +124,59 @@
     "contact": "İletişim",
     "organizer": "Düzenleyen",
     "rights": "Tüm hakları saklıdır."
+  },
+  "survey": {
+    "metaTitle": "Etkinlik Memnuniyet Anketi",
+    "title": "ETKİNLİK MEMNUNİYET ANKETİ",
+    "intro": "Anketi doldurun; katılım sertifikanız hemen hazırlansın ve e-posta adresinize gönderilsin.",
+    "info": {
+      "eventName": "Etkinlik Adı",
+      "speaker": "Konuşmacı Adı Soyadı",
+      "talk": "Konuşma Konusu",
+      "dateTime": "Etkinlik Tarihi ve Saati",
+      "venue": "Etkinlik Yeri"
+    },
+    "you": "Bilgileriniz",
+    "name": "Ad Soyad",
+    "namePlaceholder": "Örn. Ayşe Yılmaz",
+    "nameHint": "Adınız sertifikada tam olarak bu şekilde yazılır.",
+    "email": "E-posta",
+    "emailPlaceholder": "ad@ornek.com",
+    "emailHint": "Sertifikanız bu adrese gönderilir.",
+    "evaluation": "Değerlendirme",
+    "scaleHint": "Her ifade için bir seçenek işaretleyin.",
+    "scale": {
+      "1": "Kesinlikle katılmıyorum",
+      "2": "Katılmıyorum",
+      "3": "Ne katılıyorum ne katılmıyorum",
+      "4": "Katılıyorum",
+      "5": "Kesinlikle katılıyorum"
+    },
+    "optional": "İsteğe bağlı",
+    "commentPlaceholder": "Görüş ve önerilerinizi buraya yazabilirsiniz…",
+    "privacy": "Bilgileriniz yalnızca sertifikanızın gönderilmesi ve etkinliğin değerlendirilmesi için kullanılır.",
+    "submit": "Gönder ve sertifikamı al",
+    "submitting": "Gönderiliyor…",
+    "errors": {
+      "invalid": "Lütfen işaretli alanları kontrol edin ve zorunlu soruların hepsini yanıtlayın.",
+      "name": "Lütfen adınızı ve soyadınızı yazın.",
+      "email": "Lütfen geçerli bir e-posta adresi yazın.",
+      "closed": "Anket az önce kapandığı için yanıtlarınız kaydedilemedi.",
+      "duplicate": "Bu e-posta adresiyle anket zaten doldurulmuş.",
+      "duplicateSession": "Bu e-posta adresiyle bu konuşmanın anketi zaten doldurulmuş.",
+      "server": "Bir sorun oluştu. Lütfen biraz sonra tekrar deneyin."
+    },
+    "closedTitle": "Kayıt süresi sona erdi",
+    "closedText": "Anket artık yanıt kabul etmiyor. İlginiz için teşekkür ederiz.",
+    "waitingTitle": "Anket şu anda açık değil",
+    "waitingText": "Anket her konuşma sırasında açılır. Lütfen konuşma başladığında tekrar gelin.",
+    "next": "Sıradaki konuşma",
+    "successTitle": "Teşekkürler!",
+    "successText": "Yanıtlarınız kaydedildi, sertifikanız hazır.",
+    "emailSent": "Sertifikanızı {email} adresine de gönderdik.",
+    "emailFailed": "Sertifikanızı şu anda e-postayla gönderemedik; aşağıdan indirebilirsiniz.",
+    "download": "Sertifikayı indir (PDF)",
+    "certificateNo": "Sertifika no.",
+    "backHome": "DSATalks web sitesine dön"
   }
 }

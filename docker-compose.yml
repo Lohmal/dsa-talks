@@ -5,4 +5,23 @@ services:
     container_name: dsa-talks-web
     ports:
       - "3000:3000"
+    # DATABASE_URL (MongoDB Atlas), AUTH_SECRET and the SMTP settings come from .env.
+    env_file: .env
+    environment:
+      AUTH_TRUST_HOST: "true"
+      # Until real SMTP details are set in .env, certificate mails go to Mailpit below.
+      # Remove these two lines once SMTP_HOST in .env points to a real mail server.
+      SMTP_HOST: mailpit
+      SMTP_PORT: "1025"
+    depends_on:
+      - mailpit
+    restart: unless-stopped
+
+  # Test inbox for certificate e-mails: http://localhost:8025
+  mailpit:
+    image: axllent/mailpit:v1.27
+    container_name: dsa-talks-mailpit
+    ports:
+      - "8025:8025"
+      - "1025:1025"
     restart: unless-stopped

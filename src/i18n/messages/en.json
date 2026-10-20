@@ -124,5 +124,59 @@
     "contact": "Contact",
     "organizer": "Organized by",
     "rights": "All rights reserved."
+  },
+  "survey": {
+    "metaTitle": "Event Satisfaction Survey",
+    "title": "EVENT SATISFACTION SURVEY",
+    "intro": "Complete the survey and your certificate of participation will be ready right away and sent to your e-mail address.",
+    "info": {
+      "eventName": "Event",
+      "speaker": "Speaker(s)",
+      "talk": "Talk",
+      "dateTime": "Date and time",
+      "venue": "Venue"
+    },
+    "you": "Your details",
+    "name": "Full name",
+    "namePlaceholder": "e.g. Ayşe Yılmaz",
+    "nameHint": "Your name is printed on the certificate exactly like this.",
+    "email": "E-mail",
+    "emailPlaceholder": "name@example.com",
+    "emailHint": "Your certificate will be sent to this address.",
+    "evaluation": "Evaluation",
+    "scaleHint": "Choose one option for each statement.",
+    "scale": {
+      "1": "Strongly disagree",
+      "2": "Disagree",
+      "3": "Neither agree nor disagree",
+      "4": "Agree",
+      "5": "Strongly agree"
+    },
+    "optional": "Optional",
+    "commentPlaceholder": "Write your comments here…",
+    "privacy": "Your details are used only to send your certificate and to evaluate the event.",
+    "submit": "Submit and get my certificate",
+    "submitting": "Sending…",
+    "errors": {
+      "invalid": "Please check the highlighted fields and answer every required question.",
+      "name": "Please enter your full name.",
+      "email": "Please enter a valid e-mail address.",
+      "closed": "The survey has just closed, so your answers could not be saved.",
+      "duplicate": "This e-mail address has already completed the survey.",
+      "duplicateSession": "This e-mail address has already completed the survey for this talk.",
+      "server": "Something went wrong. Please try again in a moment."
+    },
+    "closedTitle": "Registration has ended",
+    "closedText": "The survey is no longer accepting responses. Thank you for your interest.",
+    "waitingTitle": "The survey is not open right now",
+    "waitingText": "The survey opens during each talk. Please come back when the talk starts.",
+    "next": "Next talk",
+    "successTitle": "Thank you!",
+    "successText": "Your answers have been saved and your certificate is ready.",
+    "emailSent": "We have also sent it to {email}.",
+    "emailFailed": "We could not e-mail it right now, but you can download it below.",
+    "download": "Download certificate (PDF)",
+    "certificateNo": "Certificate no.",
+    "backHome": "Back to the DSATalks website"
   }
 }
