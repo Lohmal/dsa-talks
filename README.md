@@ -13,6 +13,8 @@ npm run build
 
 Docker: `docker compose up -d --build` starts the site on port 3000 and Mailpit (test inbox for certificate
 e-mails) on http://localhost:8025. The site reads `.env`; the database is MongoDB Atlas.
+Set `NEXT_PUBLIC_SITE_URL` in `.env` to the final address (e.g. `https://dsatalks.atu.edu.tr`) before building:
+it is built into the pages (sitemap, link previews), so change it → rebuild with `--build`.
 
 ## Survey, certificates and admin panel
 

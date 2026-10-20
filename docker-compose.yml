@@ -1,6 +1,10 @@
 services:
   web:
-    build: .
+    build:
+      context: .
+      args:
+        # Read from .env; the address the site is reached at, e.g. https://dsatalks.atu.edu.tr
+        NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL}
     image: dsa-talks-web
     container_name: dsa-talks-web
     ports:
@@ -10,7 +14,7 @@ services:
     environment:
       AUTH_TRUST_HOST: "true"
       # Until real SMTP details are set in .env, certificate mails go to Mailpit below.
-      # Remove these two lines once SMTP_HOST in .env points to a real mail server.
+      # Remove these two lines (and the mailpit service) once SMTP_HOST in .env is a real mail server.
       SMTP_HOST: mailpit
       SMTP_PORT: "1025"
     depends_on:
