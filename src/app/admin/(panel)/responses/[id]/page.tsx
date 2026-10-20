@@ -1,12 +1,13 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, Download, ExternalLink, Mail, Trash2 } from "lucide-react";
+import { ArrowLeft, ExternalLink, Mail, Trash2 } from "lucide-react";
 import { db } from "@/lib/db";
 import { responseAverage, scopeLabel } from "@/lib/stats";
 import { formatDateTime, formatRange } from "@/lib/time";
 import { Badge, Card, PageHeader, buttonClass } from "@/components/admin/ui";
 import { ActionForm, SubmitButton } from "@/components/admin/forms";
 import { deleteResponse, resendCertificate } from "@/app/admin/actions";
+import DownloadButton from "@/components/admin/DownloadButton";
 
 export const metadata = { title: "Yanıt" };
 
@@ -46,9 +47,9 @@ export default async function ResponsePage({ params }: PageProps<"/admin/respons
         description={avg === null ? "Puanlı soru yanıtı yok." : `Ortalama puan: ${avg.toFixed(2)} / 5`}
         actions={
           <>
-            <a href={`${certificate}?download=1`} className={buttonClass("primary")}>
-              <Download className="size-4" /> Sertifikayı indir (PDF)
-            </a>
+            <DownloadButton href={`${certificate}?download=1`} fileName={`DSATalks-Certificate-${response.certificateNo}.pdf`}>
+              Sertifikayı indir (PDF)
+            </DownloadButton>
             <a href={`${certificate}?format=png`} target="_blank" className={buttonClass("outline")}>
               <ExternalLink className="size-4" /> PNG olarak aç
             </a>

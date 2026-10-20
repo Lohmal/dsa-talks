@@ -1,8 +1,20 @@
 "use client";
 
-import Link from "next/link";
+import Link, { useLinkStatus } from "next/link";
 import { usePathname } from "next/navigation";
-import { ExternalLink, LayoutDashboard, ListChecks, LogOut, MessageSquareText, QrCode, Settings2, Users } from "lucide-react";
+import { useFormStatus } from "react-dom";
+import {
+  ExternalLink,
+  LayoutDashboard,
+  ListChecks,
+  Loader2,
+  LogOut,
+  MessageSquareText,
+  QrCode,
+  Settings2,
+  Users,
+  type LucideIcon,
+} from "lucide-react";
 import { logout } from "@/app/admin/actions";
 
 const items = [
@@ -33,13 +45,7 @@ export default function AdminNav({ user }: { user: { name: string; email: string
           </span>
         </Link>
         <form action={logout} className="lg:hidden">
-          <button
-            type="submit"
-            className="inline-flex items-center gap-2 rounded-lg bg-white/10 px-3 py-2 text-sm font-semibold hover:bg-white/20"
-          >
-            <LogOut className="size-4" />
-            Çıkış
-          </button>
+          <LogoutButton className="rounded-lg px-3 py-2">Çıkış</LogoutButton>
         </form>
       </div>
 
@@ -56,13 +62,7 @@ export default function AdminNav({ user }: { user: { name: string; email: string
                     active ? "bg-white/12 text-white" : "text-white/70 hover:bg-white/6 hover:text-white"
                   }`}
                 >
-                  <span
-                    className={`grid size-8 place-items-center rounded-lg ${
-                      active ? "bg-brand text-white" : "bg-white/[0.07] text-white/70"
-                    }`}
-                  >
-                    <Icon className="size-4" />
-                  </span>
+                  <NavIcon icon={Icon} active={active} />
                   {label}
                 </Link>
               </li>
@@ -85,15 +85,37 @@ export default function AdminNav({ user }: { user: { name: string; email: string
           <p className="truncate text-xs text-white/55">{user.email}</p>
         </div>
         <form action={logout}>
-          <button
-            type="submit"
-            className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-white/10 px-3 py-2.5 text-sm font-semibold transition-colors hover:bg-white/20"
-          >
-            <LogOut className="size-4" />
-            Çıkış yap
-          </button>
+          <LogoutButton className="w-full rounded-xl px-3 py-2.5">Çıkış yap</LogoutButton>
         </form>
       </div>
     </aside>
+  );
+}
+
+// The icon turns into a spinner while the clicked page is loading.
+function NavIcon({ icon: Icon, active }: { icon: LucideIcon; active: boolean }) {
+  const { pending } = useLinkStatus();
+  return (
+    <span
+      className={`grid size-8 place-items-center rounded-lg ${
+        active || pending ? "bg-brand text-white" : "bg-white/[0.07] text-white/70"
+      }`}
+    >
+      {pending ? <Loader2 className="size-4 animate-spin" /> : <Icon className="size-4" />}
+    </span>
+  );
+}
+
+function LogoutButton({ children, className }: { children: React.ReactNode; className: string }) {
+  const { pending } = useFormStatus();
+  return (
+    <button
+      type="submit"
+      disabled={pending}
+      className={`inline-flex items-center justify-center gap-2 bg-white/10 text-sm font-semibold transition-colors hover:bg-white/20 disabled:opacity-70 ${className}`}
+    >
+      {pending ? <Loader2 className="size-4 animate-spin" /> : <LogOut className="size-4" />}
+      {children}
+    </button>
   );
 }

@@ -1,12 +1,14 @@
 import Link from "next/link";
 import type { Prisma } from "@prisma/client";
-import { ChevronLeft, ChevronRight, FileSpreadsheet, Search } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { db } from "@/lib/db";
 import { responseAverage, scopeLabel, scopeWhere } from "@/lib/stats";
 import { readScope, scopeSelectOptions } from "@/lib/scopes";
 import { formatDateTime } from "@/lib/time";
-import { Badge, Card, EmptyState, PageHeader, buttonClass, inputClass } from "@/components/admin/ui";
+import { Badge, Card, EmptyState, PageHeader, buttonClass } from "@/components/admin/ui";
 import ScopeSelect from "@/components/admin/ScopeSelect";
+import SearchBox from "@/components/admin/SearchBox";
+import DownloadButton from "@/components/admin/DownloadButton";
 
 export const metadata = { title: "Yanıtlar" };
 
@@ -58,30 +60,15 @@ export default async function ResponsesPage({ searchParams }: PageProps<"/admin/
         actions={
           <>
             <ScopeSelect value={scope} options={options} />
-            <a href={`/admin/export${query({})}`} className={buttonClass("navy")}>
-              <FileSpreadsheet className="size-4" />
+            <DownloadButton href={`/admin/export${query({})}`} fileName="DSATalks-anket.xlsx" tone="navy" icon="excel">
               Excel olarak indir
-            </a>
+            </DownloadButton>
           </>
         }
       />
 
       <Card padded={false}>
-        <form className="flex gap-2 border-b border-line p-4 sm:px-6">
-          {scope !== "all" && <input type="hidden" name="scope" value={scope} />}
-          <div className="relative flex-1">
-            <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted" />
-            <input
-              name="q"
-              defaultValue={q}
-              placeholder="Ad, e-posta veya sertifika no ile ara"
-              className={`${inputClass} pl-9`}
-            />
-          </div>
-          <button type="submit" className={buttonClass("outline")}>
-            Ara
-          </button>
-        </form>
+        <SearchBox defaultValue={q} />
 
         {responses.length === 0 ? (
           <div className="p-6">

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, CircleDot, FileSpreadsheet, Mail, MessageSquareText, Star } from "lucide-react";
+import { ArrowRight, CircleDot, Mail, MessageSquareText, Star } from "lucide-react";
 import { db } from "@/lib/db";
 import { getQuestions, getSurveyState } from "@/lib/survey";
 import { countSince, overallAverage, ratingStats, responseAverage, scopeLabel, scopeWhere } from "@/lib/stats";
@@ -8,6 +8,7 @@ import { formatDateTime, formatRange } from "@/lib/time";
 import { Badge, Card, EmptyState, PageHeader, buttonClass } from "@/components/admin/ui";
 import { AverageChart, DistributionChart } from "@/components/admin/Charts";
 import ScopeSelect from "@/components/admin/ScopeSelect";
+import DownloadButton from "@/components/admin/DownloadButton";
 
 export const metadata = { title: "Genel Bakış" };
 
@@ -41,10 +42,9 @@ export default async function Dashboard({ searchParams }: PageProps<"/admin">) {
         actions={
           <>
             <ScopeSelect value={scope} options={options} />
-            <a href={exportHref} className={buttonClass("navy")}>
-              <FileSpreadsheet className="size-4" />
+            <DownloadButton href={exportHref} fileName="DSATalks-anket.xlsx" tone="navy" icon="excel">
               Excel
-            </a>
+            </DownloadButton>
           </>
         }
       />

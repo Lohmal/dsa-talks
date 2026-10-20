@@ -75,14 +75,16 @@ function MoveButton({ id, direction, disabled }: { id: string; direction: "up" |
     <ActionForm action={moveQuestion}>
       <input type="hidden" name="id" value={id} />
       <input type="hidden" name="direction" value={direction} />
-      <button
-        type="submit"
-        disabled={disabled}
-        aria-label={direction === "up" ? "Yukarı taşı" : "Aşağı taşı"}
-        className="grid size-8 place-items-center rounded-lg text-muted transition hover:bg-surface hover:text-ink disabled:opacity-30"
-      >
-        <Icon className="size-4" />
-      </button>
+      {disabled ? (
+        <span aria-hidden className="grid size-8 place-items-center text-muted opacity-30">
+          <Icon className="size-4" />
+        </span>
+      ) : (
+        <SubmitButton tone="ghost" size="sm" className="size-8 !p-0">
+          <Icon className="size-4" />
+          <span className="sr-only">{direction === "up" ? "Yukarı taşı" : "Aşağı taşı"}</span>
+        </SubmitButton>
+      )}
     </ActionForm>
   );
 }
