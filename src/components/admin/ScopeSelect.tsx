@@ -20,7 +20,7 @@ export default function ScopeSelect({
   const [pending, startTransition] = useTransition();
 
   return (
-    <div className="relative">
+    <div className="relative min-w-0 md:w-72">
       <select
         aria-label="Kapsam"
         aria-busy={pending}
@@ -34,7 +34,7 @@ export default function ScopeSelect({
           const query = params.toString();
           startTransition(() => router.push(query ? `${pathname}?${query}` : pathname));
         }}
-        className={`${inputClass} w-auto min-w-56 pr-9 font-semibold disabled:opacity-70`}
+        className={`${inputClass} w-full truncate pr-9 font-semibold disabled:opacity-70`}
       >
         {options.map((option) => (
           <option key={option.value} value={option.value}>

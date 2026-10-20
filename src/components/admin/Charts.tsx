@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
 import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 type Stat = {
@@ -19,19 +20,36 @@ const SCALE = [
   { value: 1, label: "1 · Kesinlikle katılmıyorum", color: "#d7182a" },
 ] as const;
 
-const short = (text: string, max = 46) => (text.length > max ? `${text.slice(0, max - 1)}…` : text);
+const short = (text: string, max: number) => (text.length > max ? `${text.slice(0, max - 1)}…` : text);
 const height = (rows: number) => Math.max(220, rows * 46 + 60);
 
+// Question labels take a fixed 270px on wide cards; on phones they shrink and are cut shorter
+// (the tooltip always shows the full question).
+function useLabelAxis() {
+  const ref = useRef<HTMLDivElement>(null);
+  const [width, setWidth] = useState(800);
+  useEffect(() => {
+    const element = ref.current;
+    if (!element) return;
+    const observer = new ResizeObserver(([entry]) => setWidth(entry.contentRect.width));
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
+  const narrow = width < 560;
+  return { ref, axisWidth: narrow ? Math.round(width * 0.4) : 270, maxChars: narrow ? Math.max(12, Math.round(width / 16)) : 46 };
+}
+
 export function AverageChart({ stats }: { stats: Stat[] }) {
+  const { ref, axisWidth, maxChars } = useLabelAxis();
   const data = stats.map((stat, index) => ({
-    name: `${index + 1}. ${short(stat.text)}`,
+    name: `${index + 1}. ${short(stat.text, maxChars)}`,
     full: stat.text,
     average: stat.average === null ? 0 : Number(stat.average.toFixed(2)),
     count: stat.count,
   }));
 
   return (
-    <div style={{ height: height(data.length) }}>
+    <div ref={ref} style={{ height: height(data.length) }}>
       <ResponsiveContainer width="100%" height="100%">
         <BarChart data={data} layout="vertical" margin={{ left: 8, right: 32, top: 4, bottom: 4 }}>
           <CartesianGrid horizontal={false} stroke="#e4e8ef" />
@@ -39,8 +57,8 @@ export function AverageChart({ stats }: { stats: Stat[] }) {
           <YAxis
             type="category"
             dataKey="name"
-            width={270}
-            tick={{ fontSize: 12, fill: "#13224b" }}
+            width={axisWidth}
+            tick={{ fontSize: axisWidth < 200 ? 11 : 12, fill: "#13224b" }}
             tickLine={false}
             axisLine={false}
           />
@@ -63,8 +81,9 @@ export function AverageChart({ stats }: { stats: Stat[] }) {
 }
 
 export function DistributionChart({ stats }: { stats: Stat[] }) {
+  const { ref, axisWidth, maxChars } = useLabelAxis();
   const data = stats.map((stat, index) => {
-    const row: Record<string, string | number> = { name: `${index + 1}. ${short(stat.text)}`, full: stat.text };
+    const row: Record<string, string | number> = { name: `${index + 1}. ${short(stat.text, maxChars)}`, full: stat.text };
     for (const { value } of SCALE) {
       row[`r${value}`] = stat.count ? Math.round((stat.distribution[value] / stat.count) * 1000) / 10 : 0;
       row[`n${value}`] = stat.distribution[value];
@@ -73,15 +92,15 @@ export function DistributionChart({ stats }: { stats: Stat[] }) {
   });
 
   return (
-    <div style={{ height: height(data.length) + 40 }}>
+    <div ref={ref} style={{ height: height(data.length) + 40 }}>
       <ResponsiveContainer width="100%" height="100%">
         <BarChart data={data} layout="vertical" stackOffset="expand" margin={{ left: 8, right: 16, top: 4, bottom: 4 }}>
           <XAxis type="number" tickFormatter={(v) => `${Math.round(v * 100)}%`} tick={{ fontSize: 12, fill: "#5b6478" }} />
           <YAxis
             type="category"
             dataKey="name"
-            width={270}
-            tick={{ fontSize: 12, fill: "#13224b" }}
+            width={axisWidth}
+            tick={{ fontSize: axisWidth < 200 ? 11 : 12, fill: "#13224b" }}
             tickLine={false}
             axisLine={false}
           />

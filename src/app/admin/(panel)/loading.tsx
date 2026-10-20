@@ -5,12 +5,12 @@ export default function Loading() {
   return (
     <div role="status" aria-live="polite" className="space-y-6">
       <span className="sr-only">Yükleniyor…</span>
-      <div className="flex items-end justify-between gap-4">
-        <div className="space-y-3">
-          <div className="h-8 w-56 animate-pulse rounded-lg bg-ink/10" />
-          <div className="h-4 w-80 max-w-full animate-pulse rounded-lg bg-ink/[0.07]" />
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <div className="w-full max-w-md space-y-3">
+          <div className="h-8 w-3/5 animate-pulse rounded-lg bg-ink/10" />
+          <div className="h-4 w-full animate-pulse rounded-lg bg-ink/[0.07]" />
         </div>
-        <span className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-semibold text-muted shadow-card ring-1 ring-ink/5">
+        <span className="inline-flex w-fit shrink-0 items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-semibold text-muted shadow-card ring-1 ring-ink/5">
           <Loader2 className="size-4 animate-spin text-brand" />
           Yükleniyor…
         </span>
