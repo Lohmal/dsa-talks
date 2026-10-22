@@ -20,4 +20,7 @@ RUN npm run build
 
 ENV NODE_ENV=production PORT=3000
 EXPOSE 3000
-CMD ["npm", "start"]
+# Create the database indexes (unique e-mail per scope, certificate numbers…) if they are
+# missing, e.g. on a new empty database, then start the site. If the database cannot be
+# reached the site still starts; the indexes are created on the next start.
+CMD ["sh", "-c", "npx prisma db push --skip-generate || echo 'Database not reachable; indexes not checked.'; exec npm start"]

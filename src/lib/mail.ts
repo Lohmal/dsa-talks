@@ -92,3 +92,47 @@ export async function sendCertificateMail(input: {
     ],
   });
 }
+
+// "Şifremi unuttum" (and first-admin setup) link for the admin panel. Turkish only, like the panel.
+export async function sendPasswordResetMail(input: { to: string; name: string; url: string }) {
+  const text = [
+    `Merhaba ${input.name},`,
+    "",
+    "DSATalks yönetim paneli için şifre belirleme isteği aldık. Yeni şifrenizi belirlemek için aşağıdaki bağlantıyı açın:",
+    input.url,
+    "",
+    "Bağlantı 1 saat geçerlidir ve yalnızca bir kez kullanılabilir. Bu isteği siz yapmadıysanız bu e-postayı yok sayabilirsiniz; şifreniz değişmez.",
+    "",
+    "DSATalks",
+  ].join("\n");
+
+  const html = `<!doctype html>
+<html><body style="margin:0;background:#f5f7fa;font-family:Arial,Helvetica,sans-serif;color:#13224b">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f5f7fa;padding:32px 12px">
+    <tr><td align="center">
+      <table role="presentation" width="560" cellpadding="0" cellspacing="0" style="max-width:560px;background:#ffffff;border-radius:16px;overflow:hidden">
+        <tr><td style="background:#d7182a;height:6px;font-size:0;line-height:0">&nbsp;</td></tr>
+        <tr><td style="padding:28px 32px 0;font-size:28px;font-weight:900;letter-spacing:-1px">
+          <span style="color:#d7182a">DSA</span><span style="color:#13224b">Talks</span>
+          <span style="display:block;margin-top:4px;font-size:11px;font-weight:700;letter-spacing:3px;color:#8a93ab">YÖNETİM PANELİ</span>
+        </td></tr>
+        <tr><td style="padding:20px 32px 8px;font-size:16px;line-height:1.6">
+          <p style="margin:0 0 12px">Merhaba ${escape(input.name)},</p>
+          <p style="margin:0 0 20px">Yönetim paneli için şifre belirleme isteği aldık. Yeni şifrenizi belirlemek için butona tıklayın:</p>
+          <p style="margin:0 0 20px"><a href="${escape(input.url)}" style="display:inline-block;background:#d7182a;color:#ffffff;text-decoration:none;font-weight:bold;padding:12px 22px;border-radius:999px">Şifremi belirle</a></p>
+          <p style="margin:0 0 12px;font-size:13px;color:#5b6478">Bağlantı 1 saat geçerlidir ve yalnızca bir kez kullanılabilir. Bu isteği siz yapmadıysanız bu e-postayı yok sayabilirsiniz; şifreniz değişmez.</p>
+        </td></tr>
+        <tr><td style="background:#13224b;height:6px;font-size:0;line-height:0">&nbsp;</td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body></html>`;
+
+  await transport().sendMail({
+    from: process.env.MAIL_FROM || "DSATalks <confdsa@atu.edu.tr>",
+    to: { name: input.name, address: input.to },
+    subject: "DSATalks yönetim paneli – şifre belirleme",
+    text,
+    html,
+  });
+}

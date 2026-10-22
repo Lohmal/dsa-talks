@@ -78,15 +78,24 @@ const DEFAULT_QUESTIONS: DefaultQuestion[] = [
 
 const isDuplicate = (error: unknown) => (error as { code?: string })?.code === "P2002";
 
+// The first admin when the database has none: ADMIN_EMAIL / ADMIN_PASSWORD from .env if set,
+// otherwise admin@admin.com / admin123. Works without e-mail; change the password in the panel.
+export function firstAdmin() {
+  const email = process.env.ADMIN_EMAIL?.trim().toLowerCase();
+  const password = process.env.ADMIN_PASSWORD;
+  return email && password ? { name: "Admin", email, password } : DEFAULT_ADMIN;
+}
+
+async function createFirstAdmin() {
+  const admin = firstAdmin();
+  const passwordHash = await bcrypt.hash(admin.password, 10);
+  await db.user.create({ data: { name: admin.name, email: admin.email, passwordHash } }).catch((error) => {
+    if (!isDuplicate(error)) throw error; // another instance created it first
+  });
+}
+
 async function run() {
-  if ((await db.user.count()) === 0) {
-    const passwordHash = await bcrypt.hash(DEFAULT_ADMIN.password, 10);
-    await db.user
-      .create({ data: { name: DEFAULT_ADMIN.name, email: DEFAULT_ADMIN.email, passwordHash } })
-      .catch((error) => {
-        if (!isDuplicate(error)) throw error; // another instance created it first
-      });
-  }
+  if ((await db.user.count()) === 0) await createFirstAdmin();
 
   await db.settings
     .upsert({ where: { key: "main" }, update: {}, create: DEFAULT_SETTINGS })

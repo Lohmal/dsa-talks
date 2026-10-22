@@ -9,8 +9,36 @@ services:
     container_name: dsa-talks-web
     ports:
       - "3000:3000"
-    # DATABASE_URL, AUTH_SECRET and the SMTP settings (Google Workspace app password) come from .env.
+    # DATABASE_URL, AUTH_SECRET, ADMIN_EMAIL and the SMTP settings come from .env.
     env_file: .env
     environment:
       AUTH_TRUST_HOST: "true"
+    # Deliberately no depends_on: the site starts even if the mongo service below fails
+    # (e.g. while DATABASE_URL still points to Atlas).
     restart: unless-stopped
+
+  # Local MongoDB, reachable only by the site (no port is published). Prisma needs a replica
+  # set, so the health check also turns this single server into one ("rs0") on first start.
+  # Data lives in the mongo-data volume and survives rebuilds.
+  # .env: DATABASE_URL="mongodb://mongo:27017/dsatalks?replicaSet=rs0"
+  mongo:
+    image: mongo:8.0
+    container_name: dsa-talks-mongo
+    command: ["--replSet", "rs0", "--bind_ip_all"]
+    volumes:
+      - mongo-data:/data/db
+    healthcheck:
+      test:
+        - CMD
+        - mongosh
+        - --quiet
+        - --eval
+        - "try { rs.status().ok } catch (e) { rs.initiate({ _id: 'rs0', members: [{ _id: 0, host: 'mongo:27017' }] }).ok }"
+      interval: 10s
+      timeout: 10s
+      retries: 12
+      start_period: 20s
+    restart: unless-stopped
+
+volumes:
+  mongo-data:

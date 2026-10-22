@@ -20,8 +20,10 @@ it is built into the pages (sitemap, link previews), so change it → rebuild wi
 
 - **`/anket`** – "Etkinlik Memnuniyet Anketi" (TR/EN). Not linked from the site; shared by QR code.
   After submitting, the participant sees and downloads the certificate (PDF, English) and receives it by e-mail.
-- **`/admin`** – not linked anywhere. On a fresh database the first account is created automatically:
-  `admin@admin.com` / `admin123` (only when there are no admins at all). Add your own admin and remove or change it.
+- **`/admin`** – not linked anywhere. When the database has no admins, the first one is created automatically:
+  `ADMIN_EMAIL` / `ADMIN_PASSWORD` from `.env` if both are set, otherwise `admin@admin.com` / `admin123`.
+  Change the password under *Yöneticiler* after signing in. **Şifremi unuttum** on the login page e-mails a
+  one-time link (valid 1 hour) for setting a new password.
   - *Genel Bakış*: totals, average satisfaction, per-question averages and 5…1 distribution charts, filter by session.
   - *Yanıtlar*: search, details, certificate download, resend e-mail, delete, Excel export (`/admin/export`).
   - *Anket Ayarları*: open/close registration; mode
@@ -48,6 +50,23 @@ response is still saved; the admin can resend from the response page.
 
 On Vercel add `DATABASE_URL` and `AUTH_SECRET` (plus the SMTP keys) as environment variables; in MongoDB Atlas allow
 Vercel's IPs (or 0.0.0.0/0) under Network Access.
+
+## Database: local MongoDB in Docker
+
+`docker-compose.yml` runs MongoDB 8 next to the site (`mongo` service, data in the `mongo-data` volume, no port
+published). With `DATABASE_URL="mongodb://mongo:27017/dsatalks?replicaSet=rs0"` in `.env` the site uses it; the
+container creates the indexes on every start (`prisma db push`).
+
+Copying the existing data from Atlas (once, before switching `DATABASE_URL`):
+
+```bash
+docker compose up -d mongo
+docker compose exec mongo sh -c 'mongodump --uri="mongodb+srv://USER:PASSWORD@cluster0.lcmvmh7.mongodb.net/dsatalks" --archive | mongorestore --archive --drop'
+docker compose up -d --build
+```
+
+Admins, settings, questions and responses come across unchanged, so existing passwords keep working.
+Backup: `docker compose exec mongo mongodump --db dsatalks --archive > dsatalks-backup.archive`.
 
 ## Where things live
 
