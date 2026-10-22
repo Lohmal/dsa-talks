@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { Container, LanguageSwitcher, Wordmark } from "./ui";
+import { setConsent } from "@/lib/consent";
 import { useLanguage } from "@/i18n/LanguageProvider";
 
 // Frame for the stand-alone pages (survey, certificate check): white bar with the wordmark
@@ -55,6 +56,9 @@ export default function PublicShell({
         <Link href="/kvkk" className="font-semibold text-muted hover:text-brand">
           {m.kvkk.link}
         </Link>
+        <button type="button" onClick={() => setConsent("unset")} className="font-semibold text-muted hover:text-brand">
+          {m.cookies.settings}
+        </button>
       </footer>
     </div>
   );

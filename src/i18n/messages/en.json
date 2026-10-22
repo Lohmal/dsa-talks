@@ -118,8 +118,8 @@
     "mapTitle": "Map of the venue",
     "emailLabel": "E-mail",
     "websiteLabel": "Website",
-    "showMap": "Show map",
-    "mapNotice": "The map is loaded from Google Maps, which may set its own cookies."
+    "showMap": "Accept cookies and show map",
+    "mapNotice": "The map is loaded from Google Maps, which uses its own cookies. You chose not to allow them."
   },
   "footer": {
     "tagline": "For a Better Future",
@@ -224,5 +224,12 @@
     "link": "KVKK Information Notice",
     "ack": "I have read the {link}.",
     "ackError": "Please confirm that you have read the information notice."
+  },
+  "cookies": {
+    "title": "Cookie preferences",
+    "text": "This site only uses the cookies it needs to work. The Google Maps map in the Venue section uses Google’s own cookies; if you accept, the map loads automatically.",
+    "accept": "Accept",
+    "reject": "Reject",
+    "settings": "Cookie preferences"
   }
 }

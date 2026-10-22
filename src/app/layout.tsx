@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Poppins } from "next/font/google";
 import { LanguageProvider } from "@/i18n/LanguageProvider";
+import CookieBanner from "@/components/CookieBanner";
 import { site } from "@/config/site";
 import { siteUrl } from "@/config/url";
 import "./globals.css";
@@ -63,7 +64,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" data-scroll-behavior="smooth" className={`${poppins.variable} antialiased`}>
       <body className="font-sans">
-        <LanguageProvider>{children}</LanguageProvider>
+        <LanguageProvider>
+          {children}
+          <CookieBanner />
+        </LanguageProvider>
       </body>
     </html>
   );

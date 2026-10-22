@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Globe, Mail } from "lucide-react";
 import { sectionHref } from "./MobileMenu";
+import { setConsent } from "@/lib/consent";
 import { Container, LanguageSwitcher, Wordmark } from "./ui";
 import { site } from "@/config/site";
 import { useLanguage } from "@/i18n/LanguageProvider";
@@ -110,6 +111,14 @@ export default function Footer() {
             <Link href="/kvkk" className="whitespace-nowrap text-white/70 underline-offset-4 hover:text-white hover:underline">
               {m.kvkk.link}
             </Link>
+            {" · "}
+            <button
+              type="button"
+              onClick={() => setConsent("unset")}
+              className="whitespace-nowrap text-white/70 underline-offset-4 hover:text-white hover:underline"
+            >
+              {m.cookies.settings}
+            </button>
           </p>
           <p className="font-light italic text-white/70">{m.footer.tagline}</p>
           <LanguageSwitcher light />

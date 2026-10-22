@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { setConsent, useConsent } from "@/lib/consent";
 import { CalendarDays, Globe, Mail, Map as MapIcon, MapPin, Navigation, type LucideIcon } from "lucide-react";
 import { Container, FadeIn, SectionHeading } from "./ui";
 import { site } from "@/config/site";
@@ -75,12 +75,13 @@ export default function Venue() {
   );
 }
 
-// Google Maps sets its own cookies, so the map only loads after the visitor asks for it.
+// Google Maps sets its own cookies: the map loads by itself once cookies are accepted
+// (remembered in the browser); otherwise a placeholder offers to accept and show it.
 function MapEmbed({ src, title }: { src: string; title: string }) {
   const { m } = useLanguage();
-  const [shown, setShown] = useState(false);
+  const consent = useConsent();
 
-  if (shown) {
+  if (consent === "accepted") {
     return (
       <iframe
         title={title}
@@ -105,7 +106,7 @@ function MapEmbed({ src, title }: { src: string; title: string }) {
         <p className="mt-4 text-sm text-muted">{m.venue.mapNotice}</p>
         <button
           type="button"
-          onClick={() => setShown(true)}
+          onClick={() => setConsent("accepted")}
           className="mt-4 inline-flex items-center gap-2 rounded-full bg-ink px-5 py-2.5 text-sm font-bold text-white transition-colors hover:bg-navy"
         >
           <MapIcon className="size-4" />

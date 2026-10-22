@@ -68,7 +68,7 @@ export const kvkk: Record<"tr" | "en", { updated: string; intro: string; section
         paragraphs: [
           "DSATalks web sitesi reklam veya izleme (analitik) amaçlı çerez kullanmaz.",
           "Seçtiğiniz dil, yalnızca tarayıcınızda saklanır ve sunucuya gönderilmez. Yönetim paneline giriş yapan yetkililer için oturumun sürdürülmesine yarayan zorunlu bir çerez kullanılır.",
-          "Ulaşım bölümündeki Google Haritalar, siz “Haritayı göster” butonuna basmadan yüklenmez; haritayı açtığınızda Google’ın kendi çerez ve gizlilik politikası geçerli olur.",
+          "Ulaşım bölümündeki Google Haritalar, Google’ın kendi çerezlerini kullanır. Bu nedenle harita yalnızca siteye ilk girişinizde gösterilen çerez bildiriminde “Kabul et”i seçerseniz yüklenir; bu durumda Google’ın çerez ve gizlilik politikası geçerli olur. Tercihiniz tarayıcınızda saklanır ve sitenin alt kısmındaki “Çerez tercihleri” bağlantısından istediğiniz zaman değiştirilebilir.",
         ],
       },
       {
@@ -145,7 +145,7 @@ export const kvkk: Record<"tr" | "en", { updated: string; intro: string; section
         paragraphs: [
           "The DSATalks website does not use advertising or tracking (analytics) cookies.",
           "Your chosen language is stored only in your browser and is not sent to the server. A strictly necessary cookie keeps authorized administrators signed in to the admin panel.",
-          "The Google Maps map in the Venue section is not loaded until you press “Show map”; once it is shown, Google’s own cookie and privacy policies apply.",
+          "The Google Maps map in the Venue section uses Google’s own cookies, so it only loads if you choose “Accept” in the cookie notice shown on your first visit; Google’s cookie and privacy policies then apply. Your choice is stored in your browser and can be changed at any time with the “Cookie preferences” link at the bottom of the site.",
         ],
       },
       {

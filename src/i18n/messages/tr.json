@@ -118,8 +118,8 @@
     "mapTitle": "Etkinlik yerinin haritası",
     "emailLabel": "E-posta",
     "websiteLabel": "Web sitesi",
-    "showMap": "Haritayı göster",
-    "mapNotice": "Harita Google Haritalar’dan yüklenir; Google kendi çerezlerini kullanabilir."
+    "showMap": "Çerezleri kabul et ve haritayı göster",
+    "mapNotice": "Harita, kendi çerezlerini kullanan Google Haritalar’dan yüklenir. Çerezleri kabul etmediğiniz için gösterilmiyor."
   },
   "footer": {
     "tagline": "Daha İyi Bir Gelecek İçin",
@@ -224,5 +224,12 @@
     "link": "KVKK Aydınlatma Metni",
     "ack": "{link}’ni okudum.",
     "ackError": "Lütfen aydınlatma metnini okuduğunuzu onaylayın."
+  },
+  "cookies": {
+    "title": "Çerez tercihi",
+    "text": "Sitemiz yalnızca çalışması için gerekli çerezleri kullanır. Ulaşım bölümündeki Google Haritalar ise Google’ın kendi çerezlerini kullanır; kabul ederseniz harita otomatik olarak yüklenir.",
+    "accept": "Kabul et",
+    "reject": "Reddet",
+    "settings": "Çerez tercihleri"
   }
 }
