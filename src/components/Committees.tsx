@@ -13,7 +13,14 @@ export default function Committees() {
 
   const groups = [
     { id: "onur-kurulu", title: t.honorary, sections: [{ members: committees.honoraryChairs, featured: true }] },
-    { id: "program-kurulu", title: t.program, sections: [{ members: committees.programCommittee, featured: false }] },
+    {
+      id: "program-kurulu",
+      title: t.program,
+      sections: [
+        { heading: t.coChairs, members: committees.coChairs, featured: true },
+        { heading: t.members, members: committees.programCommittee, featured: false },
+      ],
+    },
     {
       id: "duzenleme-kurulu",
       title: t.organizing,
