@@ -2,8 +2,8 @@ import "server-only";
 import nodemailer from "nodemailer";
 import { certificateFileName } from "./certificate";
 
-// SMTP comes from .env. Without real details, docker-compose's Mailpit catches the mails
-// (localhost:1025, inbox at http://localhost:8025).
+// SMTP comes from .env: Google Workspace (smtp.gmail.com) with the app password of
+// confdsa@atu.edu.tr. Leaving SMTP_USER empty sends without logging in (IP-based relay).
 function transport() {
   const port = Number(process.env.SMTP_PORT || 587);
   const user = process.env.SMTP_USER;

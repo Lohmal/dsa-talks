@@ -11,8 +11,8 @@ npm run dev            # http://localhost:3000
 npm run build
 ```
 
-Docker: `docker compose up -d --build` starts the site on port 3000 and Mailpit (test inbox for certificate
-e-mails) on http://localhost:8025. The site reads `.env`; the database is MongoDB Atlas.
+Docker: `docker compose up -d --build` starts the site on port 3000 (change the left side of `ports` in
+`docker-compose.yml` for another port). The site reads `.env`.
 Set `NEXT_PUBLIC_SITE_URL` in `.env` to the final address (e.g. `https://dsatalks.atu.edu.tr`) before building:
 it is built into the pages (sitemap, link previews), so change it → rebuild with `--build`.
 
@@ -43,7 +43,7 @@ The QR code and links use `NEXT_PUBLIC_SITE_URL` when set, otherwise the address
 **`/kurullar`** lists the committees (data in `src/data/committees.json`, shared with the CONFDSA site).
 
 E-mail: set `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `SMTP_PASS`, `MAIL_FROM` in `.env`
-(and, with Docker, remove the two SMTP lines under `environment` in `docker-compose.yml`). If sending fails the
+(Google Workspace: `smtp.gmail.com`, port 465, the app password of confdsa@atu.edu.tr). If sending fails the
 response is still saved; the admin can resend from the response page.
 
 On Vercel add `DATABASE_URL` and `AUTH_SECRET` (plus the SMTP keys) as environment variables; in MongoDB Atlas allow
