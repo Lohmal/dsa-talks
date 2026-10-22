@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { auth } from "@/auth";
-import { db } from "@/lib/db";
+import { adminOrNull } from "@/lib/admin";
 import AuthShell from "@/components/admin/AuthShell";
 import LoginForm from "./LoginForm";
 
@@ -11,10 +10,7 @@ export const metadata: Metadata = {
 };
 
 export default async function LoginPage({ searchParams }: PageProps<"/admin/login">) {
-  const session = await auth();
-  if (session?.user?.id && (await db.user.findUnique({ where: { id: session.user.id }, select: { id: true } }))) {
-    redirect("/admin");
-  }
+  if (await adminOrNull()) redirect("/admin");
   const { next, reset } = await searchParams;
 
   return (

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { requireAdmin } from "@/lib/admin";
 import type { Prisma } from "@prisma/client";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { db } from "@/lib/db";
@@ -21,6 +22,7 @@ const mailBadge = {
 } as Record<string, React.ReactNode>;
 
 export default async function ResponsesPage({ searchParams }: PageProps<"/admin/responses">) {
+  await requireAdmin();
   const params = await searchParams;
   const scope = readScope(params.scope);
   const q = typeof params.q === "string" ? params.q.trim() : "";

@@ -131,8 +131,8 @@ export default function QrCard({ url }: { url: string }) {
           </button>
         </div>
         <p className="mt-4 text-sm text-muted">
-          QR kod yukarıdaki adrese gider. Site kendi alan adına taşındığında <code className="font-mono">NEXT_PUBLIC_SITE_URL</code>{" "}
-          ayarlanırsa QR kod o adresi kullanır.
+          QR kod yukarıdaki adrese gider. Adres <code className="font-mono">.env</code> dosyasındaki{" "}
+          <code className="font-mono">NEXT_PUBLIC_SITE_URL</code> değeridir; değiştirirseniz siteyi yeniden derleyin.
         </p>
       </Card>
     </div>

@@ -6,6 +6,23 @@ const nextConfig: NextConfig = {
   outputFileTracingIncludes: {
     "/**": ["./src/assets/**/*"],
   },
+  poweredByHeader: false,
+  // Security headers on every response: no framing by other sites (clickjacking), no MIME
+  // sniffing, only the origin as referrer to other sites, no camera/microphone/location.
+  headers() {
+    return [
+      {
+        source: "/:path*",
+        headers: [
+          { key: "X-Frame-Options", value: "DENY" },
+          { key: "Content-Security-Policy", value: "frame-ancestors 'none'" },
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+          { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
+        ],
+      },
+    ];
+  },
   turbopack: {
     rules: {
       "*.css": {

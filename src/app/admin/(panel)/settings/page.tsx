@@ -1,4 +1,5 @@
 import { CalendarPlus, Pencil, Power, Trash2 } from "lucide-react";
+import { requireAdmin } from "@/lib/admin";
 import type { SurveySession } from "@prisma/client";
 import { sessionTalks } from "@/lib/talks";
 import SessionForm from "@/components/admin/SessionForm";
@@ -34,6 +35,7 @@ function editable(session: SurveySession) {
 }
 
 export default async function SettingsPage() {
+  await requireAdmin();
   const [settings, sessions, counts] = await Promise.all([
     getSettings(),
     db.surveySession.findMany({ orderBy: { startsAt: "asc" } }),

@@ -239,7 +239,7 @@ export async function createUser(_: ActionState, formData: FormData) {
 }
 
 export async function updateUser(_: ActionState, formData: FormData) {
-  await requireAdmin();
+  const me = await requireAdmin();
   const id = objectId.safeParse(text(formData, "id"));
   if (!id.success) return fail("Yönetici bulunamadı.");
   const parsed = user.safeParse({
@@ -259,6 +259,8 @@ export async function updateUser(_: ActionState, formData: FormData) {
     if (isDuplicateEmail(error)) return fail("Bu e-posta adresiyle bir yönetici zaten var.");
     throw error;
   }
+  // A new password ends every session of that admin, including this one.
+  if (password && id.data === me.id) await signOut({ redirectTo: "/admin/login" });
   return ok(password ? "Bilgiler ve şifre güncellendi." : "Bilgiler güncellendi.");
 }
 

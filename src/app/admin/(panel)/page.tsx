@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { requireAdmin } from "@/lib/admin";
 import { ArrowRight, CircleDot, Mail, MessageSquareText, Star } from "lucide-react";
 import { db } from "@/lib/db";
 import { getQuestions, getSurveyState } from "@/lib/survey";
@@ -14,6 +15,7 @@ import DownloadButton from "@/components/admin/DownloadButton";
 export const metadata = { title: "Genel Bakış" };
 
 export default async function Dashboard({ searchParams }: PageProps<"/admin">) {
+  await requireAdmin();
   const scope = readScope((await searchParams).scope);
   const [state, questions, responses, sessions, options] = await Promise.all([
     getSurveyState(),

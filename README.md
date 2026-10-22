@@ -22,7 +22,9 @@ it is built into the pages (sitemap, link previews), so change it → rebuild wi
   After submitting, the participant sees and downloads the certificate (PDF, English) and receives it by e-mail.
 - **`/admin`** – not linked anywhere. When the database has no admins, the first one is created automatically:
   `ADMIN_EMAIL` / `ADMIN_PASSWORD` from `.env` if both are set, otherwise `admin@admin.com` / `admin123`.
-  Change the password under *Yöneticiler* after signing in. **Şifremi unuttum** on the login page e-mails a
+  Change the password under *Yöneticiler* after signing in (this signs out every other session of that admin;
+  sessions also end 12 hours after signing in). After 5 wrong passwords an address is locked for 15 minutes
+  (or until its password is reset). **Şifremi unuttum** on the login page e-mails a
   one-time link (valid 1 hour) for setting a new password.
   - *Genel Bakış*: totals, average satisfaction, per-question averages and 5…1 distribution charts, filter by session.
   - *Yanıtlar*: search, details, certificate download, resend e-mail, delete, Excel export (`/admin/export`).
@@ -40,7 +42,8 @@ it is built into the pages (sitemap, link previews), so change it → rebuild wi
 Certificates are drawn on request from `src/lib/certificate.tsx` (fonts and logos in `src/assets`), so nothing is
 stored but the response. The download link contains a long random token. Each certificate carries its number and a
 QR code for **`/dogrula`**, where anyone can check a certificate number (only what is printed on it is shown).
-The QR code and links use `NEXT_PUBLIC_SITE_URL` when set, otherwise the address the site was opened with.
+The QR code, verification links and password-reset links always use `NEXT_PUBLIC_SITE_URL` (on Vercel the production
+domain until it is set), never the address in the request, so a forged `Host` header cannot redirect them.
 
 **`/kurullar`** lists the committees (data in `src/data/committees.json`, shared with the CONFDSA site).
 

@@ -1,6 +1,5 @@
 import { db } from "@/lib/db";
 import { certificateDataOf } from "@/lib/certificates";
-import { publicOrigin } from "@/lib/origin";
 import { certificateFileName, renderCertificatePdf, renderCertificatePng } from "@/lib/certificate";
 
 // GET /api/certificate/<token>?format=png|pdf&download=1
@@ -12,7 +11,7 @@ export async function GET(request: Request, { params }: RouteContext<"/api/certi
 
   const url = new URL(request.url);
   const format = url.searchParams.get("format") === "png" ? "png" : "pdf";
-  const data = certificateDataOf(response, await publicOrigin());
+  const data = certificateDataOf(response);
   const body = format === "png" ? await renderCertificatePng(data) : await renderCertificatePdf(data);
   const disposition = url.searchParams.has("download") ? "attachment" : "inline";
 

@@ -4,7 +4,6 @@ import { z } from "zod";
 import { db } from "@/lib/db";
 import { createResetLink } from "@/lib/passwordReset";
 import { sendPasswordResetMail } from "@/lib/mail";
-import { publicOrigin } from "@/lib/origin";
 
 export type ResetRequestState = { sent: boolean; error?: string } | null;
 
@@ -16,7 +15,7 @@ export async function requestPasswordReset(_: ResetRequestState, formData: FormD
   try {
     const user = await db.user.findUnique({ where: { email: email.data } });
     if (user) {
-      const url = await createResetLink(user.id, await publicOrigin());
+      const url = await createResetLink(user.id);
       if (url) await sendPasswordResetMail({ to: user.email, name: user.name, url });
     }
   } catch (error) {

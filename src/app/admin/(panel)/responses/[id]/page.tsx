@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { requireAdmin } from "@/lib/admin";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ExternalLink, Mail, Trash2 } from "lucide-react";
 import { db } from "@/lib/db";
@@ -20,6 +21,7 @@ const RATING_LABEL: Record<number, string> = {
 };
 
 export default async function ResponsePage({ params }: PageProps<"/admin/responses/[id]">) {
+  await requireAdmin();
   const { id } = await params;
   const response = /^[a-f0-9]{24}$/.test(id) ? await db.response.findUnique({ where: { id } }) : null;
   if (!response) notFound();

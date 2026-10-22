@@ -1,4 +1,5 @@
 import { ArrowDown, ArrowUp, Pencil, Plus, Trash2 } from "lucide-react";
+import { requireAdmin } from "@/lib/admin";
 import type { Question } from "@prisma/client";
 import { getQuestions } from "@/lib/survey";
 import { Badge, Card, EmptyState, PageHeader } from "@/components/admin/ui";
@@ -22,6 +23,7 @@ const editable = (q: Question) => ({
 });
 
 export default async function QuestionsPage() {
+  await requireAdmin();
   const questions = await getQuestions();
 
   return (
