@@ -1,6 +1,7 @@
 "use client";
 
-import { CalendarDays, Globe, Mail, MapPin, Navigation, type LucideIcon } from "lucide-react";
+import { useState } from "react";
+import { CalendarDays, Globe, Mail, Map as MapIcon, MapPin, Navigation, type LucideIcon } from "lucide-react";
 import { Container, FadeIn, SectionHeading } from "./ui";
 import { site } from "@/config/site";
 import { useLanguage } from "@/i18n/LanguageProvider";
@@ -66,16 +67,51 @@ export default function Venue() {
                 {m.venue.directions}
               </a>
             </div>
-            <iframe
-              title={m.venue.mapTitle}
-              src={mapSrc}
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-              className="h-80 w-full border-0 lg:h-full lg:min-h-112"
-            />
+            <MapEmbed src={mapSrc} title={m.venue.mapTitle} />
           </div>
         </FadeIn>
       </Container>
     </section>
+  );
+}
+
+// Google Maps sets its own cookies, so the map only loads after the visitor asks for it.
+function MapEmbed({ src, title }: { src: string; title: string }) {
+  const { m } = useLanguage();
+  const [shown, setShown] = useState(false);
+
+  if (shown) {
+    return (
+      <iframe
+        title={title}
+        src={src}
+        loading="lazy"
+        referrerPolicy="no-referrer-when-downgrade"
+        className="h-80 w-full border-0 lg:h-full lg:min-h-112"
+      />
+    );
+  }
+
+  return (
+    <div className="relative grid h-80 place-items-center overflow-hidden bg-surface px-6 text-center lg:h-full lg:min-h-112">
+      <div
+        aria-hidden
+        className="absolute inset-0 opacity-60 bg-[linear-gradient(#e4e8ef_1px,transparent_1px),linear-gradient(90deg,#e4e8ef_1px,transparent_1px)] bg-size-[32px_32px]"
+      />
+      <div className="relative max-w-sm">
+        <span className="mx-auto grid size-14 place-items-center rounded-full bg-white text-brand shadow-card ring-1 ring-line">
+          <MapPin className="size-6" />
+        </span>
+        <p className="mt-4 text-sm text-muted">{m.venue.mapNotice}</p>
+        <button
+          type="button"
+          onClick={() => setShown(true)}
+          className="mt-4 inline-flex items-center gap-2 rounded-full bg-ink px-5 py-2.5 text-sm font-bold text-white transition-colors hover:bg-navy"
+        >
+          <MapIcon className="size-4" />
+          {m.venue.showMap}
+        </button>
+      </div>
+    </div>
   );
 }

@@ -117,7 +117,9 @@
     "directions": "Get directions",
     "mapTitle": "Map of the venue",
     "emailLabel": "E-mail",
-    "websiteLabel": "Website"
+    "websiteLabel": "Website",
+    "showMap": "Show map",
+    "mapNotice": "The map is loaded from Google Maps, which may set its own cookies."
   },
   "footer": {
     "tagline": "For a Better Future",
@@ -211,5 +213,16 @@
     "coChairs": "Co-Chairs",
     "members": "Members",
     "count": "members"
+  },
+  "kvkk": {
+    "title": "PERSONAL DATA PROTECTION",
+    "intro": "Information notice on the processing of personal data in the DSATalks survey and certificates.",
+    "linksTitle": "Useful links",
+    "universityPage": "University’s Personal Data Protection page (application form)",
+    "fullNotice": "University’s general information notice (PDF)",
+    "eventEmail": "Event contact address",
+    "link": "KVKK Information Notice",
+    "ack": "I have read the {link}.",
+    "ackError": "Please confirm that you have read the information notice."
   }
 }

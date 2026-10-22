@@ -48,9 +48,12 @@ export default function PublicShell({
         <Container className="max-w-3xl">{children}</Container>
       </main>
 
-      <footer className="border-t border-line bg-white py-6 text-center text-sm text-muted">
+      <footer className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 border-t border-line bg-white px-4 py-6 text-center text-sm text-muted">
         <Link href="/" className="font-semibold text-ink hover:text-brand">
           {m.survey.backHome}
+        </Link>
+        <Link href="/kvkk" className="font-semibold text-muted hover:text-brand">
+          {m.kvkk.link}
         </Link>
       </footer>
     </div>

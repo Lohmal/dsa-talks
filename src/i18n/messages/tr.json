@@ -117,7 +117,9 @@
     "directions": "Yol tarifi al",
     "mapTitle": "Etkinlik yerinin haritası",
     "emailLabel": "E-posta",
-    "websiteLabel": "Web sitesi"
+    "websiteLabel": "Web sitesi",
+    "showMap": "Haritayı göster",
+    "mapNotice": "Harita Google Haritalar’dan yüklenir; Google kendi çerezlerini kullanabilir."
   },
   "footer": {
     "tagline": "Daha İyi Bir Gelecek İçin",
@@ -211,5 +213,16 @@
     "coChairs": "Eş Başkanlar",
     "members": "Kurul Üyeleri",
     "count": "üye"
+  },
+  "kvkk": {
+    "title": "KİŞİSEL VERİLERİN KORUNMASI",
+    "intro": "DSATalks anketi ve sertifikaları kapsamında kişisel verilerin işlenmesine ilişkin aydınlatma metni.",
+    "linksTitle": "Bağlantılar",
+    "universityPage": "Üniversitenin Kişisel Verilerin Korunması sayfası (başvuru formu)",
+    "fullNotice": "Üniversitenin genel aydınlatma metni (PDF)",
+    "eventEmail": "Etkinlik iletişim adresi",
+    "link": "KVKK Aydınlatma Metni",
+    "ack": "{link}’ni okudum.",
+    "ackError": "Lütfen aydınlatma metnini okuduğunuzu onaylayın."
   }
 }

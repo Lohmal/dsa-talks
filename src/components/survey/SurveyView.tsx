@@ -234,6 +234,7 @@ function SurveyForm({
 
       <div className="flex flex-col items-center gap-4 pt-2 text-center">
         <p className="max-w-lg text-sm text-muted">{m.survey.privacy}</p>
+        <KvkkConsent invalid={invalid.has("kvkk")} />
         <button
           type="submit"
           disabled={pending}
@@ -371,6 +372,31 @@ function ChoiceCard({ question, invalid }: { question: SurveyQuestion; invalid: 
         </label>
       )}
     </Card>
+  );
+}
+
+// Required tick confirming the KVKK information notice was read (not a consent to anything extra).
+function KvkkConsent({ invalid }: { invalid: boolean }) {
+  const { m } = useLanguage();
+  const [before, after] = m.kvkk.ack.split("{link}");
+  return (
+    <div className="max-w-lg">
+      <label
+        className={`flex cursor-pointer items-start gap-3 rounded-xl px-4 py-3 text-left text-sm font-semibold text-ink ring-1 ${
+          invalid ? "bg-brand/[0.05] ring-brand/40" : "bg-white ring-line"
+        }`}
+      >
+        <input type="checkbox" name="kvkk" required className="mt-0.5 size-4 shrink-0 accent-brand" />
+        <span>
+          {before}
+          <a href="/kvkk" target="_blank" rel="noreferrer" className="text-brand underline underline-offset-2 hover:text-brand-dark">
+            {m.kvkk.link}
+          </a>
+          {after}
+        </span>
+      </label>
+      {invalid && <p className="mt-1.5 text-left text-xs font-semibold text-brand">{m.kvkk.ackError}</p>}
+    </div>
   );
 }
 

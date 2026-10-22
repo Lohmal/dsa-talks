@@ -105,8 +105,11 @@ export default function Footer() {
         </div>
 
         <div className="flex flex-col items-center gap-5 border-t border-white/10 py-7 text-sm md:flex-row md:justify-between">
-          <p className="text-white/45">
-            © 2026 {m.meta.name} · {m.meta.universityShort}. {m.footer.rights}
+          <p className="text-center text-white/45 md:text-left">
+            © 2026 {m.meta.name} · {m.meta.universityShort}. {m.footer.rights}{" "}
+            <Link href="/kvkk" className="whitespace-nowrap text-white/70 underline-offset-4 hover:text-white hover:underline">
+              {m.kvkk.link}
+            </Link>
           </p>
           <p className="font-light italic text-white/70">{m.footer.tagline}</p>
           <LanguageSwitcher light />

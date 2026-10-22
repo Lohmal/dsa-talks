@@ -77,6 +77,9 @@ export async function submitSurvey(formData: FormData): Promise<SubmitResult> {
       return { ...base, rating: null, text: text || null, choices: [] };
     });
 
+    // The KVKK information notice must have been acknowledged.
+    if (formData.get("kvkk") !== "on") fields.push("kvkk");
+
     if (fields.length || !parsed.success) return { status: "error", code: "invalid", fields: [...new Set(fields)] };
 
     const email = parsed.data.email;
