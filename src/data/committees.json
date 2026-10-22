@@ -259,6 +259,19 @@
         "tr": "Çukurova Üniversitesi Bilgisayar Mühendisliği Bölümü"
       },
       "photo": "/images/people/baris-ata.webp"
+    },
+    {
+      "given": "Hamza",
+      "surname": "Erol",
+      "title": {
+        "en": "Prof. Dr.",
+        "tr": "Prof. Dr."
+      },
+      "affiliation": {
+        "en": "Department of Computer Engineering, Mersin University",
+        "tr": "Mersin Üniversitesi Bilgisayar Mühendisliği Bölümü"
+      },
+      "photo": "/images/people/hamza-erol.webp"
     }
   ],
   "localCommittee": [
