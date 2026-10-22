@@ -16,8 +16,8 @@ export default function Committees() {
     {
       id: "program-kurulu",
       title: t.program,
-      // The co-chairs are listed as ordinary members of the program committee.
-      sections: [{ members: [...committees.programCommittee, ...committees.coChairs], featured: false }],
+      // The co-chairs are listed first among the members of the program committee.
+      sections: [{ members: [...committees.coChairs, ...committees.programCommittee], featured: false }],
     },
     {
       id: "duzenleme-kurulu",
