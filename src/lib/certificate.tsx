@@ -6,7 +6,7 @@ import { PDFDocument } from "pdf-lib";
 import QRCode from "qrcode";
 
 // The participation certificate (English only), drawn after the approved design:
-// red/navy frame with corner stripes, the three logos, the participant's name and the event.
+// red/navy frame with corner stripes, the logos, the participant's name and the event.
 
 export type CertificateData = {
   name: string;
@@ -47,7 +47,6 @@ function loadAssets(): Promise<Assets> {
       font("Poppins-BoldItalic.ttf"),
       font("Poppins-MediumItalic.ttf"),
       logo("atu.png"),
-      logo("coretech.png"),
       logo("dsa-talks.png"),
     ]);
     return {
