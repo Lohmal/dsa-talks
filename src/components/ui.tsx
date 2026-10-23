@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { motion, useReducedMotion } from "motion/react";
 import { locales, useLanguage } from "@/i18n/LanguageProvider";
 
@@ -13,6 +14,18 @@ export function Wordmark({ light = false, className = "" }: { light?: boolean; c
     <span className={`font-black tracking-[-0.04em] ${className}`}>
       <span className={light ? "text-white" : "text-brand"}>DSA</span>
       <span className={light ? "text-brand" : "text-ink"}>Talks</span>
+    </span>
+  );
+}
+
+// The university's logo, a thin rule, then the wordmark: the brand in the top bars.
+export function Brand() {
+  const { m } = useLanguage();
+  return (
+    <span className="flex items-center gap-3">
+      <Image src="/images/atu-logo.png" alt={m.meta.universityShort} width={212} height={204} priority className="h-9 w-auto sm:h-10" />
+      <span aria-hidden className="h-7 w-px bg-line" />
+      <Wordmark />
     </span>
   );
 }

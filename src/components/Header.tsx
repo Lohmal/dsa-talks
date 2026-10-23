@@ -6,7 +6,7 @@ import { Menu } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import MobileMenu, { sectionHref, type SectionId } from "./MobileMenu";
-import { Container, LanguageSwitcher, Wordmark } from "./ui";
+import { Brand, Container, LanguageSwitcher } from "./ui";
 import { useLanguage } from "@/i18n/LanguageProvider";
 
 const sections: readonly SectionId[] = ["about", "speakers", "program", "committees", "venue"];
@@ -56,7 +56,7 @@ export default function Header() {
     >
       <Container className="flex h-16 items-center justify-between gap-6 sm:h-18">
         <Link href={onHome ? "#top" : "/"} className="text-2xl sm:text-[1.7rem]">
-          <Wordmark />
+          <Brand />
         </Link>
 
         <nav aria-label="Main" className="hidden items-center gap-1 md:flex">

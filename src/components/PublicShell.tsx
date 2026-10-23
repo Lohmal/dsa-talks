@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Container, LanguageSwitcher, Wordmark } from "./ui";
+import { Brand, Container, LanguageSwitcher } from "./ui";
 import { setConsent } from "@/lib/consent";
 import { useLanguage } from "@/i18n/LanguageProvider";
 
@@ -23,7 +23,7 @@ export default function PublicShell({
       <header className="border-t-4 border-brand bg-white">
         <Container className="flex h-16 items-center justify-between">
           <Link href="/" className="text-2xl">
-            <Wordmark />
+            <Brand />
           </Link>
           <LanguageSwitcher />
         </Container>
