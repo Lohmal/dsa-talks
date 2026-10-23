@@ -51,8 +51,6 @@ E-mail: set `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `SMTP_PASS`, `
 (Google Workspace: `smtp.gmail.com`, port 465, the app password of confdsa@atu.edu.tr). If sending fails the
 response is still saved; the admin can resend from the response page.
 
-On Vercel add `DATABASE_URL` and `AUTH_SECRET` (plus the SMTP keys) as environment variables; in MongoDB Atlas allow
-Vercel's IPs (or 0.0.0.0/0) under Network Access.
 
 ## Database: local MongoDB in Docker
 
