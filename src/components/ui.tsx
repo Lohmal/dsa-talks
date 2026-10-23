@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { motion, useReducedMotion } from "motion/react";
+import { MotionConfig, motion } from "motion/react";
 import { locales, useLanguage } from "@/i18n/LanguageProvider";
 
 export function Container({ children, className = "" }: { children: React.ReactNode; className?: string }) {
@@ -102,7 +102,10 @@ export function LanguageSwitcher({ light = false }: { light?: boolean }) {
   );
 }
 
-// Fades content up into view once while scrolling; static when the user prefers reduced motion.
+// Fades content up into view once while scrolling. The markup is the same on the server and in
+// the browser (choosing it by the reduced-motion setting made hydration fail and could leave the
+// content invisible); for visitors who prefer reduced motion, MotionConfig drops the movement
+// and keeps only the fade.
 export function FadeIn({
   children,
   delay = 0,
@@ -112,18 +115,17 @@ export function FadeIn({
   delay?: number;
   className?: string;
 }) {
-  const reduceMotion = useReducedMotion();
-  if (reduceMotion) return <div className={className}>{children}</div>;
-
   return (
-    <motion.div
-      className={className}
-      initial={{ opacity: 0, y: 28 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "0px 0px -80px 0px" }}
-      transition={{ duration: 0.7, delay, ease: [0.22, 1, 0.36, 1] }}
-    >
-      {children}
-    </motion.div>
+    <MotionConfig reducedMotion="user">
+      <motion.div
+        className={className}
+        initial={{ opacity: 0, y: 28 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "0px 0px -80px 0px" }}
+        transition={{ duration: 0.7, delay, ease: [0.22, 1, 0.36, 1] }}
+      >
+        {children}
+      </motion.div>
+    </MotionConfig>
   );
 }
