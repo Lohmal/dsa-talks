@@ -6,6 +6,9 @@ const nextConfig: NextConfig = {
   outputFileTracingIncludes: {
     "/**": ["./src/assets/**/*"],
   },
+  // Loaded with Node's require instead of being bundled: its zip library (unzipper) has an
+  // optional, lazily required S3 integration that the bundler would otherwise try to resolve.
+  serverExternalPackages: ["exceljs"],
   poweredByHeader: false,
   // Security headers on every response: no framing by other sites (clickjacking), no MIME
   // sniffing, only the origin as referrer to other sites, no camera/microphone/location.
