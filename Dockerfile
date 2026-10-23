@@ -7,9 +7,10 @@ RUN apk add --no-cache openssl
 WORKDIR /app
 
 # Dependencies first, so they are only reinstalled when package*.json or the schema change.
+# No security audit or funding requests during the install: they only add network round trips.
 COPY package.json package-lock.json ./
 COPY prisma ./prisma
-RUN npm ci
+RUN npm ci --no-audit --no-fund
 
 # The site's public address is built into the pages (sitemap, link previews);
 # docker-compose passes it from NEXT_PUBLIC_SITE_URL in .env.
