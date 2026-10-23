@@ -23,8 +23,8 @@ export function Brand() {
   const { m } = useLanguage();
   return (
     <span className="flex items-center gap-3">
-      <Image src="/images/atu-logo.png" alt={m.meta.universityShort} width={212} height={204} priority className="h-9 w-auto sm:h-10" />
-      <span aria-hidden className="h-7 w-px bg-line" />
+      <Image src="/images/atu-logo.png" alt={m.meta.universityShort} width={212} height={204} priority className="h-12 w-auto sm:h-14" />
+      <span aria-hidden className="h-9 w-px bg-line" />
       <Wordmark />
     </span>
   );
