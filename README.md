@@ -11,6 +11,8 @@ npm run dev            # http://localhost:3000
 npm run build
 ```
 
+Windows Server without Docker (Node.js, MongoDB service, NSSM, IIS reverse proxy): see `KURULUM.md` (Turkish).
+
 Docker: `docker compose up -d --build` starts the site on port 3000 (change the left side of `ports` in
 `docker-compose.yml` for another port). The site reads `.env`.
 Set `NEXT_PUBLIC_SITE_URL` in `.env` to the final address (e.g. `https://dsatalks.atu.edu.tr`) before building:
