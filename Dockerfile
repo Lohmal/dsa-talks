@@ -19,8 +19,8 @@ ENV NEXT_TELEMETRY_DISABLED=1
 COPY . .
 RUN npm run build
 
-ENV NODE_ENV=production PORT=3000
-EXPOSE 3000
+ENV NODE_ENV=production
+EXPOSE 8080
 # Create the database indexes (unique e-mail per scope, certificate numbers…) if they are
 # missing, e.g. on a new empty database, then start the site. If the database cannot be
 # reached the site still starts; the indexes are created on the next start.
