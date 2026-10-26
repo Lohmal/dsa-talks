@@ -130,7 +130,21 @@ C:\nssm\nssm.exe edit DSATalks
 
 ## 7. IIS reverse proxy
 
-Adres için IIS'te zaten bir site varsa (https ve sertifika hazırsa) bu bölüm yerine **7B**'yi uygula.
+### 7.0 Hangi yol? Önce durumu kontrol et
+
+1. **Gizli pencerede** (ya da telefondan) `https://confdsa.atu.edu.tr` adresini aç. Normal pencerede eski bir sitenin
+   yönlendirmesi (örneğin `/#!/`) tarayıcı önbelleğinden gelebilir.
+2. IIS Yöneticisi'nde solda **Sites** listesine bak: `confdsa.atu.edu.tr` bağlantısı (Bindings) olan ya da 443 portunu
+   kullanan bir site var mı?
+3. Solda **sunucu adı** → **Server Certificates**: `confdsa.atu.edu.tr` ya da `*.atu.edu.tr` için sertifika var mı?
+
+| Durum | Ne yapılır |
+|---|---|
+| **A)** Listede o adrese bağlı bir site var (dosyaları silinmiş olsa bile) | **7B**'yi uygula. 7B.3'te Physical path'i boş `C:\inetpub\dsatalks` klasörüne çevir; silinmiş bir klasörü göstermesin |
+| **B)** Site IIS'ten tamamen silinmiş, ama Server Certificates'ta sertifika var | Bu bölümü (**7**) uygula: yeni site açılır, 7.5'te binding'e https, 443, host `confdsa.atu.edu.tr` yazıp o sertifikayı seç. Bilgi işlemden DNS ve port istemeye gerek yok (7.1'i atla), adres zaten bu sunucuya geliyor |
+| **C)** Site de sertifika da yok | Sertifikayı bilgi işlemden iste, sonra **B** gibi devam et |
+| Gizli pencerede hâlâ eski site açılıyor | IIS'te o adrese bağlı bir site hâlâ var → **A** |
+| Gizli pencerede hiçbir şey ya da IIS hata sayfası açılıyor | Site silinmiş → **B** veya **C** |
 
 ### 7.1 Bilgi işlemden iste
 
@@ -200,7 +214,7 @@ Sonra 9. adımdaki güncelleme adımlarını uygula: hizmeti durdur → `npm run
 ## 7B. IIS'te mevcut siteyi kullanma (confdsa.atu.edu.tr)
 
 Adres için IIS'te zaten bir site varsa (örneğin eski afiş sitesi; https bağlantısı ve SSL sertifikası hazır), 7. adım
-yerine bu yol kullanılır. Yeni site açılmaz; mevcut site Next projesine (`localhost:8080`) yönlendirilir. Sertifikaya ve
+yerine bu yol kullanılır (7.0'daki **A** durumu). Yeni site açılmaz; mevcut site Next projesine (`localhost:8080`) yönlendirilir. Sertifikaya ve
 bağlantılara dokunulmaz.
 
 ### 7B.1 Eklentiler kurulu mu?
