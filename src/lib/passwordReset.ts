@@ -2,7 +2,7 @@ import "server-only";
 import { createHash, randomBytes } from "node:crypto";
 import bcrypt from "bcryptjs";
 import { siteUrl } from "@/config/url";
-import { db } from "./db";
+import { db, unused } from "./db";
 import { clearFailures } from "./loginThrottle";
 
 // One-time links for setting a new admin password. The link carries a random token; only its
@@ -49,7 +49,7 @@ export async function resetPassword(token: string, password: string) {
   const [user] = await db.$transaction([
     db.user.update({ where: { id: record.userId }, data: { passwordHash } }),
     db.passwordToken.update({ where: { id: record.id }, data: { usedAt: new Date() } }),
-    db.passwordToken.deleteMany({ where: { userId: record.userId, usedAt: null } }),
+    db.passwordToken.deleteMany({ where: { userId: record.userId, ...unused } }),
     db.loginCode.deleteMany({ where: { userId: record.userId } }), // sign-ins begun with the old password
   ]);
   clearFailures(user.email); // a locked login (too many attempts) opens again

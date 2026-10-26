@@ -1,6 +1,6 @@
 import "server-only";
 import { createHash, randomBytes, randomInt, timingSafeEqual } from "node:crypto";
-import { db } from "./db";
+import { db, unused } from "./db";
 
 // Second step of signing in: after the right password, a 6-digit code is e-mailed to the admin.
 // The browser gets a random ticket that ties the code to this sign-in, so the code alone is not
@@ -47,7 +47,7 @@ export async function resendLoginCode(ticket: string) {
   if (!record || record.usedAt) return null;
   const code = newCode();
   const updated = await db.loginCode.updateMany({
-    where: { id: record.id, usedAt: null, sends: { lt: MAX_SENDS } },
+    where: { id: record.id, ...unused, sends: { lt: MAX_SENDS } },
     data: {
       codeHash: hashCode(ticket, code),
       attempts: 0,
@@ -65,7 +65,7 @@ export async function checkLoginCode(ticket: string, code: string) {
   if (!record || record.usedAt || record.expiresAt < new Date()) return "expired";
 
   const counted = await db.loginCode.updateMany({
-    where: { id: record.id, usedAt: null, attempts: { lt: MAX_ATTEMPTS } },
+    where: { id: record.id, ...unused, attempts: { lt: MAX_ATTEMPTS } },
     data: { attempts: { increment: 1 } },
   });
   if (!counted.count) return "expired";
@@ -73,6 +73,6 @@ export async function checkLoginCode(ticket: string, code: string) {
   const right = timingSafeEqual(Buffer.from(record.codeHash), Buffer.from(hashCode(ticket, code)));
   if (!right) return record.attempts + 1 >= MAX_ATTEMPTS ? "expired" : "wrong";
 
-  const used = await db.loginCode.updateMany({ where: { id: record.id, usedAt: null }, data: { usedAt: new Date() } });
+  const used = await db.loginCode.updateMany({ where: { id: record.id, ...unused }, data: { usedAt: new Date() } });
   return used.count ? { userId: record.userId } : "expired";
 }
