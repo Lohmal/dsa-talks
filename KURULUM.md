@@ -130,6 +130,8 @@ C:\nssm\nssm.exe edit DSATalks
 
 ## 7. IIS reverse proxy
 
+Adres için IIS'te zaten bir site varsa (https ve sertifika hazırsa) bu bölüm yerine **7B**'yi uygula.
+
 ### 7.1 Bilgi işlemden iste
 
 - `dsatalks.atu.edu.tr` için bu sunucuya bir DNS kaydı
@@ -194,6 +196,107 @@ AUTH_URL="https://dsatalks.atu.edu.tr"
 ```
 
 Sonra 9. adımdaki güncelleme adımlarını uygula: hizmeti durdur → `npm run build` → hizmeti başlat.
+
+## 7B. IIS'te mevcut siteyi kullanma (confdsa.atu.edu.tr)
+
+Adres için IIS'te zaten bir site varsa (örneğin eski afiş sitesi; https bağlantısı ve SSL sertifikası hazır), 7. adım
+yerine bu yol kullanılır. Yeni site açılmaz; mevcut site Next projesine (`localhost:8080`) yönlendirilir. Sertifikaya ve
+bağlantılara dokunulmaz.
+
+### 7B.1 Eklentiler kurulu mu?
+
+IIS Yöneticisi'nde (`inetmgr`) solda **sunucu adına** tıkla. Ortada **URL Rewrite** ve **Application Request Routing
+Cache** simgeleri var mı bak. Biri yoksa iis.net'ten **URL Rewrite 2.1** ve **Application Request Routing 3.0**'ı kur,
+sonra IIS Yöneticisi'ni kapatıp yeniden aç.
+
+### 7B.2 Proxy ayarları (sunucu düzeyinde, bir kere)
+
+1. **Sunucu adı** → **Application Request Routing Cache** → sağda **Server Proxy Settings**:
+   - **Enable proxy** ✓
+   - **Reverse rewrite host in response headers** ✗ (işareti kaldır)
+   - **Apply**
+2. **Sunucu adı** → **Configuration Editor** → üstte Section: `system.webServer/proxy`:
+   - **preserveHostHeader** → **True**
+   - **Apply**
+
+İkinci kısım atlanırsa admin girişi ve anket gönderimi çalışmaz.
+
+### 7B.3 Eski siteyi boşalt
+
+1. Solda **Sites** altında `confdsa.atu.edu.tr`'nin bağlı olduğu siteyi bul. Sağda **Bindings**'e bak:
+   `https 443 confdsa.atu.edu.tr` görünmeli. Bağlantılara dokunma.
+2. `C:\inetpub\dsatalks` adında **boş** bir klasör oluştur.
+3. Siteyi seç → sağda **Basic Settings** → **Physical path**: `C:\inetpub\dsatalks` → **OK**.
+
+Böylece eski dosyalar ve içlerindeki eski yönlendirme kuralları (`web.config`, örneğin `/#!/` yönlendirmesi) devre dışı
+kalır. Eski klasör silinmez; geri dönmek için Physical path'i eski klasöre çevirmek yeterli.
+
+### 7B.4 Next'e yönlendirme kuralı
+
+1. Aynı siteyi seç → **URL Rewrite**. Listede eski kurallar varsa sil.
+2. Sağda **Add Rule(s)** → **Reverse Proxy** → adres: `localhost:8080` → **Enable SSL Offloading** ✓ → **OK**.
+
+Pencerede "Rewrite the domain names of the links in HTTP responses" gibi bir **outbound** seçeneği çıkarsa
+**işaretleme**: sıkıştırılmış sayfalarda hata verir ve gerekmez.
+
+### 7B.5 https bilgisini ilet
+
+1. URL Rewrite → sağda **View Server Variables** → **Add** → `HTTP_X_FORWARDED_PROTO` → **OK** → **Back to Rules**.
+2. 7B.4'te oluşan kurala çift tıkla → **Server Variables** → **Add**:
+   - Name: `HTTP_X_FORWARDED_PROTO`
+   - Value: `https`
+3. **Apply**.
+
+### 7B.6 http'yi https'e yönlendir
+
+1. URL Rewrite → **Add Rule(s)** → **Blank rule**:
+   - Name: `HTTPS`
+   - Pattern: `(.*)`
+   - Conditions → Add: Condition input `{HTTPS}`, Pattern `^OFF$`
+   - Action type: **Redirect** → Redirect URL `https://{HTTP_HOST}/{R:1}` → **Permanent (301)**
+2. **Apply**.
+3. Bu kuralı **Move Up** ile reverse proxy kuralının **üstüne** taşı.
+
+### 7B.7 `.env`
+
+```
+NEXT_PUBLIC_SITE_URL="https://confdsa.atu.edu.tr"
+AUTH_URL="https://confdsa.atu.edu.tr"
+AUTH_TRUST_HOST=true
+```
+
+### 7B.8 Yeniden derle ve başlat
+
+1. `services.msc` → DSATalks → **Durdur**
+2. Komutlar:
+   ```powershell
+   cd C:\dsa-talks
+   ```
+   ```powershell
+   npm run build
+   ```
+3. `services.msc` → DSATalks → **Başlat**
+
+### 7B.9 Test
+
+Tarayıcıda **gizli pencere** kullan (eski sitenin yönlendirmeleri önbellekte kalmış olabilir):
+
+- [ ] `https://confdsa.atu.edu.tr` → DSATalks açılıyor
+- [ ] `http://confdsa.atu.edu.tr` → https'e geçip DSATalks açılıyor
+- [ ] `/admin` girişi oluyor, panel açılıyor
+- [ ] `/anket` gönderiliyor, sertifika iniyor
+- [ ] Telefondan **mobil veriyle** açılıyor
+
+| Belirti | Bak |
+|---|---|
+| 502 hatası | DSATalks hizmeti çalışıyor mu? `C:\dsa-talks-logs\error.log` |
+| Giriş sonrası `localhost:8080`'e atıyor | 7B.2'nin ikinci kısmı (preserveHostHeader) |
+| Hâlâ `/#!/` adresine gidiyor | 7B.3 uygulanmamış ya da tarayıcı önbelleği; gizli pencerede dene |
+
+### 7B.10 8080'i dışarıya kapat
+
+Her şey çalışınca bilgi işlemden üniversite güvenlik duvarında **8080'i kapatmalarını** iste; Windows güvenlik duvarında
+8080 için açılmış bir kural varsa kaldır. Site yalnızca `https://confdsa.atu.edu.tr` üzerinden erişilebilir olmalı.
 
 ## 8. Son test
 
