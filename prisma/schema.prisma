@@ -47,6 +47,23 @@ model PasswordToken {
   @@index([userId])
 }
 
+// Second step of signing in: a 6-digit code e-mailed after the password. The browser keeps a
+// random ticket for this sign-in; only hashes of the ticket and the code are stored. Codes
+// expire after 10 minutes.
+model LoginCode {
+  id         String    @id @default(auto()) @map("_id") @db.ObjectId
+  userId     String    @db.ObjectId
+  ticketHash String    @unique
+  codeHash   String
+  attempts   Int       @default(0) // wrong codes since the last one was sent
+  sends      Int       @default(1) // codes sent for this ticket
+  expiresAt  DateTime
+  usedAt     DateTime?
+  createdAt  DateTime  @default(now())
+
+  @@index([userId])
+}
+
 model User {
   id           String   @id @default(auto()) @map("_id") @db.ObjectId
   name         String

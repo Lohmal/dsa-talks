@@ -50,6 +50,7 @@ export async function resetPassword(token: string, password: string) {
     db.user.update({ where: { id: record.userId }, data: { passwordHash } }),
     db.passwordToken.update({ where: { id: record.id }, data: { usedAt: new Date() } }),
     db.passwordToken.deleteMany({ where: { userId: record.userId, usedAt: null } }),
+    db.loginCode.deleteMany({ where: { userId: record.userId } }), // sign-ins begun with the old password
   ]);
   clearFailures(user.email); // a locked login (too many attempts) opens again
   return true;
