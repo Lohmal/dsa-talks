@@ -2,6 +2,7 @@
 
 import { AuthError } from "next-auth";
 import { ExpiredCode, checkPassword, signIn } from "@/auth";
+import { DEFAULT_ADMIN } from "@/lib/bootstrap";
 import { db } from "@/lib/db";
 import { CODE_MINUTES, resendLoginCode, startLoginCode } from "@/lib/loginCode";
 import { sendLoginCodeMail } from "@/lib/mail";
@@ -9,20 +10,32 @@ import { sendLoginCodeMail } from "@/lib/mail";
 // Signing in takes two steps: e-mail and password, then the code e-mailed to the admin.
 export type LoginState =
   | { step: "password"; error?: string }
-  | { step: "code"; ticket: string; email: string; error?: string; resent?: boolean };
+  | { step: "code"; ticket: string; email: string; error?: string; resent?: boolean }; // email: where the code went
 
 const isDev = process.env.NODE_ENV !== "production";
 
-// Without SMTP a local server could never sign in, so outside production the code is also
-// printed to the server console and a failed send does not stop the sign-in.
+// admin@admin.com has no mailbox, so its code goes to a real address from .env: ADMIN_EMAIL
+// (unless that is admin@admin.com too), otherwise the SMTP account. Whoever runs the server can
+// then sign in and change that e-mail.
+function codeAddress(email: string) {
+  if (email !== DEFAULT_ADMIN.email) return email;
+  const configured = process.env.ADMIN_EMAIL?.trim().toLowerCase();
+  const fallback = configured && configured !== DEFAULT_ADMIN.email ? configured : process.env.SMTP_USER?.trim();
+  return fallback || email;
+}
+
+// The address the code went to, or null if it could not be sent. Without SMTP a local server
+// could never sign in, so outside production the code is also printed to the server console
+// and a failed send does not stop the sign-in.
 async function mailCode(user: { email: string; name: string }, code: string) {
-  if (isDev) console.info(`[login] code for ${user.email}: ${code}`);
+  const to = codeAddress(user.email);
+  if (isDev) console.info(`[login] code for ${user.email} (sent to ${to}): ${code}`);
   try {
-    await sendLoginCodeMail({ to: user.email, name: user.name, code, minutes: CODE_MINUTES });
-    return true;
+    await sendLoginCodeMail({ to, name: user.name, code, minutes: CODE_MINUTES });
+    return to;
   } catch (error) {
     console.error("[login] could not send the code:", error);
-    return isDev;
+    return isDev ? to : null;
   }
 }
 
@@ -38,10 +51,11 @@ async function sendCode(formData: FormData): Promise<LoginState> {
 
   const started = await startLoginCode(user.id);
   if (!started) return { step: "password", error: "Kısa sürede çok fazla kod istendi. 15 dakika sonra tekrar deneyin." };
-  if (!(await mailCode(user, started.code))) {
+  const sentTo = await mailCode(user, started.code);
+  if (!sentTo) {
     return { step: "password", error: "Doğrulama kodu e-postası gönderilemedi. Biraz sonra tekrar deneyin." };
   }
-  return { step: "code", ticket: started.ticket, email: user.email };
+  return { step: "code", ticket: started.ticket, email: sentTo };
 }
 
 async function resendCode(state: Extract<LoginState, { step: "code" }>): Promise<LoginState> {

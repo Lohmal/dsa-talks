@@ -29,8 +29,13 @@ DATABASE_URL="mongodb://127.0.0.1:27017/dsatalks?replicaSet=rs0"
 AUTH_SECRET="..."
 AUTH_TRUST_HOST=true
 NEXT_PUBLIC_SITE_URL="https://dsatalks.atu.edu.tr"
+ADMIN_EMAIL, ADMIN_PASSWORD
 SMTP_HOST, SMTP_PORT, SMTP_SECURE, SMTP_USER, SMTP_PASS, MAIL_FROM
 ```
+
+Admin girişi şifreden sonra e-postayla gelen 6 haneli kodu ister, bu yüzden SMTP ayarları çalışmalı.
+`admin@admin.com` hesabının kodu o adrese değil `ADMIN_EMAIL`'e (o boşsa ya da o da `admin@admin.com` ise `SMTP_USER` kutusuna) gider; bu hesapla
+girdikten sonra Yöneticiler sayfasından e-postasını gerçek bir adresle değiştir.
 
 `DATABASE_URL`'de `mongo:27017` değil **`127.0.0.1:27017`** yazmalı. `AUTH_URL`'yi şimdilik **ekleme**; 7. adımda eklenecek.
 
@@ -89,7 +94,8 @@ Sunucunun tarayıcısında `http://localhost:8080` adresini aç ve kontrol et:
 - [ ] Ana sayfa açılıyor
 - [ ] `/kurullar` açılıyor
 - [ ] `/admin` girişi oluyor. İlk admin kendiliğinden oluşur: `.env`'deki `ADMIN_EMAIL`/`ADMIN_PASSWORD` ile, bunlar boşsa
-  `admin@admin.com` / `admin123` ile. **Girdikten sonra Yöneticiler sayfasından şifreyi hemen değiştir.**
+  `admin@admin.com` / `admin123` ile. Şifreden sonra e-postayla gelen 6 haneli kodu gir (`admin@admin.com` için kod
+  `ADMIN_EMAIL`'e, o boşsa ya da `admin@admin.com` ise `SMTP_USER` kutusuna gelir). **Girdikten sonra Yöneticiler sayfasından şifreyi hemen değiştir.**
 - [ ] Anket Ayarları'ndan anketi açıp `/anket`'i deneme verisiyle doldur. Sertifika iniyor ve e-posta geliyor mu?
   Sonra deneme yanıtını admin panelinden sil.
 

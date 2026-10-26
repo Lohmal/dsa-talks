@@ -26,8 +26,12 @@ it is built into the pages (sitemap, link previews), so change it → rebuild wi
   `ADMIN_EMAIL` / `ADMIN_PASSWORD` from `.env` if both are set, otherwise `admin@admin.com` / `admin123`.
   Change the password under *Yöneticiler* after signing in (this signs out every other session of that admin;
   sessions also end 12 hours after signing in). After 5 wrong passwords an address is locked for 15 minutes
-  (or until its password is reset). **Şifremi unuttum** on the login page e-mails a
-  one-time link (valid 1 hour) for setting a new password.
+  (or until its password is reset). After the right password a 6-digit code is e-mailed to the admin and the
+  session opens only once it is entered (valid 10 minutes, 5 tries, "Kodu tekrar gönder" sends a new one twice).
+  So every admin needs a real mailbox and working SMTP. The code of `admin@admin.com`, which has no mailbox, goes
+  to `ADMIN_EMAIL` (or, if that is empty or `admin@admin.com` too, to `SMTP_USER`); sign in and change that admin's e-mail under *Yöneticiler*.
+  Outside production the code is also printed to the server console.
+  **Şifremi unuttum** on the login page e-mails a one-time link (valid 1 hour) for setting a new password.
   - *Genel Bakış*: totals, average satisfaction, per-question averages and 5…1 distribution charts, filter by session.
   - *Yanıtlar*: search, details, certificate download, resend e-mail, delete, Excel export (`/admin/export`).
   - *Anket Ayarları*: open/close registration; mode
