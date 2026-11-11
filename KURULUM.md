@@ -376,7 +376,12 @@ bulunamaz; bu yol kuralların dışında bırakılmalı.
 3. **Reverse proxy** kuralına (adı `ReverseProxyInboundRule1` gibidir) çift tıkla ve aynı koşulu ekle → **Apply**.
 4. Kural listesinde iki kural da duruyor olmalı; sıraları değişmemeli (HTTPS üstte).
 
-**Test et:**
+**Test et (isteğe bağlı):**
+
+Zorunlu değil; atlanıp doğrudan 7C.4'e geçilebilir. Klasörleri ve doğrulama dosyasını win-acme kendisi oluşturur ve iş
+bitince siler. Bu test sadece yukarıdaki koşulların doğru olduğunu win-acme'yi çalıştırmadan görmek içindir: Let's
+Encrypt çok sayıda başarısız denemeden sonra bir süre yeni istek kabul etmediği için hatayı önceden yakalamak işe yarar.
+Atlanırsa ve win-acme "404" hatası verirse yukarıdaki koşulları kontrol et, düzeltmeden tekrar deneme.
 
 1. `C:\inetpub\dsatalks` içinde `.well-known` klasörünü, onun içinde `acme-challenge` klasörünü oluştur. Dosya Gezgini
    nokta ile başlayan klasör adı vermezse PowerShell'de:
