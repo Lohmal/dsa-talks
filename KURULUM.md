@@ -454,6 +454,91 @@ için kısa sürede çok sayıda başarısız denemeden sonra bir süre yeni den
 Yeni sertifika çalıştıktan sonra okulun eski sertifikası IIS'te **Server Certificates** listesinde kalabilir; süresi
 dolunca oradan kaldırılabilir. Kaldırmadan önce başka bir sitenin onu kullanmadığından emin ol.
 
+## 7D. Okulun verdiği sertifikayı siteye takma
+
+Okul (bilgi işlem) hazır bir sertifika verirse 7C yerine bu yol kullanılır. İkisinden **yalnızca biri** kullanılmalı.
+
+### Başlamadan önce: bilgi işlemden iste
+
+> Merhaba, confdsa.atu.edu.tr için SSL sertifikasını **.pfx dosyası olarak ve şifresiyle** birlikte gönderebilir misiniz?
+
+Sana iki şey gelecek:
+
+- `confdsa.pfx` gibi bir **dosya**
+- O dosyanın **şifresi**
+
+### Adım 1: Dosyayı sunucuya koy
+
+1. Uzak Masaüstü ile sunucuya bağlan.
+2. Sunucuda `C:\` sürücüsünde `sertifika` adında bir klasör oluştur.
+3. Gelen `.pfx` dosyasını bu klasöre kopyala. Sonuç: `C:\sertifika\confdsa.pfx`
+
+### Adım 2: IIS Yöneticisi'ni aç
+
+1. Başlat menüsüne `inetmgr` yaz ve Enter'a bas.
+2. **Internet Information Services (IIS) Yöneticisi** penceresi açılır.
+
+### Adım 3: Sertifikayı sunucuya yükle
+
+1. Sol taraftaki ağaçta **en üstteki** satıra tıkla. Bu sunucunun adı; altında "Application Pools" ve "Sites" var.
+2. Ortadaki simgeler arasında **Server Certificates**'a (Sunucu Sertifikaları) çift tıkla.
+3. Sağdaki menüde **Import...** (İçeri Aktar) seçeneğine tıkla.
+4. Açılan küçük pencerede:
+   - **Certificate file:** Yanındaki **...** düğmesine bas ve `C:\sertifika\confdsa.pfx` dosyasını seç.
+   - **Password:** Bilgi işlemin verdiği şifreyi yaz.
+   - **Select Certificate Store:** **Web Hosting** seç.
+   - **Allow this certificate to be exported:** Bu kutuyu **boş bırak.**
+5. **OK**'e bas.
+6. Ortadaki listede yeni sertifika görünecek. Satırda **Expiration Date** (bitiş tarihi) yazıyor. **Bu tarihi bir yere
+   not et.**
+
+### Adım 4: Sertifikayı siteye tak
+
+1. Sol taraftaki ağaçta **Sites**'ın yanındaki oka tıkla ve listeyi aç.
+2. Sitene tıkla (DSATalks ya da confdsa adındaki site).
+3. Sağdaki menüde **Bindings...** (Bağlamalar) seçeneğine tıkla.
+4. Açılan listede **Type** sütununda **https** yazan satırı seç.
+5. **Edit...** (Düzenle) düğmesine bas.
+6. Pencerenin altındaki **SSL certificate** listesini aç ve **yeni yüklediğin sertifikayı** seç. Emin değilsen yanındaki
+   **View...** düğmesiyle bitiş tarihine bak; yeni olanın tarihi daha ileride.
+7. **OK**'e bas, sonra **Close**.
+
+### Adım 5: Kontrol et
+
+1. Tarayıcıda **gizli pencere** aç (Ctrl + Shift + N).
+2. `https://confdsa.atu.edu.tr` adresini yaz.
+3. Site açılıyor ve adres çubuğunda **kilit simgesi** görünüyorsa tamam.
+4. İstersen kilide tıkla → sertifika bilgileri → geçerlilik tarihi yeni tarih olmalı.
+5. Telefondan, Wi-Fi kapalı ve mobil veri açıkken de bir kere aç.
+
+### Adım 6: Dosyayı temizle
+
+Sertifika artık sunucunun içinde kayıtlı. `C:\sertifika\confdsa.pfx` dosyasını **sil**; başkasının eline geçmesin. Şifreyi
+de güvenli bir yerde sakla ya da sil.
+
+### Önemli notlar
+
+**1. win-acme kurduysan:** Okulun sertifikasını kullanacaksan win-acme'nin yenileme işini kapat. Yoksa birkaç hafta
+içinde okulun sertifikasının yerine kendi sertifikasını takar.
+
+1. `C:\win-acme\wacs.exe`'ye sağ tık → **Yönetici olarak çalıştır**.
+2. **A** yaz, Enter (Manage renewals).
+3. Listedeki sertifikayı seç ve iptal et (**Cancel renewal**).
+4. **Q** ile çık.
+
+win-acme'yi hiç kurmadıysan bu notu geç.
+
+**2. Süre dolmadan yenile:** Okulun sertifikası kendiliğinden yenilenmez. Adım 3'te not ettiğin bitiş tarihinden
+**2 hafta önce** bilgi işlemden yeni `.pfx` dosyasını iste ve **Adım 1'den 6'ya kadar** aynı adımları tekrarla.
+
+**3. Cloudflare'e dokunmaya gerek yok.**
+
+**4. Siteyi yeniden başlatmaya gerek yok.** DSATalks hizmetine, koda ve `.env`'ye de dokunmuyorsun; değişen sadece
+IIS'teki sertifika.
+
+Bilgi işlem `.pfx` yerine başka bir dosya (`.crt`, `.key` gibi) verirse ya da "CSR gönderin" derse bu adımlar yetmez;
+o durumda dosyanın `.pfx`'e çevrilmesi ya da sertifikanın bu sunucuda ürettirilmesi gerekir.
+
 ## 8. Son test
 
 Telefondan **mobil veriyle** (okul ağına bağlı değilken):
