@@ -348,6 +348,8 @@ Neden:
 - **Cloudflare modu:** Let's Encrypt doğrulama isteğini Cloudflare üzerinden gönderir. Okulun sertifikası çoktan
   bitmişse ve Cloudflare **Full (strict)** modundaysa Cloudflare isteği sunucuya iletmez. **Full** modu bitmiş
   sertifikayı da kabul eder; sertifika alındıktan sonra yeniden **Full (strict)** yapılır.
+- **Okulun sertifikası bitmeden yapılırsa Cloudflare'de değişiklik gerekmez.** Full (strict) zorunlu değil, bir öneri:
+  bu modda Cloudflare sunucudaki sertifikanın geçerliliğini de kontrol eder. Mod olduğu gibi bırakılırsa da site çalışır.
 
 ### 7C.2 win-acme'yi indir ve aç
 
