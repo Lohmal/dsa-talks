@@ -318,6 +318,62 @@ Tarayıcıda **gizli pencere** kullan (eski sitenin yönlendirmeleri önbellekte
 Her şey çalışınca bilgi işlemden üniversite güvenlik duvarında **8080'i kapatmalarını** iste; Windows güvenlik duvarında
 8080 için açılmış bir kural varsa kaldır. Site yalnızca `https://confdsa.atu.edu.tr` üzerinden erişilebilir olmalı.
 
+## 7C. Kendi SSL sertifikamız (Let's Encrypt + win-acme)
+
+Okulun sertifikası biterse ya da kendi sertifikamızı kurmamız istenirse: Let's Encrypt ücretsiz, bütün tarayıcıların
+güvendiği bir sertifika verir; win-acme onu IIS'e kurar ve 90 günde bir kendiliğinden yeniler.
+
+- Ziyaretçinin tarayıcısında görünen sertifikayı Cloudflare verir ve yeniler. IIS'teki sertifika, Cloudflare'in sunucuya
+  güvenle bağlanması ve kurum içinden Cloudflare'e uğramadan gelenlerin uyarı görmemesi içindir.
+- Proje klasörüne (`C:\dsa-talks`) bir şey koyulmaz; kod, `.env` ve derleme değişmez. HTTPS'i IIS yapar, Next 8080'de
+  düz HTTP ile çalışmaya devam eder.
+
+### 7C.1 Bilgi işleme sor
+
+> Kendi sertifikamızı kurmak için Let's Encrypt (win-acme) kullanacağız. Kurum içinden confdsa.atu.edu.tr'ye erişim
+> Cloudflare üzerinden mi, doğrudan sunucuya mı gidiyor? atu.edu.tr'de Let's Encrypt'i engelleyen bir CAA kaydı var mı?
+> Doğrulama sırasında Cloudflare SSL modunu geçici olarak Full yapmak gerekebilir.
+
+### 7C.2 win-acme'yi indir
+
+win-acme.com'dan x64 **trimmed** zip'i indir ve `C:\win-acme` klasörüne aç.
+
+### 7C.3 Doğrulama yolunu Next'e gönderme
+
+Let's Encrypt, sitenin `/.well-known/acme-challenge/` adresine küçük bir dosya koyup okuyarak doğrular. IIS kuralları her
+isteği Next'e yolladığı için bu yol kuralların dışında bırakılmalı:
+
+1. IIS Yöneticisi → DSATalks sitesi → **URL Rewrite**.
+2. **HTTPS** yönlendirme kuralına ve **reverse proxy** kuralına sırayla çift tıkla → **Conditions** → **Add**:
+   - Condition input: `{REQUEST_URI}`
+   - Check if input string: **Does Not Match the Pattern**
+   - Pattern: `^/\.well-known/acme-challenge/`
+3. İkisinde de **Apply**.
+
+### 7C.4 Sertifikayı al
+
+`C:\win-acme\wacs.exe`'yi **yönetici olarak** çalıştır:
+
+1. **N** (Create certificate, default settings).
+2. Listeden IIS sitesini seç (`confdsa.atu.edu.tr`).
+3. Bildirimler için bir e-posta adresi gir; Let's Encrypt kullanım koşullarını okuyup kabul et.
+
+win-acme sertifikayı alır, IIS'teki https bağlantısına takar ve Görev Zamanlayıcısı'na yenileme görevi ekler.
+Doğrulama dosyalarını IIS sitesinin klasörüne (`C:\inetpub\dsatalks`) geçici olarak koyar ve sonra siler.
+
+### 7C.5 Kontrol
+
+- IIS → DSATalks sitesi → **Bindings** → https → **Edit** → **View**: veren (issuer) Let's Encrypt (R10/R11 gibi) olmalı.
+- Görev Zamanlayıcısı'nda **win-acme renew** görevi görünmeli.
+- Gizli pencerede `https://confdsa.atu.edu.tr` açılmalı.
+- Bilgi işlem Cloudflare SSL modunu **Full (strict)** yapabilir.
+
+| Belirti | Sebep / çözüm |
+|---|---|
+| Doğrulama 404 veriyor | 7C.3'teki koşullar eksik |
+| Doğrulama Cloudflare hatası veriyor (525/526) | Eski sertifika çoktan bitmişse Cloudflare isteği sunucuya iletemez. Bilgi işlem SSL modunu geçici olarak **Full** yapsın (strict değil), sertifika alındıktan sonra **Full (strict)**'e geri alsın |
+| "CAA" hatası | Alan adında sertifika sağlayıcılarını sınırlayan bir kayıt var; bilgi işlem `letsencrypt.org` için CAA kaydı eklemeli |
+
 ## 8. Son test
 
 Telefondan **mobil veriyle** (okul ağına bağlı değilken):
