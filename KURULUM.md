@@ -320,59 +320,137 @@ Her şey çalışınca bilgi işlemden üniversite güvenlik duvarında **8080'i
 
 ## 7C. Kendi SSL sertifikamız (Let's Encrypt + win-acme)
 
-Okulun sertifikası biterse ya da kendi sertifikamızı kurmamız istenirse: Let's Encrypt ücretsiz, bütün tarayıcıların
-güvendiği bir sertifika verir; win-acme onu IIS'e kurar ve 90 günde bir kendiliğinden yeniler.
+Okulun sertifikası biterse ya da kendi sertifikamızı kurmamız istenirse kullanılır. **Let's Encrypt** ücretsiz ve bütün
+tarayıcıların güvendiği bir sertifika verir (90 gün geçerli). **win-acme** bu sertifikayı alır, IIS'e kurar ve süresi
+dolmadan kendiliğinden yeniler.
 
-- Ziyaretçinin tarayıcısında görünen sertifikayı Cloudflare verir ve yeniler. IIS'teki sertifika, Cloudflare'in sunucuya
-  güvenle bağlanması ve kurum içinden Cloudflare'e uğramadan gelenlerin uyarı görmemesi içindir.
-- Proje klasörüne (`C:\dsa-talks`) bir şey koyulmaz; kod, `.env` ve derleme değişmez. HTTPS'i IIS yapar, Next 8080'de
-  düz HTTP ile çalışmaya devam eder.
+**Bilmen gerekenler**
 
-### 7C.1 Bilgi işleme sor
+- Ziyaretçinin tarayıcısında görünen sertifikayı Cloudflare verir ve yeniler; o tarafta yapılacak bir şey yok. IIS'teki
+  sertifika iki iş görür: Cloudflare'in sunucuya güvenle bağlanması ve kurum içinden Cloudflare'e uğramadan gelenlerin
+  tarayıcıda uyarı görmemesi.
+- Proje klasörüne (`C:\dsa-talks`) bir şey koyulmaz; kod, `.env` ve derleme değişmez. HTTPS'i IIS yapar, Next 8080'de düz
+  HTTP ile çalışmaya devam eder.
+- Sertifika Windows'un sertifika deposuna kaydedilir; elle taşınacak bir sertifika dosyası yoktur.
+- Bir adım başarısız olursa mevcut sertifika yerinde kalır; site bozulmaz.
+
+### 7C.1 Bilgi işleme sor (başlamadan önce)
 
 > Kendi sertifikamızı kurmak için Let's Encrypt (win-acme) kullanacağız. Kurum içinden confdsa.atu.edu.tr'ye erişim
 > Cloudflare üzerinden mi, doğrudan sunucuya mı gidiyor? atu.edu.tr'de Let's Encrypt'i engelleyen bir CAA kaydı var mı?
-> Doğrulama sırasında Cloudflare SSL modunu geçici olarak Full yapmak gerekebilir.
+> Okulun mevcut sertifikası bittiyse doğrulama sırasında Cloudflare SSL modunu geçici olarak Full (strict değil) yapmanız
+> gerekebilir.
 
-### 7C.2 win-acme'yi indir
+Neden:
 
-win-acme.com'dan x64 **trimmed** zip'i indir ve `C:\win-acme` klasörüne aç.
+- **CAA kaydı:** Alan adı için hangi firmaların sertifika verebileceğini belirler. Varsa ve içinde `letsencrypt.org`
+  yoksa Let's Encrypt sertifika vermez; bilgi işlem `letsencrypt.org` için CAA kaydı eklemeli.
+- **Cloudflare modu:** Let's Encrypt doğrulama isteğini Cloudflare üzerinden gönderir. Okulun sertifikası çoktan
+  bitmişse ve Cloudflare **Full (strict)** modundaysa Cloudflare isteği sunucuya iletmez. **Full** modu bitmiş
+  sertifikayı da kabul eder; sertifika alındıktan sonra yeniden **Full (strict)** yapılır.
+
+### 7C.2 win-acme'yi indir ve aç
+
+1. win-acme.com → **Download** → **x64 trimmed** sürümünün zip dosyasını indir (adı `win-acme.v2.x.x.x64.trimmed.zip`
+   gibidir). Sunucu dosya indirmeye izin vermezse kendi bilgisayarına indirip Uzak Masaüstü ile kopyala.
+2. Zip dosyasına sağ tık → **Özellikler** → altta **Engellemeyi kaldır** (Unblock) kutusu varsa işaretle → **Tamam**.
+   Böylece Windows içindeki programı çalıştırırken engel çıkarmaz.
+3. Zip'i `C:\win-acme` klasörüne aç. İçinde `wacs.exe` olmalı. Bu klasörü silme; yenileme görevi buradaki `wacs.exe`'yi
+   kullanır.
 
 ### 7C.3 Doğrulama yolunu Next'e gönderme
 
-Let's Encrypt, sitenin `/.well-known/acme-challenge/` adresine küçük bir dosya koyup okuyarak doğrular. IIS kuralları her
-isteği Next'e yolladığı için bu yol kuralların dışında bırakılmalı:
+Let's Encrypt, sitenin `http://confdsa.atu.edu.tr/.well-known/acme-challenge/...` adresine küçük bir dosya koyup
+internetten okuyarak alan adının bizim olduğunu doğrular. IIS kurallarımız her isteği Next'e yolladığı için bu dosya
+bulunamaz; bu yol kuralların dışında bırakılmalı.
 
-1. IIS Yöneticisi → DSATalks sitesi → **URL Rewrite**.
-2. **HTTPS** yönlendirme kuralına ve **reverse proxy** kuralına sırayla çift tıkla → **Conditions** → **Add**:
+1. IIS Yöneticisi (`inetmgr`) → solda **Sites** → DSATalks sitesi → ortada **URL Rewrite**.
+2. **HTTPS** adlı yönlendirme kuralına çift tıkla:
+   - **Conditions** bölümünü aç → **Add**
    - Condition input: `{REQUEST_URI}`
    - Check if input string: **Does Not Match the Pattern**
    - Pattern: `^/\.well-known/acme-challenge/`
-3. İkisinde de **Apply**.
+   - **OK** → sağda **Apply** → **Back to Rules**
+3. **Reverse proxy** kuralına (adı `ReverseProxyInboundRule1` gibidir) çift tıkla ve aynı koşulu ekle → **Apply**.
+4. Kural listesinde iki kural da duruyor olmalı; sıraları değişmemeli (HTTPS üstte).
+
+**Test et:**
+
+1. `C:\inetpub\dsatalks` içinde `.well-known` klasörünü, onun içinde `acme-challenge` klasörünü oluştur. Dosya Gezgini
+   nokta ile başlayan klasör adı vermezse PowerShell'de:
+   ```powershell
+   New-Item -ItemType Directory -Force C:\inetpub\dsatalks\.well-known\acme-challenge
+   ```
+2. İçine `test.txt` adında, içinde sadece `ok` yazan bir dosya koy.
+3. Tarayıcıda `http://confdsa.atu.edu.tr/.well-known/acme-challenge/test.txt` adresini aç. Ekranda **ok** görünmeli.
+   - DSATalks'un "sayfa bulunamadı" ekranı geliyorsa koşul eklenmemiş ya da yanlış kurala eklenmiş.
+   - IIS'in 404 hata sayfası geliyorsa klasör yolu yanlış (sitenin **Basic Settings → Physical path**'ine bak).
+4. `test.txt`'yi sil. Klasörler kalabilir.
 
 ### 7C.4 Sertifikayı al
 
-`C:\win-acme\wacs.exe`'yi **yönetici olarak** çalıştır:
+1. `C:\win-acme\wacs.exe`'ye sağ tık → **Yönetici olarak çalıştır**. Siyah bir pencerede menü açılır.
+2. **N** (Create certificate, default settings) yaz, Enter.
+3. win-acme IIS'teki siteleri listeler. DSATalks sitesinin numarasını yaz, Enter. Sonra sitenin adreslerini
+   (`confdsa.atu.edu.tr`) gösterir; hepsini almak için Enter.
+4. İlk kullanımda bir kere şunları sorar:
+   - **E-posta adresi:** Let's Encrypt hesabına kayıt edilir. Senin ya da bölümün adresini yaz.
+   - **Kullanım koşulları:** Let's Encrypt'in koşullarını oku; kabul ediyorsan `y`.
+5. win-acme doğrulamayı yapar (birkaç saniye ile bir dakika arası), sertifikayı alır, IIS'teki https bağlantısına takar
+   ve Görev Zamanlayıcısı'na yenileme görevini ekler. Sonunda başarı mesajı ve bir sonraki yenileme tarihi görünür.
+6. **Q** ile çık.
 
-1. **N** (Create certificate, default settings).
-2. Listeden IIS sitesini seç (`confdsa.atu.edu.tr`).
-3. Bildirimler için bir e-posta adresi gir; Let's Encrypt kullanım koşullarını okuyup kabul et.
+Ekrandaki ifadeler sürüme göre biraz farklı olabilir; seçimler aynıdır.
 
-win-acme sertifikayı alır, IIS'teki https bağlantısına takar ve Görev Zamanlayıcısı'na yenileme görevi ekler.
-Doğrulama dosyalarını IIS sitesinin klasörüne (`C:\inetpub\dsatalks`) geçici olarak koyar ve sonra siler.
+**Başarısız olursa:** Hata mesajını oku ve kaydet; sebebi düzeltmeden tekrar tekrar deneme. Let's Encrypt aynı alan adı
+için kısa sürede çok sayıda başarısız denemeden sonra bir süre yeni deneme kabul etmez. Sebepler için 7C.7'ye bak.
 
 ### 7C.5 Kontrol
 
-- IIS → DSATalks sitesi → **Bindings** → https → **Edit** → **View**: veren (issuer) Let's Encrypt (R10/R11 gibi) olmalı.
-- Görev Zamanlayıcısı'nda **win-acme renew** görevi görünmeli.
-- Gizli pencerede `https://confdsa.atu.edu.tr` açılmalı.
-- Bilgi işlem Cloudflare SSL modunu **Full (strict)** yapabilir.
+1. **Sertifika takıldı mı:** IIS → DSATalks sitesi → sağda **Bindings** → https satırı → **Edit** → **View**:
+   - Issued by: Let's Encrypt'in ara sertifikası (R10, R11, E5 gibi)
+   - Issued to: `confdsa.atu.edu.tr`
+   - Valid to: yaklaşık 90 gün sonrası
+2. **Site açılıyor mu:** Gizli pencerede `https://confdsa.atu.edu.tr`, ayrıca telefondan mobil veriyle.
+3. **Sunucu doğru sertifikayı sunuyor mu:**
+   ```powershell
+   curl.exe -v --resolve confdsa.atu.edu.tr:443:127.0.0.1 https://confdsa.atu.edu.tr
+   ```
+   Çıktıdaki `issuer:` satırında Let's Encrypt görünmeli.
+4. **Cloudflare:** Okulun sertifikası nedeniyle mod geçici olarak Full yapıldıysa bilgi işlem şimdi **Full (strict)**'e
+   geri alabilir.
+
+### 7C.6 Yenileme (kendiliğinden)
+
+- win-acme, Görev Zamanlayıcısı'na **win-acme renew** ile başlayan adla bir görev ekler. Görev her gün çalışır;
+  sertifikanın bitmesine yaklaşık bir ay kala yenisini alıp IIS'e takar. Senin bir şey yapman gerekmez.
+- **Kontrol:** `taskschd.msc` → Görev Zamanlayıcısı Kitaplığı → bu görev görünmeli; **Son Çalışma Sonucu** başarılı olmalı.
+- **Yenilemeleri görmek:** `wacs.exe`'yi yönetici olarak aç → **A** (Manage renewals) → sertifika ve bir sonraki yenileme
+  tarihi listelenir.
+- **Elle yenilemek gerekirse:** `wacs.exe` → **R** (Run renewals). Sadece zamanı gelmiş olanları yeniler.
+- **Loglar:** `C:\ProgramData\win-acme\` altında.
+- Let's Encrypt artık süre dolumu için e-posta göndermiyor. Ayda bir Görev Zamanlayıcısı'ndaki sonuca ya da sitenin
+  sertifika tarihine bakmak yeterli.
+- 7C.3'teki URL Rewrite koşullarını **kaldırma**; her yenilemede doğrulama aynı yoldan yapılır.
+- Yenilemeden sonra IIS'i ya da siteyi yeniden başlatmak gerekmez; win-acme yeni sertifikayı bağlantıya kendisi takar.
+
+### 7C.7 Sorun çıkarsa
 
 | Belirti | Sebep / çözüm |
 |---|---|
-| Doğrulama 404 veriyor | 7C.3'teki koşullar eksik |
-| Doğrulama Cloudflare hatası veriyor (525/526) | Eski sertifika çoktan bitmişse Cloudflare isteği sunucuya iletemez. Bilgi işlem SSL modunu geçici olarak **Full** yapsın (strict değil), sertifika alındıktan sonra **Full (strict)**'e geri alsın |
-| "CAA" hatası | Alan adında sertifika sağlayıcılarını sınırlayan bir kayıt var; bilgi işlem `letsencrypt.org` için CAA kaydı eklemeli |
+| Doğrulamada 404 | 7C.3'teki koşullar eksik ya da yanlış kurala eklenmiş; 7C.3'teki testi tekrarla |
+| Doğrulamada DSATalks sayfası dönüyor | Reverse proxy kuralındaki koşul eksik |
+| Doğrulamada 525 / 526 (Cloudflare) | Okulun sertifikası bitmiş ve Cloudflare Full (strict) modunda; bilgi işlem geçici olarak **Full** yapsın, sertifika alındıktan sonra geri alsın |
+| "CAA" hatası | Bilgi işlem `letsencrypt.org` için CAA kaydı eklemeli |
+| "Timeout" / bağlantı hatası | Let's Encrypt sunucuya ulaşamıyor: 80 portu dışarıdan açık mı, Cloudflare'deki DNS kaydı bu sunucuyu mu gösteriyor? |
+| "too many failed authorizations" | Çok sayıda başarısız deneme; sebebi düzeltip bir saat sonra tekrar dene |
+| `wacs.exe` açılmıyor / engelleniyor | 7C.2'deki **Engellemeyi kaldır** adımı atlanmış; zip'in engelini kaldırıp yeniden aç |
+| Yenileme görevi hata veriyor | `C:\ProgramData\win-acme\` altındaki loglara bak; çoğu zaman 7C.3'teki koşul kaldırılmış ya da Cloudflare ayarı değişmiştir |
+
+### 7C.8 Eski sertifika
+
+Yeni sertifika çalıştıktan sonra okulun eski sertifikası IIS'te **Server Certificates** listesinde kalabilir; süresi
+dolunca oradan kaldırılabilir. Kaldırmadan önce başka bir sitenin onu kullanmadığından emin ol.
 
 ## 8. Son test
 
