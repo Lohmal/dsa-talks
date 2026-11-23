@@ -4,7 +4,8 @@ import { z } from "zod";
 import { db } from "@/lib/db";
 import { getQuestions, getSettings, GRACE_MS, tidyName } from "@/lib/survey";
 import { formatDate } from "@/lib/time";
-import { mailCertificate, newCertificateNo, newCertificateToken } from "@/lib/certificates";
+import { newCertificateNo, newCertificateToken } from "@/lib/certificates";
+import { queueCertificateMail } from "@/lib/mailQueue";
 import { sessionTalks } from "@/lib/talks";
 import type { SubmitResult } from "@/components/survey/types";
 
@@ -117,8 +118,8 @@ export async function submitSurvey(formData: FormData): Promise<SubmitResult> {
     }
     if (!response) throw new Error("Could not allocate a certificate number");
 
-    // 4. E-mail the certificate; a mail problem does not undo the saved answers.
-    const emailSent = await mailCertificate(response);
+    // 4. Queue the certificate e-mail (sent in the background, retried on failure).
+    await queueCertificateMail(response.id).catch((error) => console.error("[survey] could not queue the mail:", error));
 
     return {
       status: "success",
@@ -126,7 +127,6 @@ export async function submitSurvey(formData: FormData): Promise<SubmitResult> {
       email: response.email,
       certificateNo: response.certificateNo,
       token: response.certificateToken,
-      emailSent,
     };
   } catch (error) {
     console.error("[survey] submission failed:", error);

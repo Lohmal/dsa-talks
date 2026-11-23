@@ -8,7 +8,7 @@ import { signOut } from "@/auth";
 import { db } from "@/lib/db";
 import { requireAdmin } from "@/lib/admin";
 import { fromIstanbul } from "@/lib/time";
-import { mailCertificate } from "@/lib/certificates";
+import { queueCertificateMail, requeueFailedMails } from "@/lib/mailQueue";
 import type { ActionState } from "@/components/admin/forms";
 
 // Every action re-checks the admin session first; the forms live in src/app/admin/(panel).
@@ -281,11 +281,14 @@ export async function resendCertificate(_: ActionState, formData: FormData) {
   const id = objectId.safeParse(text(formData, "id"));
   const response = id.success ? await db.response.findUnique({ where: { id: id.data } }) : null;
   if (!response) return fail("Yanıt bulunamadı.");
-  const sent = await mailCertificate(response);
-  revalidatePath("/admin", "layout");
-  return sent
-    ? { ok: true, message: `Sertifika ${response.email} adresine gönderildi.` }
-    : fail("E-posta gönderilemedi. SMTP ayarlarını kontrol edin.");
+  await queueCertificateMail(response.id);
+  return ok(`Sertifika ${response.email} adresine gönderilmek üzere sıraya alındı.`);
+}
+
+export async function resendFailedCertificates() {
+  await requireAdmin();
+  const count = await requeueFailedMails();
+  return ok(count ? `${count} başarısız e-posta yeniden sıraya alındı.` : "Başarısız e-posta yok.");
 }
 
 export async function deleteResponse(_: ActionState, formData: FormData) {

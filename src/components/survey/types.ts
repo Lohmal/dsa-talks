@@ -40,7 +40,6 @@ export type SubmitResult =
       email: string;
       certificateNo: string;
       token: string;
-      emailSent: boolean;
     }
   | {
       status: "error";

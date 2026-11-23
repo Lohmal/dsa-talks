@@ -1,5 +1,5 @@
 // Runs once when a server instance starts: creates the first admin, the settings and the
-// default survey questions if the database is empty.
+// default survey questions if the database is empty, then starts the certificate mail queue.
 export async function register() {
   if (process.env.NEXT_RUNTIME !== "nodejs" || !process.env.DATABASE_URL) return;
   try {
@@ -7,5 +7,11 @@ export async function register() {
     await ensureDefaults();
   } catch (error) {
     console.error("[bootstrap] could not prepare the database:", error);
+  }
+  try {
+    const { startMailWorker } = await import("./lib/mailQueue");
+    await startMailWorker();
+  } catch (error) {
+    console.error("[mail queue] could not start:", error);
   }
 }

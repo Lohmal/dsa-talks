@@ -302,15 +302,9 @@ function Success({ result }: { result: Extract<SubmitResult, { status: "success"
       </span>
       <h2 className="mt-6 text-3xl font-extrabold text-ink">{m.survey.successTitle}</h2>
       <p className="mt-3 text-muted">{m.survey.successText}</p>
-      <p
-        className={`mx-auto mt-4 inline-flex max-w-full items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold ${
-          result.emailSent ? "bg-surface text-ink ring-1 ring-line" : "bg-amber-50 text-amber-800 ring-1 ring-amber-200"
-        }`}
-      >
+      <p className="mx-auto mt-4 inline-flex max-w-full items-center gap-2 rounded-2xl bg-surface px-4 py-2 text-sm font-semibold text-ink ring-1 ring-line">
         <Mail className="size-4 shrink-0" />
-        <span className="truncate">
-          {result.emailSent ? m.survey.emailSent.replace("{email}", result.email) : m.survey.emailFailed}
-        </span>
+        <span className="min-w-0 wrap-break-word">{m.survey.emailSent.replace("{email}", result.email)}</span>
       </p>
 
       {/* eslint-disable-next-line @next/next/no-img-element -- generated on request, not a static asset */}

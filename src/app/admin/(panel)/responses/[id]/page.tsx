@@ -128,11 +128,18 @@ export default async function ResponsePage({ params }: PageProps<"/admin/respons
                 <Badge tone="green">Gönderildi</Badge>
               ) : response.emailStatus === "failed" ? (
                 <Badge tone="red">Gönderilemedi</Badge>
+              ) : response.emailStatus === "sending" ? (
+                <Badge tone="amber">Gönderiliyor</Badge>
               ) : (
-                <Badge tone="amber">Bekliyor</Badge>
+                <Badge tone="amber">Sırada</Badge>
               )}
               {response.emailSentAt && <span className="text-sm text-muted">{formatDateTime(response.emailSentAt)}</span>}
             </div>
+            {response.emailStatus === "pending" && response.emailNextAt && (
+              <p className="mt-2 text-xs text-muted">
+                Yeniden deneme: {formatDateTime(response.emailNextAt)} ({response.emailAttempts ?? 0}. deneme başarısız oldu)
+              </p>
+            )}
             {response.emailError && <p className="mt-3 wrap-break-word text-xs text-brand">{response.emailError}</p>}
             <ActionForm action={resendCertificate} className="mt-4">
               <input type="hidden" name="id" value={response.id} />

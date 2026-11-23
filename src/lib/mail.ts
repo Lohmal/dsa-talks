@@ -4,17 +4,21 @@ import { certificateFileName } from "./certificate";
 
 // SMTP comes from .env: Google Workspace (smtp.gmail.com) with the app password of
 // confdsa@atu.edu.tr. Leaving SMTP_USER empty sends without logging in (IP-based relay).
+// One shared, pooled connection per process: Gmail refuses many parallel logins from one account.
+const shared = globalThis as { smtp?: ReturnType<typeof nodemailer.createTransport> };
 function transport() {
-  const port = Number(process.env.SMTP_PORT || 587);
   const user = process.env.SMTP_USER;
-  return nodemailer.createTransport({
+  shared.smtp ??= nodemailer.createTransport({
     host: process.env.SMTP_HOST || "localhost",
-    port,
+    port: Number(process.env.SMTP_PORT || 587),
     secure: process.env.SMTP_SECURE === "true",
     auth: user ? { user, pass: process.env.SMTP_PASS } : undefined,
+    pool: true,
+    maxConnections: 1,
     connectionTimeout: 10_000,
     greetingTimeout: 10_000,
   });
+  return shared.smtp;
 }
 
 const copy = {

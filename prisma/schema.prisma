@@ -150,7 +150,9 @@ model Response {
   certificateNo    String     @unique
   certificateToken String     @unique
   certificateDate  String // date line printed on the certificate
-  emailStatus      String     @default("pending") // pending | sent | failed
+  emailStatus      String     @default("pending") // pending | sending | sent | failed (queue: src/lib/mailQueue.ts)
+  emailAttempts    Int?
+  emailNextAt      DateTime? // a pending mail is not sent before this time (retry back-off)
   emailError       String?
   emailSentAt      DateTime?
   createdAt        DateTime   @default(now())

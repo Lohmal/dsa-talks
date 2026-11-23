@@ -30,6 +30,7 @@ export default async function Dashboard({ searchParams }: PageProps<"/admin">) {
   const average = overallAverage(stats);
   const sent = responses.filter((r) => r.emailStatus === "sent").length;
   const failed = responses.filter((r) => r.emailStatus === "failed").length;
+  const queued = responses.filter((r) => r.emailStatus === "pending" || r.emailStatus === "sending").length;
   const lastDay = countSince(responses, 24);
   const exportHref = `/admin/export${scope === "all" ? "" : `?scope=${scope}`}`;
 
@@ -68,7 +69,7 @@ export default async function Dashboard({ searchParams }: PageProps<"/admin">) {
           icon={Mail}
           label="Gönderilen sertifika"
           value={`${sent}`}
-          note={failed ? `${failed} gönderim başarısız` : "Başarısız gönderim yok"}
+          note={[queued && `${queued} sırada`, failed ? `${failed} başarısız` : "Başarısız gönderim yok"].filter(Boolean).join(" · ")}
         />
         <Kpi
           icon={CircleDot}

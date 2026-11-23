@@ -1,7 +1,6 @@
 import "server-only";
 import { randomBytes, randomInt } from "node:crypto";
 import type { Response } from "@prisma/client";
-import { db } from "./db";
 import { renderCertificatePdf, type CertificateData } from "./certificate";
 import { sendCertificateMail } from "./mail";
 import { verifyUrl } from "./origin";
@@ -28,32 +27,16 @@ export function certificateDataOf(response: Response): CertificateData {
   };
 }
 
-// Renders the PDF, mails it and records the outcome; never throws, so a mail problem
-// cannot undo a saved survey.
-export async function mailCertificate(response: Response) {
-  try {
-    const pdf = await renderCertificatePdf(certificateDataOf(response));
-    await sendCertificateMail({
-      to: response.email,
-      name: response.name,
-      locale: response.locale,
-      certificateNo: response.certificateNo,
-      talk: talkTitles(responseTalks(response), response.locale) || null,
-      pdf,
-    });
-    await db.response.update({
-      where: { id: response.id },
-      data: { emailStatus: "sent", emailError: null, emailSentAt: new Date() },
-    });
-    return true;
-  } catch (error) {
-    console.error("[mail] certificate could not be sent:", error);
-    await db.response
-      .update({
-        where: { id: response.id },
-        data: { emailStatus: "failed", emailError: String((error as Error)?.message ?? error).slice(0, 500) },
-      })
-      .catch(() => {});
-    return false;
-  }
+// Renders the PDF and mails it; throws on failure. Only the mail queue (mailQueue.ts) calls
+// this, so the outcome is recorded and retried there.
+export async function sendCertificate(response: Response) {
+  const pdf = await renderCertificatePdf(certificateDataOf(response));
+  await sendCertificateMail({
+    to: response.email,
+    name: response.name,
+    locale: response.locale,
+    certificateNo: response.certificateNo,
+    talk: talkTitles(responseTalks(response), response.locale) || null,
+    pdf,
+  });
 }

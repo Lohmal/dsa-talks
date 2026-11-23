@@ -32,6 +32,7 @@ export default function Select({
   const [own, setOwn] = useState(defaultValue ?? options[0]?.value ?? "");
   const current = value ?? own;
   const [open, setOpen] = useState(false);
+  const [place, setPlace] = useState<React.CSSProperties>({});
   const [active, setActive] = useState(0);
   const root = useRef<HTMLDivElement>(null);
   const list = useRef<HTMLUListElement>(null);
@@ -45,8 +46,18 @@ export default function Select({
     const onDown = (event: PointerEvent) => {
       if (!root.current?.contains(event.target as Node)) setOpen(false);
     };
+    // The list is placed on the screen (fixed), so it closes when the page scrolls or resizes.
+    const onMove = (event: Event) => {
+      if (!list.current?.contains(event.target as Node)) setOpen(false);
+    };
     document.addEventListener("pointerdown", onDown);
-    return () => document.removeEventListener("pointerdown", onDown);
+    window.addEventListener("scroll", onMove, true);
+    window.addEventListener("resize", onMove);
+    return () => {
+      document.removeEventListener("pointerdown", onDown);
+      window.removeEventListener("scroll", onMove, true);
+      window.removeEventListener("resize", onMove);
+    };
   }, [open]);
 
   // Keep the highlighted option in view.
@@ -62,7 +73,21 @@ export default function Select({
     if (option.value !== current) onChange?.(option.value);
   };
 
+  // Positioned against the screen rather than the parent, so a card that hides overflowing
+  // content cannot cut it off; opens upwards when there is more room above.
   const openList = () => {
+    const box = root.current?.getBoundingClientRect();
+    if (box) {
+      const below = window.innerHeight - box.bottom - 12;
+      const above = box.top - 12;
+      const up = below < 240 && above > below;
+      setPlace({
+        left: box.left,
+        width: box.width,
+        maxHeight: Math.min(288, up ? above : below),
+        ...(up ? { bottom: window.innerHeight - box.top + 6 } : { top: box.bottom + 6 }),
+      });
+    }
     setActive(selectedIndex);
     setOpen(true);
   };
@@ -126,7 +151,8 @@ export default function Select({
           id={`${id}-list`}
           role="listbox"
           aria-label={label}
-          className="absolute left-0 right-0 z-30 mt-1.5 max-h-72 min-w-full overflow-auto rounded-xl bg-white p-1.5 shadow-xl shadow-ink/15 ring-1 ring-ink/10"
+          style={place}
+          className="fixed z-50 overflow-auto rounded-xl bg-white p-1.5 shadow-xl shadow-ink/15 ring-1 ring-ink/10"
         >
           {options.map((option, index) => {
             const isSelected = index === selectedIndex;

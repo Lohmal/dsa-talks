@@ -47,7 +47,7 @@ export async function buildResponsesWorkbook(scope: string) {
     })),
   ];
 
-  const statusText: Record<string, string> = { sent: "Gönderildi", failed: "Başarısız", pending: "Bekliyor" };
+  const statusText: Record<string, string> = { sent: "Gönderildi", failed: "Başarısız", pending: "Sırada", sending: "Gönderiliyor" };
   for (const r of responses) {
     const average = responseAverage(r);
     const row: Record<string, string | number | null> = {
