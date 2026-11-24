@@ -3,6 +3,7 @@ import { requireAdmin } from "@/lib/admin";
 import type { SurveySession } from "@prisma/client";
 import { sessionTalks } from "@/lib/talks";
 import SessionForm from "@/components/admin/SessionForm";
+import FileField from "@/components/admin/FileField";
 import { db } from "@/lib/db";
 import { adminEdition, conferenceContent, eventContent, type EditionWithEvent } from "@/lib/editions";
 import { localize } from "@/lib/bilingual";
@@ -237,6 +238,12 @@ export default async function SettingsPage() {
               hint="Toplantı bazındaki sertifikalarda yazar (İngilizce). Konuşmacı bazında oturum tarihi kullanılır."
             >
               <input name="certificateDate" defaultValue={settings.certificateDate} className={inputClass} />
+            </Field>
+            <Field
+              label="Sertifikadaki ikinci logo"
+              hint="Üniversite logosunun yanında çıkar. Boş bırakılırsa DSATalks için DSATalks logosu, diğerlerinde yalnızca üniversite logosu kullanılır."
+            >
+              <FileField name="certificateLogo" defaultValue={settings.certificateLogo ?? ""} as="png" />
             </Field>
           </div>
           <SubmitButton tone="navy" className="mt-5">

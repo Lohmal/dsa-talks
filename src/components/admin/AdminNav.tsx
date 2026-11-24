@@ -8,6 +8,7 @@ import { AnimatePresence, motion } from "motion/react";
 import {
   CalendarRange,
   ExternalLink,
+  FilePenLine,
   Globe,
   LayoutDashboard,
   ListChecks,
@@ -30,6 +31,7 @@ const groups = [
     title: "Seçili yıl",
     items: [
       { href: "/admin", label: "Genel Bakış", icon: LayoutDashboard },
+      { href: "/admin/content", label: "İçerik", icon: FilePenLine },
       { href: "/admin/responses", label: "Yanıtlar", icon: MessageSquareText },
       { href: "/admin/settings", label: "Anket Ayarları", icon: Settings2 },
       { href: "/admin/questions", label: "Sorular", icon: ListChecks },

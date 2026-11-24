@@ -62,6 +62,12 @@ const eventInfo = z.object({
   venueTr: z.string().min(2, "Yer (TR) gerekli."),
   venueEn: z.string().min(2, "Yer (EN) gerekli."),
   certificateDate: z.string().min(2, "Sertifika tarihi gerekli."),
+  // An uploaded file (/media/<id>) or a file of the site (/images/...); empty: the default.
+  certificateLogo: z
+    .string()
+    .max(300)
+    .refine((value) => value === "" || /^\/(media|images)\/[\w./-]+$/.test(value), "Logo adresi geçersiz.")
+    .transform((value) => value || null),
 });
 
 export async function saveEventInfo(_: ActionState, formData: FormData) {
@@ -326,4 +332,37 @@ export async function deleteResponse(_: ActionState, formData: FormData) {
 
 export async function logout() {
   await signOut({ redirectTo: "/admin/login" });
+}
+
+// ── Content of the chosen year (texts, details, speakers, committees, pages) ────────────
+
+const CONTENT_KEYS = ["messages", "site", "speakers", "committees", "pages"];
+
+export async function saveContent(_: ActionState, formData: FormData) {
+  await requireAdmin();
+  const raw = String(formData.get("content") ?? "");
+  if (raw.length > 4_000_000) return fail("İçerik çok büyük; kaydedilemedi.");
+  let content: unknown;
+  try {
+    content = JSON.parse(raw);
+  } catch {
+    return fail("İçerik okunamadı; sayfayı yenileyip tekrar deneyin.");
+  }
+  if (typeof content !== "object" || content === null || Array.isArray(content)) return fail("İçerik okunamadı.");
+  // The whole tree is stored (not only the changes), so this year keeps exactly these texts
+  // even when the defaults in the code change later.
+  const clean = Object.fromEntries(Object.entries(content).filter(([key]) => CONTENT_KEYS.includes(key)));
+  const edition = await adminEdition();
+  await db.edition.update({ where: { id: edition.id }, data: { content: clean } });
+  revalidatePath("/", "layout");
+  return ok(`${edition.event.name} ${edition.year} içeriği kaydedildi.`);
+}
+
+// Back to the defaults of the code (everything saved for this year is dropped).
+export async function resetContent() {
+  await requireAdmin();
+  const edition = await adminEdition();
+  await db.edition.update({ where: { id: edition.id }, data: { content: {} } });
+  revalidatePath("/", "layout");
+  return ok("İçerik varsayılanlara döndürüldü.");
 }
