@@ -1,4 +1,7 @@
-# DSATalks – Windows Server Kurulum Rehberi
+# CONFDSA ve etkinlikler – Windows Server Kurulum Rehberi
+
+Site (CONFDSA ana sayfası, `/etkinlikler`, anketler, admin paneli) tek proje olarak çalışır. Sunucudaki
+Windows hizmetinin ve IIS sitesinin adı ilk kurulumdan kalma **DSATalks**'tur; aşağıda bu adla geçer.
 
 Proje klasörü `C:\dsa-talks`, alan adı `dsatalks.atu.edu.tr` örnek olarak yazıldı; farklıysa her yerde değiştir.
 Bütün PowerShell komutları **yönetici olarak açılmış PowerShell**'de çalıştırılır.
@@ -92,7 +95,7 @@ npm start
 Sunucunun tarayıcısında `http://localhost:8080` adresini aç ve kontrol et:
 
 - [ ] Ana sayfa açılıyor
-- [ ] `/kurullar` açılıyor
+- [ ] `/etkinlikler` ve `/etkinlikler/dsatalks` açılıyor
 - [ ] `/admin` girişi oluyor. İlk admin kendiliğinden oluşur: `.env`'deki `ADMIN_EMAIL`/`ADMIN_PASSWORD` ile, bunlar boşsa
   `admin@admin.com` / `admin123` ile. Şifreden sonra e-postayla gelen 6 haneli kodu gir (`admin@admin.com` için kod
   `ADMIN_EMAIL`'e, o boşsa ya da `admin@admin.com` ise `SMTP_USER` kutusuna gelir). **Girdikten sonra Yöneticiler sayfasından şifreyi hemen değiştir.**
@@ -301,8 +304,8 @@ AUTH_TRUST_HOST=true
 
 Tarayıcıda **gizli pencere** kullan (eski sitenin yönlendirmeleri önbellekte kalmış olabilir):
 
-- [ ] `https://confdsa.atu.edu.tr` → DSATalks açılıyor
-- [ ] `http://confdsa.atu.edu.tr` → https'e geçip DSATalks açılıyor
+- [ ] `https://confdsa.atu.edu.tr` → CONFDSA açılıyor
+- [ ] `http://confdsa.atu.edu.tr` → https'e geçip CONFDSA açılıyor
 - [ ] `/admin` girişi oluyor, panel açılıyor
 - [ ] `/anket` gönderiliyor, sertifika iniyor
 - [ ] Telefondan **mobil veriyle** açılıyor
@@ -569,9 +572,76 @@ Telefondan **mobil veriyle** (okul ağına bağlı değilken):
    npm ci
    ```
    ```powershell
+   npx prisma db push
+   ```
+   ```powershell
    npm run build
    ```
 3. `services.msc` → DSATalks → **Başlat**
+
+`npx prisma db push` veritabanının indekslerini koddaki şemaya uydurur; şema değişmediyse hiçbir şey yapmaz,
+her güncellemede çalıştırmak zararsızdır.
+
+## 9A. CONFDSA ve etkinlikler sürümüne geçiş (bir kere)
+
+Bu sürümde CONFDSA ana sayfa oldu, DSATalks `/etkinlikler/dsatalks` adresine taşındı ve her şey etkinlik ve yıl
+bazında tutulmaya başladı. Geçişte veritabanının yapısı değişir; **önce yedek alın** (10. bölüm).
+
+1. Yedek al (10.2).
+2. 9. bölümdeki adımları uygula (`npx prisma db push` dahil).
+3. Site ilk açılışta veritabanını kendisi günceller:
+   - **CONFDSA 2026** ve **DSATalks 2026** oluşturulur.
+   - Eski anket ayarları, sorular, oturumlar, bütün yanıtlar ve sertifikalar **DSATalks 2026**'ya bağlanır.
+4. Kontrol:
+   - `https://confdsa.atu.edu.tr` → CONFDSA, menüde **Etkinlikler** → DSATalks
+   - Admin panelinde en üstte **DSATalks 2026** seçili; **Yanıtlar**'da eski yanıtlar görünüyor
+   - `/dogrula`'da daha önce verilmiş bir sertifika numarası doğrulanıyor
+   - Basılı QR kodlar (`/anket`) DSATalks 2026 anketini açıyor
+   - Eski `/kurullar` adresi DSATalks kurullarına yönleniyor
+
+## 10. Yedekleme
+
+Bütün veriler (yanıtlar, sertifika kayıtları, metinler, yüklenen fotoğraflar ve PDF'ler) MongoDB'de; yedek için
+veritabanının kopyasını almak yeterli.
+
+### 10.1 Yedekleme aracını kur (bir kere)
+
+1. mongodb.com/try/download/database-tools → **MongoDB Database Tools**, Windows x64 **zip**.
+2. Zip'i `C:\mongodb-tools` klasörüne aç; içinde `bin\mongodump.exe` ve `bin\mongorestore.exe` olmalı.
+3. `C:\dsa-talks-yedek` klasörünü oluştur.
+
+### 10.2 Yedek al
+
+```powershell
+& "C:\mongodb-tools\bin\mongodump.exe" --uri="mongodb://127.0.0.1:27017/dsatalks?replicaSet=rs0" --archive="C:\dsa-talks-yedek\dsatalks-$(Get-Date -Format yyyy-MM-dd).archive"
+```
+
+Yedek dosyasını ara ara sunucunun dışına da kopyala (bölümün ortak klasörü, harici disk vb.).
+
+### 10.3 Yedekten geri dön
+
+Hizmeti durdur, sonra:
+
+```powershell
+& "C:\mongodb-tools\bin\mongorestore.exe" --uri="mongodb://127.0.0.1:27017/?replicaSet=rs0" --archive="C:\dsa-talks-yedek\DOSYA-ADI.archive" --drop
+```
+
+`--drop` veritabanındaki mevcut verileri yedektekiyle değiştirir. Sonra hizmeti başlat.
+
+### 10.4 Her gece otomatik yedek (isteğe bağlı)
+
+1. Not Defteri'nde şu içeriği `C:\dsa-talks-yedek\yedekle.cmd` olarak kaydet:
+   ```bat
+   for /f %%d in ('powershell -NoProfile -Command "Get-Date -Format yyyy-MM-dd"') do set TARIH=%%d
+   "C:\mongodb-tools\bin\mongodump.exe" --uri="mongodb://127.0.0.1:27017/dsatalks?replicaSet=rs0" --archive="C:\dsa-talks-yedek\dsatalks-%TARIH%.archive"
+   forfiles /p "C:\dsa-talks-yedek" /m *.archive /d -30 /c "cmd /c del @path"
+   ```
+   İlk satır tarihi alır, son satır 30 günden eski yedekleri siler.
+2. `taskschd.msc` → **Create Task**:
+   - General: `DSATalks yedek`, kullanıcı `SYSTEM`
+   - Triggers: **Daily**, 03:00
+   - Actions: Program `C:\dsa-talks-yedek\yedekle.cmd`
+3. Görevi bir kere elle çalıştır (**Run**) ve klasörde yedek dosyasının oluştuğunu kontrol et.
 
 ## Sorun çıkarsa
 

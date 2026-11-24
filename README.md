@@ -1,106 +1,89 @@
-# DSATalks
+# CONFDSA and its events
 
-DSATalks (Adana Alparslan Türkeş Science and Technology University, 4–5 November 2026, ATÜ Library Conference Hall),
-with the Event Satisfaction Survey (`/anket`), participation certificates and an admin panel (`/admin`).
+The site of the International Conference on Data Science and Analytics (CONFDSA) and the events of the
+Department of Data Science and Analytics, Adana Alparslan Türkeş Science and Technology University
+(confdsa.atu.edu.tr). One Next.js project with one MongoDB database and one admin panel:
+
+- **`/`** – CONFDSA (home page, program, speakers, committees, topics, contact, …), the current year;
+  earlier years at `/2026`, `/2026/program`, …
+- **`/etkinlikler`** – the events (DSATalks and later ones); each at `/etkinlikler/<event>` (current year) and
+  `/etkinlikler/<event>/<year>`, with its committees at `…/kurullar`
+- Event Satisfaction Survey and participation certificates per event and year, `/dogrula` for certificates,
+  `/kvkk` for the information notice
+- **`/admin`** – the admin panel: every text, speaker, committee and file of every year, surveys, responses,
+  new events and new years
 
 ```bash
-cp .env.example .env   # fill in DATABASE_URL and AUTH_SECRET
+cp .env.example .env   # fill in DATABASE_URL, AUTH_SECRET, NEXT_PUBLIC_SITE_URL and the SMTP keys
 npm install            # also runs `prisma generate`
 npm run db:push        # creates the MongoDB indexes (once, and after schema changes)
 npm run dev            # http://localhost:3000
-npm run build
+npm run build && npm start   # production, port 8080
 ```
 
 Windows Server without Docker (Node.js, MongoDB service, NSSM, IIS reverse proxy): see `KURULUM.md` (Turkish).
+Docker: `docker compose up -d --build` (site on port 3000, MongoDB next to it).
+`NEXT_PUBLIC_SITE_URL` is built into the pages (sitemap, link previews, certificate QR codes): change it → rebuild.
 
-Docker: `docker compose up -d --build` starts the site on port 3000 (change the left side of `ports` in
-`docker-compose.yml` for another port). The site reads `.env`.
-Set `NEXT_PUBLIC_SITE_URL` in `.env` to the final address (e.g. `https://dsatalks.atu.edu.tr`) before building:
-it is built into the pages (sitemap, link previews), so change it → rebuild with `--build`.
+## Events and years
+
+Everything belongs to one **year of an event** (`Edition` in `prisma/schema.prisma`): texts, speakers, committees,
+survey settings, questions, time windows, responses and certificates. CONFDSA is the event `confdsa` (conference
+template), DSATalks is `dsatalks` (one-page event template); new events use the event template.
+
+- *Etkinlikler ve Yıllar* in the panel opens a new year, copying the chosen parts from an earlier one (copies
+  only; the earlier year never changes), makes a year current, or adds a new event.
+- The panel works on the year chosen at the top of its menu (a cookie).
+- On start-up `src/lib/bootstrap.ts` brings the database up to date: the first admin, CONFDSA 2026 and DSATalks
+  2026, and the data of the first version (one survey without years) moved to DSATalks 2026.
+
+## Content (texts, details, speakers, committees)
+
+The pages read one content tree per year (`src/confdsa/content.ts`, `src/content/event.ts`): the texts of
+`src/confdsa/i18n/messages/*.json` or `src/i18n/messages/*.json` joined into `{ tr, en }` pairs
+(`src/lib/bilingual.ts`), the details (`config/site.ts`), speakers and committees (`data/`), and for CONFDSA the
+published menu pages. *İçerik* in the panel edits the tree of the chosen year with one generic editor
+(`src/components/admin/content`) and saves it whole into the year; texts added to the code later still show up
+(defaults under the saved tree). Field names in the editor: `src/components/admin/content/labels.ts`.
+
+Files uploaded in the panel are stored in the database (`Asset`) and served at `/media/<id>`; photos are shrunk
+and saved as WebP, certificate logos as PNG.
 
 ## Survey, certificates and admin panel
 
-- **`/anket`** – "Etkinlik Memnuniyet Anketi" (TR/EN). Not linked from the site; shared by QR code.
-  After submitting, the participant sees and downloads the certificate (PDF, English) and receives it by e-mail.
-- **`/admin`** – not linked anywhere. When the database has no admins, the first one is created automatically:
-  `ADMIN_EMAIL` / `ADMIN_PASSWORD` from `.env` if both are set, otherwise `admin@admin.com` / `admin123`.
-  Change the password under *Yöneticiler* after signing in (this signs out every other session of that admin;
-  sessions also end 12 hours after signing in). After 5 wrong passwords an address is locked for 15 minutes
-  (or until its password is reset). After the right password a 6-digit code is e-mailed to the admin and the
-  session opens only once it is entered (valid 10 minutes, 5 tries, "Kodu tekrar gönder" sends a new one twice).
-  So every admin needs a real mailbox and working SMTP. The code of `admin@admin.com`, which has no mailbox, goes
-  to `ADMIN_EMAIL` (or, if that is empty or `admin@admin.com` too, to `SMTP_USER`); sign in and change that admin's e-mail under *Yöneticiler*.
-  Outside production the code is also printed to the server console.
-  **Şifremi unuttum** on the login page e-mails a one-time link (valid 1 hour) for setting a new password.
-  - *Genel Bakış*: totals, average satisfaction, per-question averages and 5…1 distribution charts, filter by session.
-  - *Yanıtlar*: search, details, certificate download, resend e-mail, delete, Excel export (`/admin/export`).
-  - *Anket Ayarları*: open/close registration; mode
-    - **Toplantı bazında** – open until closed, one response per e-mail;
-    - **Konuşmacı bazında** – open only inside the time windows (entered in Türkiye time, UTC+3). A window can
-      hold several talks (speakers); one response and one certificate (listing all its talks) per e-mail per
-      window. A form opened in a window can still be sent 15 minutes after it ends.
-  - *Sorular*: add, edit, reorder and delete questions — 5-point, multiple choice (with an optional
-    “other” field; used for the topics participants would like to see) or text. Answers store the question
-    text, so editing questions never changes earlier results.
-  - *Yöneticiler*: add, edit and remove admins (the last admin cannot be removed).
-  - *QR Kod*: PNG of the survey link, plain or as a printable poster.
+- **Survey**: `/anket` (DSATalks 2026, the printed QR codes), `/etkinlikler/<event>/<year>/anket`, and
+  `/<year>/anket` for CONFDSA (off by default). TR/EN; after submitting, the participant downloads the certificate
+  (PDF, English) and receives it by e-mail. The QR code of a year is under *QR Kod*.
+  - **Toplantı bazında** – open until closed, one response per e-mail per year;
+  - **Konuşmacı bazında** – open only inside the time windows (Türkiye time, UTC+3), one response per e-mail per
+    window; a form opened in a window can still be sent 15 minutes after it ends.
+- **Certificates** are drawn on request (`src/lib/certificate.tsx`); numbers are `<prefix>-<year>-XXXXXX` with the
+  event's prefix. The event name and the second logo come from the year (*Anket Ayarları*). Each certificate has a
+  QR code for **`/dogrula`**, which checks certificates of every event and year.
+- **E-mails** go through a queue in the database (`src/lib/mailQueue.ts`): one SMTP connection, one mail a second,
+  retries after 1, 5, 15 and 60 minutes; *Yanıtlar* can resend all failed ones. SMTP: `SMTP_HOST`, `SMTP_PORT`,
+  `SMTP_SECURE`, `SMTP_USER`, `SMTP_PASS`, `MAIL_FROM` (Google Workspace: `smtp.gmail.com`, port 465, an app password).
+- **`/admin`**: the first admin is created when there is none (`ADMIN_EMAIL` / `ADMIN_PASSWORD`, otherwise
+  `admin@admin.com` / `admin123`). Sign-in needs the password and a 6-digit code sent by e-mail; 5 wrong
+  passwords lock an address for 15 minutes; sessions end after 12 hours or when the password changes.
+  **Şifremi unuttum** sends a one-time link (1 hour).
 
-Certificates are drawn on request from `src/lib/certificate.tsx` (fonts and logos in `src/assets`), so nothing is
-stored but the response. The download link contains a long random token. Each certificate carries its number and a
-QR code for **`/dogrula`**, where anyone can check a certificate number (only what is printed on it is shown).
-The QR code, verification links and password-reset links always use `NEXT_PUBLIC_SITE_URL` (on Vercel the production
-domain until it is set), never the address in the request, so a forged `Host` header cannot redirect them.
-
-**`/kurullar`** lists the committees (data in `src/data/committees.json`, shared with the CONFDSA site).
-
-E-mail: set `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `SMTP_PASS`, `MAIL_FROM` in `.env`
-(Google Workspace: `smtp.gmail.com`, port 465, the app password of confdsa@atu.edu.tr). If sending fails the
-response is still saved; the admin can resend from the response page.
-
-
-## Database: local MongoDB in Docker
-
-`docker-compose.yml` runs MongoDB 8 next to the site (`mongo` service, data in the `mongo-data` volume, no port
-published). With `DATABASE_URL="mongodb://mongo:27017/dsatalks?replicaSet=rs0"` in `.env` the site uses it; the
-container creates the indexes on every start (`prisma db push`).
-
-Copying the existing data from Atlas (once, before switching `DATABASE_URL`):
-
-```bash
-docker compose up -d mongo
-docker compose exec mongo sh -c 'mongodump --uri="mongodb+srv://USER:PASSWORD@cluster0.lcmvmh7.mongodb.net/dsatalks" --archive | mongorestore --archive --drop'
-docker compose up -d --build
-```
-
-Admins, settings, questions and responses come across unchanged, so existing passwords keep working.
-Backup: `docker compose exec mongo mongodump --db dsatalks --archive > dsatalks-backup.archive`.
+All links in e-mails, QR codes and certificates use `NEXT_PUBLIC_SITE_URL`, never the address in the request.
 
 ## Where things live
 
 ```
-prisma/schema.prisma    MongoDB models: User, Settings, SurveySession, Question, Response
-src/
-  app/                  site page, /anket (survey + server action), /admin (panel, login, export),
-                        /api/certificate/[token] (PDF/PNG), metadata files
-  auth.ts, proxy.ts     Auth.js (credentials) and the /admin guard
-  components/           site sections, survey/ (form UI), admin/ (panel UI, charts, QR)
-  lib/                  db, bootstrap (first admin, defaults), survey state, certificate, mail, stats, export, time
-  config/site.ts        Instagram, website, e-mail, map query
-  data/speakers.ts      Speakers: name, affiliation, photo, biography, academic links
-  i18n/messages/        en.json / tr.json — every public text, including the program and the survey
-public/images/speakers  Speaker photos (square .webp)
+prisma/schema.prisma        Event, Edition (a year), Question, SurveySession, Response, Asset, User, …
+src/app/(conference)/       CONFDSA: root layout, [year]/… pages (/program → /current/program, next.config.ts)
+src/app/(event)/            event template pages, survey, /dogrula, /kvkk, admin panel and its actions
+src/confdsa/                CONFDSA components, texts, data, menu (config/navigation.ts), content defaults
+src/components/             event template components, survey UI, admin UI (content editor in admin/content)
+src/lib/                    editions (years), bootstrap, survey, certificates, mail queue, stats, export, auth helpers
+public/                     photos, posters, logos
 ```
 
-## SEO and sharing
+## SEO
 
-`src/app` holds the metadata files: `sitemap.ts`, `robots.ts`, `manifest.ts`, `opengraph-image.tsx`
-(the link preview, drawn with the Poppins files in `src/assets/fonts`), `icon.svg` and `apple-icon.png`.
-The home page also carries schema.org `Event` data (dates, venue, speakers, talks). `/admin`, `/anket` and `/api`
-are excluded from indexing.
-
-The absolute site address comes from `src/config/url.ts`: on Vercel the production domain is used
-automatically; once the site has its own domain, set `NEXT_PUBLIC_SITE_URL` (e.g. `https://dsatalks.example.com`)
-in the Vercel project settings and redeploy.
-
-Talk titles and times come from `program.days` in the message files; the speaker cards and badges
-("Day 1 · 10:15") are derived from it, so the program only needs to be edited in one place.
+`src/app/sitemap.ts` lists the published CONFDSA pages, the speaker profiles and the event pages; event pages
+take their title, description and link preview (`opengraph-image.tsx`) from the year's texts. The admin panel,
+the surveys and `/api` stay out of search results.
