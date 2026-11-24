@@ -5,6 +5,7 @@ import { ArrowDown, ArrowUp, Loader2, Plus, Trash2, Upload } from "lucide-react"
 import { isPair } from "@/lib/bilingual";
 import { ActionForm, SubmitButton, type FormAction } from "@/components/admin/forms";
 import { inputClass } from "@/components/admin/ui";
+import { navigation, type NavItem } from "@/confdsa/config/navigation";
 import { fileKeys, labelOf } from "./labels";
 
 // One editor for everything a year shows: it walks the year's content tree and draws a field
@@ -142,22 +143,48 @@ export default function ContentEditor({
 // A tab: its groups (objects) as collapsible boxes; a list (speakers) as a list.
 function Section({ ctx, path, value }: { ctx: Ctx; path: Path; value: Json }) {
   if (path[0] === "pages" && isObject(value)) {
+    // In menu order, sub-pages under their menu; the home page is always on.
+    const toggle = (item: NavItem, depth: number, parentOff: boolean): React.ReactNode => {
+      const on = value[item.key] === true;
+      return (
+        <li key={`${depth}-${item.key}`}>
+          {!(depth > 0 && item.key === "registration") ? (
+            <label
+              className={`flex items-center justify-between gap-3 rounded-xl px-4 py-3 ring-1 ring-line ${depth ? "ml-6" : ""}`}
+            >
+              <span className="min-w-0">
+                <span className="block text-sm font-bold text-ink">{ctx.pageLabels[item.key] ?? item.key}</span>
+                <span className="block text-xs text-muted">
+                  {item.href}
+                  {on && parentOff && " · üst menü kapalı olduğu için görünmez"}
+                </span>
+              </span>
+              <span className="flex shrink-0 items-center gap-2 text-xs font-bold">
+                <span className={on ? "text-emerald-700" : "text-muted"}>{on ? "Açık" : "Kapalı"}</span>
+                <input
+                  type="checkbox"
+                  role="switch"
+                  checked={on}
+                  onChange={(event) => ctx.update([...path, item.key], event.target.checked)}
+                  className="size-5 accent-brand"
+                />
+              </span>
+            </label>
+          ) : null}
+          {item.children && (
+            <ul className="mt-2 space-y-2">{item.children.map((child) => toggle(child, depth + 1, parentOff || !on))}</ul>
+          )}
+        </li>
+      );
+    };
     return (
       <Box>
-        <p className="mb-4 text-sm text-muted">Kapalı sayfalar menüde görünmez ve açılmaz.</p>
-        <div className="grid gap-2 sm:grid-cols-2">
-          {Object.entries(value).map(([key, on]) => (
-            <label key={key} className="flex items-center gap-3 rounded-xl px-3 py-2 ring-1 ring-line">
-              <input
-                type="checkbox"
-                checked={on === true}
-                onChange={(event) => ctx.update([...path, key], event.target.checked)}
-                className="size-4 accent-brand"
-              />
-              <span className="text-sm font-semibold text-ink">{ctx.pageLabels[key] ?? key}</span>
-            </label>
-          ))}
-        </div>
+        <p className="mb-4 text-sm text-muted">
+          Açık sayfalar menüde görünür. Kapalı sayfalar menüden kalkar ve adresi açılmaz (404). Sayfaların yazıları
+          “Metinler” sekmesinde; Kayıt, Ücret, Konaklama, Sosyal etkinlikler, Ödüller ve Yayınlar “Bilgi sayfaları”
+          altında.
+        </p>
+        <ul className="space-y-2">{navigation.filter((item) => item.key !== "home").map((item) => toggle(item, 0, false))}</ul>
       </Box>
     );
   }

@@ -256,5 +256,147 @@
     "view": "Etkinliğe git",
     "past": "Önceki yıllar",
     "empty": "Henüz duyurulmuş bir etkinlik yok."
+  },
+  "infoPages": {
+    "registration": {
+      "intro": "CONFDSA 2026 kayıtları kabul bildirimlerinin ardından açılır. Aşağıdaki adımlar ve tarihler kesinleştikçe güncellenecektir.",
+      "sections": [
+        {
+          "title": "Kimler kayıt olmalı",
+          "text": "Kabul edilen her özetin programda yer alabilmesi için yazarlarından en az birinin kayıt olması gerekir. Sunum yapmadan katılmak isteyenler dinleyici olarak kayıt olabilir.",
+          "items": [],
+          "linkLabel": "",
+          "linkUrl": ""
+        },
+        {
+          "title": "Nasıl kayıt olunur",
+          "text": "",
+          "items": [
+            "Kayıt Ücreti sayfasındaki ücretleri inceleyin.",
+            "Kayıt formunu doldurun (bağlantı burada yayımlanacaktır).",
+            "Kayıt ücretini ödeyip dekontu confdsa@atu.edu.tr adresine gönderin."
+          ],
+          "linkLabel": "",
+          "linkUrl": ""
+        },
+        {
+          "title": "Son tarih",
+          "text": "Kayıt son tarihi Önemli Tarihler sayfasında yer alır.",
+          "items": [],
+          "linkLabel": "Önemli Tarihler",
+          "linkUrl": "/important-dates"
+        }
+      ]
+    },
+    "registrationFee": {
+      "intro": "CONFDSA 2026 kayıt ücretleri burada duyurulacaktır.",
+      "fees": [
+        {
+          "label": "Sunumlu katılım (akademisyen)",
+          "value": "Daha sonra duyurulacak"
+        },
+        {
+          "label": "Sunumlu katılım (öğrenci)",
+          "value": "Daha sonra duyurulacak"
+        },
+        {
+          "label": "Çevrim içi sunum",
+          "value": "Daha sonra duyurulacak"
+        },
+        {
+          "label": "Dinleyici",
+          "value": "Daha sonra duyurulacak"
+        }
+      ],
+      "sections": [
+        {
+          "title": "Ücrete dahil olanlar",
+          "text": "",
+          "items": [
+            "Tüm bilimsel oturumlara katılım",
+            "Konferans materyalleri ve katılım belgesi",
+            "Kahve araları"
+          ],
+          "linkLabel": "",
+          "linkUrl": ""
+        },
+        {
+          "title": "Ödeme",
+          "text": "Banka hesap bilgileri ve ödeme talimatları kabul bildirimlerinin ardından paylaşılacaktır.",
+          "items": [],
+          "linkLabel": "",
+          "linkUrl": ""
+        }
+      ]
+    },
+    "accommodation": {
+      "intro": "Katılımcılar konaklamalarını kendileri ayarlar. Adana'da şehir merkezinde ve üniversiteye yakın pek çok otel bulunmaktadır.",
+      "sections": [
+        {
+          "title": "Adana'ya ulaşım",
+          "text": "Adana'ya Çukurova Uluslararası Havalimanı üzerinden hava yoluyla, ayrıca şehirlerarası otobüs ve trenle ulaşılabilir. Üniversite Sarıçam ilçesinde, şehir merkezine araçla yaklaşık 20 dakika uzaklıktadır.",
+          "items": [],
+          "linkLabel": "",
+          "linkUrl": ""
+        },
+        {
+          "title": "Oteller",
+          "text": "Konferans alanına yakın önerilen otellerin listesi burada duyurulacaktır.",
+          "items": [],
+          "linkLabel": "",
+          "linkUrl": ""
+        }
+      ]
+    },
+    "socialActivities": {
+      "intro": "CONFDSA, bilimsel oturumların yanında katılımcılara meslektaşlarıyla tanışma ve Adana'yı keşfetme fırsatı sunar.",
+      "sections": [
+        {
+          "title": "Sosyal program",
+          "text": "Sosyal programın ayrıntıları burada duyurulacaktır.",
+          "items": [],
+          "linkLabel": "",
+          "linkUrl": ""
+        },
+        {
+          "title": "Adana'yı keşfedin",
+          "text": "Adana; mutfağı, Taşköprü, Sabancı Merkez Camii ve Seyhan Nehri ile tanınır.",
+          "items": [],
+          "linkLabel": "",
+          "linkUrl": ""
+        }
+      ]
+    },
+    "awards": {
+      "intro": "CONFDSA 2026'da sunulan öne çıkan çalışmalar bilim kurulu tarafından ödüllendirilebilir.",
+      "sections": [
+        {
+          "title": "En iyi sunum ödülleri",
+          "text": "Ödül kategorileri, değerlendirme ölçütleri ve kazananlar burada duyurulacaktır.",
+          "items": [],
+          "linkLabel": "",
+          "linkUrl": ""
+        }
+      ]
+    },
+    "paperPublications": {
+      "intro": "CONFDSA 2026'da sunulan çalışmalar için yayın olanakları.",
+      "sections": [
+        {
+          "title": "Özet kitabı",
+          "text": "Kabul edilen ve sunulan özetler konferans özet kitabında yayımlanacaktır.",
+          "items": [],
+          "linkLabel": "",
+          "linkUrl": ""
+        },
+        {
+          "title": "Tam metinler",
+          "text": "Genişletilmiş tam metinler için dergiler ve yayın olanakları burada duyurulacaktır.",
+          "items": [],
+          "linkLabel": "",
+          "linkUrl": ""
+        }
+      ]
+    }
   }
 }

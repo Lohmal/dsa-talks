@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import PageShell from "@/confdsa/components/ui/PageShell";
-import ComingSoon from "@/confdsa/components/ui/ComingSoon";
+import InfoPage from "@/confdsa/components/sections/InfoPage";
 import { requirePage } from "@/confdsa/server";
 
 export const metadata: Metadata = { title: "Social Activities" };
@@ -10,7 +10,7 @@ export default async function Page({ params }: PageProps<"/[year]/social-activit
 
   return (
     <PageShell titleKey="socialActivities">
-      <ComingSoon />
+      <InfoPage page="socialActivities" />
     </PageShell>
   );
 }

@@ -33,6 +33,12 @@ export const labels: Record<string, string> = {
   days: "Günler",
   sessions: "Oturumlar",
   items: "Maddeler",
+  infoPages: "Bilgi sayfaları (Kayıt, Ücret, Konaklama, …)",
+  sections: "Bölümler",
+  fees: "Ücret tablosu",
+  value: "Değer / tutar",
+  linkLabel: "Düğme yazısı (boşsa düğme yok)",
+  linkUrl: "Düğme adresi (örn. /important-dates ya da https://…)",
 
   // Common fields
   name: "Ad",

@@ -256,5 +256,147 @@
     "view": "View event",
     "past": "Earlier years",
     "empty": "No events have been announced yet."
+  },
+  "infoPages": {
+    "registration": {
+      "intro": "Registration for CONFDSA 2026 opens after the notification of acceptance. The steps and deadlines below will be updated as they are finalised.",
+      "sections": [
+        {
+          "title": "Who should register",
+          "text": "At least one author of each accepted abstract must register for the presentation to be included in the conference program. Participants who attend without presenting can also register as listeners.",
+          "items": [],
+          "linkLabel": "",
+          "linkUrl": ""
+        },
+        {
+          "title": "How to register",
+          "text": "",
+          "items": [
+            "Check the fees on the Registration Fee page.",
+            "Fill in the registration form (the link will be published here).",
+            "Pay the registration fee and send the receipt to confdsa@atu.edu.tr."
+          ],
+          "linkLabel": "",
+          "linkUrl": ""
+        },
+        {
+          "title": "Deadline",
+          "text": "The registration deadline is listed on the Important Dates page.",
+          "items": [],
+          "linkLabel": "Important Dates",
+          "linkUrl": "/important-dates"
+        }
+      ]
+    },
+    "registrationFee": {
+      "intro": "Registration fees for CONFDSA 2026 will be announced here.",
+      "fees": [
+        {
+          "label": "Presenter (academic)",
+          "value": "To be announced"
+        },
+        {
+          "label": "Presenter (student)",
+          "value": "To be announced"
+        },
+        {
+          "label": "Online presentation",
+          "value": "To be announced"
+        },
+        {
+          "label": "Listener",
+          "value": "To be announced"
+        }
+      ],
+      "sections": [
+        {
+          "title": "What the fee covers",
+          "text": "",
+          "items": [
+            "Participation in all scientific sessions",
+            "Conference materials and certificate of participation",
+            "Coffee breaks"
+          ],
+          "linkLabel": "",
+          "linkUrl": ""
+        },
+        {
+          "title": "Payment",
+          "text": "Bank account details and payment instructions will be shared after the notification of acceptance.",
+          "items": [],
+          "linkLabel": "",
+          "linkUrl": ""
+        }
+      ]
+    },
+    "accommodation": {
+      "intro": "Participants arrange their own accommodation. Adana offers a wide range of hotels in the city centre and close to the university.",
+      "sections": [
+        {
+          "title": "Getting to Adana",
+          "text": "Adana can be reached by air through Çukurova International Airport, and by intercity bus and train. The university is in the Sarıçam district, about 20 minutes from the city centre by car.",
+          "items": [],
+          "linkLabel": "",
+          "linkUrl": ""
+        },
+        {
+          "title": "Hotels",
+          "text": "A list of recommended hotels near the venue will be announced here.",
+          "items": [],
+          "linkLabel": "",
+          "linkUrl": ""
+        }
+      ]
+    },
+    "socialActivities": {
+      "intro": "Alongside the scientific sessions, CONFDSA offers participants a chance to meet colleagues and discover Adana.",
+      "sections": [
+        {
+          "title": "Social programme",
+          "text": "Details of the social programme will be announced here.",
+          "items": [],
+          "linkLabel": "",
+          "linkUrl": ""
+        },
+        {
+          "title": "Discover Adana",
+          "text": "Adana is known for its cuisine, the Stone Bridge (Taşköprü), the Sabancı Central Mosque and the Seyhan River.",
+          "items": [],
+          "linkLabel": "",
+          "linkUrl": ""
+        }
+      ]
+    },
+    "awards": {
+      "intro": "Outstanding contributions presented at CONFDSA 2026 may be recognised by the scientific committee.",
+      "sections": [
+        {
+          "title": "Best presentation awards",
+          "text": "The award categories, evaluation criteria and winners will be announced here.",
+          "items": [],
+          "linkLabel": "",
+          "linkUrl": ""
+        }
+      ]
+    },
+    "paperPublications": {
+      "intro": "Publication opportunities for the work presented at CONFDSA 2026.",
+      "sections": [
+        {
+          "title": "Abstract book",
+          "text": "Accepted and presented abstracts will be published in the conference abstract book.",
+          "items": [],
+          "linkLabel": "",
+          "linkUrl": ""
+        },
+        {
+          "title": "Full papers",
+          "text": "Journals and publication opportunities for extended full papers will be announced here.",
+          "items": [],
+          "linkLabel": "",
+          "linkUrl": ""
+        }
+      ]
+    }
   }
 }
