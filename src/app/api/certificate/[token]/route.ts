@@ -11,7 +11,7 @@ export async function GET(request: Request, { params }: RouteContext<"/api/certi
 
   const url = new URL(request.url);
   const format = url.searchParams.get("format") === "png" ? "png" : "pdf";
-  const data = certificateDataOf(response);
+  const data = await certificateDataOf(response);
   const body = format === "png" ? await renderCertificatePng(data) : await renderCertificatePdf(data);
   const disposition = url.searchParams.has("download") ? "attachment" : "inline";
 

@@ -2,23 +2,43 @@ import "server-only";
 import bcrypt from "bcryptjs";
 import { db } from "./db";
 
-// First-run defaults. Runs once per server process (see instrumentation.ts) and again lazily
-// where it matters (login, survey), so a fresh database is always usable.
+// First-run defaults and the move to events and years. Runs once per server process (see
+// instrumentation.ts) and again lazily where it matters (login, pages), so a fresh database is
+// always usable and an existing one is brought up to date before the first request.
 
 export const DEFAULT_ADMIN = { name: "Admin", email: "admin@admin.com", password: "admin123" };
 
-const DEFAULT_SETTINGS = {
-  key: "main",
-  isOpen: false,
-  mode: "EVENT" as const,
-  eventName: "DSATalks",
-  speakersText: "Prof. Dr. İlker Ünal, Silvan Schwaller, Dr. Recep Erol",
-  eventDateTr: "4–5 Kasım 2026",
-  eventDateEn: "4–5 November 2026",
-  venueTr: "ATÜ Kütüphane Konferans Salonu, Adana",
-  venueEn: "ATÜ Library Conference Hall, Adana",
-  certificateDate: "4–5 November 2026",
-};
+// The two series the site started with, and the survey details of their first year.
+const EVENTS = [
+  {
+    event: { slug: "confdsa", name: "CONFDSA", template: "CONFERENCE" as const, certificatePrefix: "CONF", currentYear: 2026, order: 0 },
+    survey: {
+      eventName: "CONFDSA",
+      speakersText: "",
+      eventDateTr: "4–5 Kasım 2026",
+      eventDateEn: "4–5 November 2026",
+      venueTr: "Adana Alparslan Türkeş Bilim ve Teknoloji Üniversitesi, Adana",
+      venueEn: "Adana Alparslan Türkeş Science and Technology University, Adana",
+      certificateDate: "4–5 November 2026",
+    },
+  },
+  {
+    event: { slug: "dsatalks", name: "DSATalks", template: "EVENT" as const, certificatePrefix: "DSAT", currentYear: 2026, order: 1 },
+    survey: {
+      eventName: "DSATalks",
+      speakersText: "Prof. Dr. İlker Ünal, Silvan Schwaller, Dr. Recep Erol",
+      eventDateTr: "4–5 Kasım 2026",
+      eventDateEn: "4–5 November 2026",
+      venueTr: "ATÜ Kütüphane Konferans Salonu, Adana",
+      venueEn: "ATÜ Library Conference Hall, Adana",
+      certificateDate: "4–5 November 2026",
+    },
+  },
+];
+const FIRST_YEAR = 2026;
+
+// The survey fields of the old single "Settings" document (before events and years).
+const SURVEY_FIELDS = ["isOpen", "mode", "eventName", "speakersText", "eventDateTr", "eventDateEn", "venueTr", "venueEn", "certificateDate"];
 
 // The questions of the printed "Etkinlik Memnuniyet Anketi" form.
 type DefaultQuestion = {
@@ -54,7 +74,7 @@ export const TOPICS_QUESTION: DefaultQuestion = {
   ].map(([tr, en]) => ({ tr, en })),
 };
 
-const DEFAULT_QUESTIONS: DefaultQuestion[] = [
+export const DEFAULT_QUESTIONS: DefaultQuestion[] = [
   ["Etkinliğin duyuru kanalları yeterlidir.", "The event's announcement channels were sufficient."],
   ["Etkinlik beklentilerimi karşılamaktadır.", "The event met my expectations."],
   ["Etkinlik içeriği anlaşılır ve öğreticidir.", "The event content was clear and instructive."],
@@ -94,19 +114,56 @@ async function createFirstAdmin() {
   });
 }
 
+async function legacySettings() {
+  const result = (await db.$runCommandRaw({ find: "Settings", filter: { key: "main" }, limit: 1 })) as {
+    cursor?: { firstBatch?: Record<string, unknown>[] };
+  };
+  const doc = result.cursor?.firstBatch?.[0];
+  return doc ? Object.fromEntries(SURVEY_FIELDS.filter((key) => key in doc).map((key) => [key, doc[key]])) : {};
+}
+
+// Survey data saved before events and years (no editionId) belongs to DSATalks 2026.
+async function adoptOrphans(editionId: string) {
+  for (const collection of ["Response", "Question", "SurveySession"]) {
+    await db.$runCommandRaw({
+      update: collection,
+      updates: [{ q: { editionId: { $exists: false } }, u: { $set: { editionId: { $oid: editionId } } }, multi: true }],
+    });
+  }
+}
+
+export async function seedQuestions(editionId: string) {
+  await db.question.createMany({
+    data: DEFAULT_QUESTIONS.map((q, order) => ({
+      ...q,
+      editionId,
+      options: q.options ?? [],
+      allowOther: q.allowOther ?? false,
+      order,
+    })),
+  });
+}
+
 async function run() {
   if ((await db.user.count()) === 0) await createFirstAdmin();
 
-  await db.settings
-    .upsert({ where: { key: "main" }, update: {}, create: DEFAULT_SETTINGS })
-    .catch((error) => {
+  for (const { event: data, survey } of EVENTS) {
+    const event = await db.event.upsert({ where: { slug: data.slug }, update: {}, create: data }).catch(async (error) => {
       if (!isDuplicate(error)) throw error;
+      return db.event.findUniqueOrThrow({ where: { slug: data.slug } });
     });
+    if (await db.edition.count({ where: { eventId: event.id } })) continue;
 
-  if ((await db.question.count()) === 0) {
-    await db.question.createMany({
-      data: DEFAULT_QUESTIONS.map((q, order) => ({ ...q, options: q.options ?? [], allowOther: q.allowOther ?? false, order })),
-    });
+    // First year of this series: DSATalks takes over the old settings and survey data.
+    const isDsatalks = data.slug === "dsatalks";
+    const edition = await db.edition
+      .create({ data: { eventId: event.id, year: FIRST_YEAR, ...survey, ...(isDsatalks ? await legacySettings() : {}) } })
+      .catch(async (error) => {
+        if (!isDuplicate(error)) throw error;
+        return db.edition.findUniqueOrThrow({ where: { eventId_year: { eventId: event.id, year: FIRST_YEAR } } });
+      });
+    if (isDsatalks) await adoptOrphans(edition.id);
+    if ((await db.question.count({ where: { editionId: edition.id } })) === 0) await seedQuestions(edition.id);
   }
 }
 

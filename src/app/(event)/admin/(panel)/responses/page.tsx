@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { requireAdmin } from "@/lib/admin";
+import { adminEdition } from "@/lib/editions";
 import type { Prisma } from "@prisma/client";
 import { ChevronLeft, ChevronRight, RotateCw } from "lucide-react";
 import { db } from "@/lib/db";
@@ -36,6 +37,7 @@ const mailOptions = [
 
 export default async function ResponsesPage({ searchParams }: PageProps<"/admin/responses">) {
   await requireAdmin();
+  const edition = await adminEdition();
   const params = await searchParams;
   const scope = readScope(params.scope);
   const q = typeof params.q === "string" ? params.q.trim() : "";
@@ -43,7 +45,7 @@ export default async function ResponsesPage({ searchParams }: PageProps<"/admin/
   const page = Math.max(1, Number(params.page) || 1);
 
   const where: Prisma.ResponseWhereInput = {
-    ...scopeWhere(scope),
+    ...scopeWhere(edition.id, scope),
     ...(mail !== "all" && { emailStatus: { in: mailFilters[mail] } }),
     ...(q && {
       OR: [
@@ -57,8 +59,8 @@ export default async function ResponsesPage({ searchParams }: PageProps<"/admin/
   const [total, responses, options, failedCount] = await Promise.all([
     db.response.count({ where }),
     db.response.findMany({ where, orderBy: { createdAt: "desc" }, skip: (page - 1) * PAGE_SIZE, take: PAGE_SIZE }),
-    scopeSelectOptions(),
-    db.response.count({ where: { emailStatus: "failed" } }),
+    scopeSelectOptions(edition.id),
+    db.response.count({ where: { editionId: edition.id, emailStatus: "failed" } }),
   ]);
   const pages = Math.max(1, Math.ceil(total / PAGE_SIZE));
   const query = (extra: Record<string, string | number>) => {
@@ -74,13 +76,13 @@ export default async function ResponsesPage({ searchParams }: PageProps<"/admin/
   return (
     <>
       <PageHeader
-        title="Yanıtlar"
+        title={`Yanıtlar · ${edition.event.name} ${edition.year}`}
         description={`${total} yanıt. Bir yanıta tıklayarak cevapları ve sertifikayı görün.`}
         actions={
           <>
             <ScopeSelect value={scope} options={options} />
             <ScopeSelect value={mail} options={mailOptions} param="mail" label="E-posta durumu" className="min-w-0 md:w-52" />
-            <DownloadButton href={`/admin/export${query({})}`} fileName="DSATalks-anket.xlsx" tone="navy" icon="excel">
+            <DownloadButton href={`/admin/export${query({})}`} fileName={`${edition.event.name}-${edition.year}-anket.xlsx`} tone="navy" icon="excel">
               Excel olarak indir
             </DownloadButton>
           </>

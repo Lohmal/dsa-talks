@@ -1,4 +1,5 @@
-// KVKK information notice (aydınlatma metni) for the DSATalks survey and certificates.
+// KVKK information notice (aydınlatma metni) for the surveys and certificates of CONFDSA and
+// the department's events (DSATalks and later ones).
 // Controller details and application channels follow the university's own notice at
 // https://kvk.atu.edu.tr; have changes approved by the university's KVKK unit.
 
@@ -15,7 +16,7 @@ export const kvkk: Record<"tr" | "en", { updated: string; intro: string; section
   tr: {
     updated: "Son güncelleme: Ekim 2026",
     intro:
-      "Bu metin, DSATalks etkinliği kapsamında Etkinlik Memnuniyet Anketi’ni dolduran ve katılım sertifikası alan kişilerin kişisel verilerinin nasıl işlendiğini, 6698 sayılı Kişisel Verilerin Korunması Kanunu’nun (KVKK) 10. maddesi uyarınca açıklamak için hazırlanmıştır.",
+      "Bu metin, CONFDSA ve Veri Bilimi ve Analitiği Bölümü etkinlikleri (ör. DSATalks) kapsamında Etkinlik Memnuniyet Anketi’ni dolduran ve katılım sertifikası alan kişilerin kişisel verilerinin nasıl işlendiğini, 6698 sayılı Kişisel Verilerin Korunması Kanunu’nun (KVKK) 10. maddesi uyarınca açıklamak için hazırlanmıştır.",
     sections: [
       {
         title: "1. Veri sorumlusu",
@@ -46,7 +47,7 @@ export const kvkk: Record<"tr" | "en", { updated: string; intro: string; section
       {
         title: "4. Toplama yöntemi ve hukuki sebep",
         paragraphs: [
-          "Kişisel verileriniz, DSATalks web sitesindeki anket formu aracılığıyla elektronik ortamda ve doğrudan sizden toplanır.",
+          "Kişisel verileriniz, CONFDSA web sitesindeki (confdsa.atu.edu.tr) anket formları aracılığıyla elektronik ortamda ve doğrudan sizden toplanır.",
           "Verileriniz KVKK’nın 5. maddesinin 2. fıkrasında yer alan; bir sözleşmenin kurulması veya ifasıyla doğrudan ilgili olması (talep ettiğiniz katılım sertifikasının düzenlenmesi), veri sorumlusunun hukuki yükümlülüğünü yerine getirebilmesi için zorunlu olması (eğitim ve bilimsel etkinliklerin yürütülmesi) ve ilgili kişinin temel hak ve özgürlüklerine zarar vermemek kaydıyla veri sorumlusunun meşru menfaatleri için zorunlu olması (etkinliğin değerlendirilmesi) hukuki sebeplerine dayanılarak işlenir.",
         ],
       },
@@ -66,7 +67,7 @@ export const kvkk: Record<"tr" | "en", { updated: string; intro: string; section
       {
         title: "7. Çerezler",
         paragraphs: [
-          "DSATalks web sitesi reklam veya izleme (analitik) amaçlı çerez kullanmaz.",
+          "CONFDSA web sitesi reklam veya izleme (analitik) amaçlı çerez kullanmaz.",
           "Seçtiğiniz dil, yalnızca tarayıcınızda saklanır ve sunucuya gönderilmez. Yönetim paneline giriş yapan yetkililer için oturumun sürdürülmesine yarayan zorunlu bir çerez kullanılır.",
           "Ulaşım bölümündeki Google Haritalar, Google’ın kendi çerezlerini kullanır. Bu nedenle harita yalnızca siteye ilk girişinizde gösterilen çerez bildiriminde “Kabul et”i seçerseniz yüklenir; bu durumda Google’ın çerez ve gizlilik politikası geçerli olur. Tercihiniz tarayıcınızda saklanır ve sitenin alt kısmındaki “Çerez tercihleri” bağlantısından istediğiniz zaman değiştirilebilir.",
         ],
@@ -92,7 +93,7 @@ export const kvkk: Record<"tr" | "en", { updated: string; intro: string; section
   en: {
     updated: "Last updated: October 2026",
     intro:
-      "This notice explains, under Article 10 of the Turkish Personal Data Protection Law No. 6698 (KVKK), how the personal data of people who complete the DSATalks Event Satisfaction Survey and receive a certificate of participation are processed.",
+      "This notice explains, under Article 10 of the Turkish Personal Data Protection Law No. 6698 (KVKK), how the personal data of people who complete the Event Satisfaction Survey of CONFDSA or of an event of the Department of Data Science and Analytics (e.g. DSATalks) and receive a certificate of participation are processed.",
     sections: [
       {
         title: "1. Data controller",
@@ -123,7 +124,7 @@ export const kvkk: Record<"tr" | "en", { updated: string; intro: string; section
       {
         title: "4. Collection method and legal basis",
         paragraphs: [
-          "Your data are collected electronically and directly from you through the survey form on the DSATalks website.",
+          "Your data are collected electronically and directly from you through the survey forms on the CONFDSA website (confdsa.atu.edu.tr).",
           "They are processed on the legal grounds set out in Article 5(2) of the KVKK: processing being directly related to the performance of a contract (issuing the certificate you request), being necessary for the University to fulfil its legal obligations (carrying out educational and scientific activities), and being necessary for the legitimate interests of the University (evaluating the event), provided that your fundamental rights and freedoms are not harmed.",
         ],
       },
@@ -143,7 +144,7 @@ export const kvkk: Record<"tr" | "en", { updated: string; intro: string; section
       {
         title: "7. Cookies",
         paragraphs: [
-          "The DSATalks website does not use advertising or tracking (analytics) cookies.",
+          "The CONFDSA website does not use advertising or tracking (analytics) cookies.",
           "Your chosen language is stored only in your browser and is not sent to the server. A strictly necessary cookie keeps authorized administrators signed in to the admin panel.",
           "The Google Maps map in the Venue section uses Google’s own cookies, so it only loads if you choose “Accept” in the cookie notice shown on your first visit; Google’s cookie and privacy policies then apply. Your choice is stored in your browser and can be changed at any time with the “Cookie preferences” link at the bottom of the site.",
         ],

@@ -1,5 +1,5 @@
-// MongoDB Atlas via Prisma 6 (Prisma 7 does not support MongoDB yet).
-// Indexes are created with `npm run db:push`.
+// MongoDB via Prisma 6 (Prisma 7 does not support MongoDB yet).
+// Indexes are created with `npm run db:push` (npx prisma db push).
 
 generator client {
   provider      = "prisma-client-js"
@@ -20,6 +20,11 @@ enum QuestionType {
   RATING // 5 = strongly agree … 1 = strongly disagree
   TEXT
   CHOICE // pick any number of options, optionally plus a free-text "other"
+}
+
+enum Template {
+  CONFERENCE // the CONFDSA site: the home page and its pages
+  EVENT // the one-page event template (DSATalks)
 }
 
 // One talk in a speaker time window.
@@ -73,26 +78,49 @@ model User {
   updatedAt    DateTime @updatedAt
 }
 
-// A single document (key "main") with the survey switch, the mode and the event details.
-model Settings {
+// A series that comes back every year: CONFDSA (the home page) or an event such as DSATalks
+// (/etkinlikler/<slug>). The single "Settings" document of the first version became the
+// survey fields of DSATalks 2026 (src/lib/bootstrap.ts).
+model Event {
+  id                String   @id @default(auto()) @map("_id") @db.ObjectId
+  slug              String   @unique // address: /etkinlikler/<slug>; "confdsa" for the conference
+  name              String
+  template          Template
+  certificatePrefix String // certificate numbers: <prefix>-<year>-XXXXXX
+  currentYear       Int // the year shown at the address of the event
+  order             Int      @default(0)
+  createdAt         DateTime @default(now())
+}
+
+// One year of an event with its own texts, survey, questions, responses and certificates.
+// Opening a new year copies what is chosen from the previous one; earlier years stay as they were.
+model Edition {
   id              String     @id @default(auto()) @map("_id") @db.ObjectId
-  key             String     @unique @default("main")
+  eventId         String     @db.ObjectId
+  year            Int
+  content         Json? // texts, details, speakers, committees saved in the panel (over the code defaults)
+  // Survey
   isOpen          Boolean    @default(false)
   mode            SurveyMode @default(EVENT)
-  eventName       String
+  eventName       String // also printed on the certificate
   speakersText    String // shown as the speaker in EVENT mode
   eventDateTr     String
   eventDateEn     String
   venueTr         String
   venueEn         String
   certificateDate String // date line on EVENT mode certificates, e.g. "4–5 November 2026"
+  certificateLogo String? // second logo on the certificate (an image address); empty: the event default
+  createdAt       DateTime   @default(now())
   updatedAt       DateTime   @updatedAt
+
+  @@unique([eventId, year])
 }
 
 // A time window for SESSION mode with one or more talks. Times are stored in UTC and entered
 // in Türkiye time. One response (one certificate) per e-mail per window.
 model SurveySession {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  editionId String   @db.ObjectId
   talks     Talk[]
   // Windows created before talks existed kept a single speaker in these fields.
   speaker   String?
@@ -102,11 +130,12 @@ model SurveySession {
   endsAt    DateTime
   createdAt DateTime @default(now())
 
-  @@index([startsAt])
+  @@index([editionId, startsAt])
 }
 
 model Question {
   id         String         @id @default(auto()) @map("_id") @db.ObjectId
+  editionId  String         @db.ObjectId
   order      Int
   type       QuestionType
   textTr     String
@@ -116,6 +145,8 @@ model Question {
   allowOther Boolean        @default(false) // CHOICE only: adds a free-text "other" field
   createdAt  DateTime       @default(now())
   updatedAt  DateTime       @updatedAt
+
+  @@index([editionId, order])
 }
 
 // Answers keep a copy of the question text, so editing or deleting a question later
@@ -132,9 +163,11 @@ type Answer {
 
 model Response {
   id               String     @id @default(auto()) @map("_id") @db.ObjectId
+  editionId        String     @db.ObjectId
   name             String
   email            String
-  // "event" in EVENT mode, "session:<id>" in SESSION mode; one response per e-mail per scope.
+  // "event" in EVENT mode, "session:<id>" in SESSION mode; one response per e-mail per scope
+  // and year.
   scope            String
   mode             SurveyMode
   sessionId        String?    @db.ObjectId
@@ -157,7 +190,19 @@ model Response {
   emailSentAt      DateTime?
   createdAt        DateTime   @default(now())
 
-  @@unique([email, scope])
-  @@index([createdAt])
+  @@unique([editionId, email, scope])
+  @@index([editionId, createdAt])
   @@index([sessionId])
+  @@index([emailStatus])
+}
+
+// A file uploaded in the admin panel (photo, logo, poster PDF), served at /media/<id>. Kept in
+// the database so a database backup holds everything.
+model Asset {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  contentType String
+  size        Int
+  data        Bytes
+  createdAt   DateTime @default(now())
 }

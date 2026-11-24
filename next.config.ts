@@ -10,6 +10,8 @@ const nextConfig: NextConfig = {
       { source: "/", destination: "/current" },
       { source: `/:page(${conferencePaths.join("|")})/:rest*`, destination: "/current/:page/:rest*" },
       { source: "/etkinlikler", destination: "/current/etkinlikler" },
+      // The survey of a conference year uses the survey design of the event template.
+      { source: "/:year(\\d{4})/anket", destination: "/konferans-anketi/:year" },
     ];
   },
   // Two root layouts (CONFDSA and the event template), so unknown addresses get one 404 page.

@@ -38,7 +38,7 @@ export default function PublicShell({
         <Container className="relative max-w-3xl">
           <p className="flex items-center gap-3 text-xs font-bold uppercase tracking-[0.38em] text-white/85">
             <span aria-hidden className="h-0.5 w-8 bg-white" />
-            DSATalks
+            {m.meta.name}
           </p>
           <h1 className="mt-4 text-3xl font-black tracking-[-0.02em] sm:text-5xl">{title}</h1>
           <p className="mt-4 max-w-2xl text-white/85 sm:text-lg">{intro}</p>

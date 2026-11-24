@@ -4,11 +4,12 @@ import type { SurveySession } from "@prisma/client";
 import { sessionTalks } from "@/lib/talks";
 import SessionForm from "@/components/admin/SessionForm";
 import { db } from "@/lib/db";
-import { getSettings } from "@/lib/survey";
+import { adminEdition, conferenceContent, eventContent, type EditionWithEvent } from "@/lib/editions";
+import { localize } from "@/lib/bilingual";
+import { displayName } from "@/confdsa/data/committees";
 import { formatRange, toIstanbulParts, windowStatus } from "@/lib/time";
-import { defaultSpeakers as speakers } from "@/data/speakers";
-import en from "@/i18n/messages/en.json";
-import tr from "@/i18n/messages/tr.json";
+import type { Messages as EventMessages } from "@/i18n/LanguageProvider";
+import type { Messages as ConferenceMessages } from "@/confdsa/i18n/LanguageProvider";
 import { Badge, Card, Field, PageHeader, inputClass } from "@/components/admin/ui";
 import { ActionForm, SubmitButton } from "@/components/admin/forms";
 import {
@@ -21,6 +22,20 @@ import {
 } from "@/app/(event)/admin/actions";
 
 export const metadata = { title: "Anket Ayarları" };
+
+// Speaker names and talk titles of the year's program, offered when adding a time window.
+function suggestions(edition: EditionWithEvent) {
+  if (edition.event.template === "EVENT") {
+    const content = eventContent(edition);
+    const titles = (locale: "tr" | "en") =>
+      localize<EventMessages>(content.messages, locale).program.days.flatMap((d) => d.sessions.map((s) => s.title));
+    return { speakers: content.speakers.map((s) => s.name), titlesTr: titles("tr"), titlesEn: titles("en") };
+  }
+  const content = conferenceContent(edition);
+  const titles = (locale: "tr" | "en") =>
+    localize<ConferenceMessages>(content.messages, locale).program.days.flatMap((d) => d.sessions.map((s) => s.title));
+  return { speakers: content.speakers.map((s) => displayName(s, "tr")), titlesTr: titles("tr"), titlesEn: titles("en") };
+}
 
 // A window as plain form values (Türkiye time) for the client-side form.
 function editable(session: SurveySession) {
@@ -36,34 +51,35 @@ function editable(session: SurveySession) {
 
 export default async function SettingsPage() {
   await requireAdmin();
-  const [settings, sessions, counts] = await Promise.all([
-    getSettings(),
-    db.surveySession.findMany({ orderBy: { startsAt: "asc" } }),
-    db.response.groupBy({ by: ["sessionId"], _count: { _all: true } }),
+  const settings = await adminEdition();
+  const [sessions, counts] = await Promise.all([
+    db.surveySession.findMany({ where: { editionId: settings.id }, orderBy: { startsAt: "asc" } }),
+    db.response.groupBy({ by: ["sessionId"], where: { editionId: settings.id }, _count: { _all: true } }),
   ]);
+  const suggested = suggestions(settings);
   const responsesOf = (id: string) => counts.find((c) => c.sessionId === id)?._count._all ?? 0;
 
   return (
     <>
       <PageHeader
-        title="Anket Ayarları"
+        title={`Anket Ayarları · ${settings.event.name} ${settings.year}`}
         description="Anketin açık olup olmadığını, nasıl yanıt toplanacağını ve konuşmacı oturumlarını buradan yönetin."
       />
 
       {/* Talk titles of the site's program, offered as suggestions when adding a time window. */}
       <datalist id="speaker-names">
-        {speakers.map((s) => (
-          <option key={s.slug} value={s.name} />
+        {[...new Set(suggested.speakers)].map((name) => (
+          <option key={name} value={name} />
         ))}
       </datalist>
       <datalist id="titles-tr">
-        {tr.program.days.flatMap((d) => d.sessions).map((s) => (
-          <option key={s.time + s.title} value={s.title} />
+        {[...new Set(suggested.titlesTr)].map((title) => (
+          <option key={title} value={title} />
         ))}
       </datalist>
       <datalist id="titles-en">
-        {en.program.days.flatMap((d) => d.sessions).map((s) => (
-          <option key={s.time + s.title} value={s.title} />
+        {[...new Set(suggested.titlesEn)].map((title) => (
+          <option key={title} value={title} />
         ))}
       </datalist>
 

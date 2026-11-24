@@ -24,10 +24,10 @@ export async function queueCertificateMail(responseId: string) {
   kick();
 }
 
-// Puts every failed certificate mail back in the queue; returns how many.
-export async function requeueFailedMails() {
+// Puts every failed certificate mail of a year back in the queue; returns how many.
+export async function requeueFailedMails(editionId: string) {
   const { count } = await db.response.updateMany({
-    where: { emailStatus: "failed" },
+    where: { editionId, emailStatus: "failed" },
     data: { emailStatus: "pending", emailAttempts: 0, emailNextAt: null },
   });
   kick();

@@ -23,27 +23,34 @@ function transport() {
 
 const copy = {
   tr: {
-    subject: "DSATalks katılım sertifikanız",
+    subject: (event: string) => `${event} katılım sertifikanız`,
     greeting: (name: string) => `Merhaba ${name},`,
-    body: "Etkinlik Memnuniyet Anketi’ni doldurduğunuz için teşekkür ederiz. DSATalks katılım sertifikanız ektedir.",
+    body: (event: string) => `Etkinlik Memnuniyet Anketi’ni doldurduğunuz için teşekkür ederiz. ${event} katılım sertifikanız ektedir.`,
     talk: "Konuşma",
     number: "Sertifika numarası",
     closing: "Daha iyi bir gelecek için,",
   },
   en: {
-    subject: "Your DSATalks certificate of participation",
+    subject: (event: string) => `Your ${event} certificate of participation`,
     greeting: (name: string) => `Dear ${name},`,
-    body: "Thank you for completing the Event Satisfaction Survey. Your DSATalks certificate of participation is attached.",
+    body: (event: string) => `Thank you for completing the Event Satisfaction Survey. Your ${event} certificate of participation is attached.`,
     talk: "Talk",
     number: "Certificate number",
     closing: "For a better future,",
   },
 };
 
+// The event name at the top of the e-mail; "DSATalks" keeps its two colours.
+const wordmark = (event: string) =>
+  event === "DSATalks"
+    ? `<span style="color:#d7182a">DSA</span><span style="color:#13224b">Talks</span>`
+    : `<span style="color:#d7182a">${escape(event)}</span>`;
+
 const escape = (value: string) =>
   value.replace(/[&<>"']/g, (char) => `&#${char.charCodeAt(0)};`);
 
 export async function sendCertificateMail(input: {
+  eventName: string;
   to: string;
   name: string;
   locale: string;
@@ -61,14 +68,14 @@ export async function sendCertificateMail(input: {
       <table role="presentation" width="560" cellpadding="0" cellspacing="0" style="max-width:560px;background:#ffffff;border-radius:16px;overflow:hidden">
         <tr><td style="background:#d7182a;height:6px;font-size:0;line-height:0">&nbsp;</td></tr>
         <tr><td style="padding:28px 32px 0;font-size:28px;font-weight:900;letter-spacing:-1px">
-          <span style="color:#d7182a">DSA</span><span style="color:#13224b">Talks</span>
+          ${wordmark(input.eventName)}
         </td></tr>
         <tr><td style="padding:20px 32px 8px;font-size:16px;line-height:1.6">
           <p style="margin:0 0 12px">${escape(t.greeting(input.name))}</p>
-          <p style="margin:0 0 12px">${escape(t.body)}</p>
+          <p style="margin:0 0 12px">${escape(t.body(input.eventName))}</p>
           ${talkLine ? `<p style="margin:0 0 12px;color:#5b6478">${escape(talkLine)}</p>` : ""}
           <p style="margin:0 0 12px;color:#5b6478">${escape(t.number)}: <strong style="color:#13224b">${escape(input.certificateNo)}</strong></p>
-          <p style="margin:24px 0 0">${escape(t.closing)}<br><strong>DSATalks</strong></p>
+          <p style="margin:24px 0 0">${escape(t.closing)}<br><strong>${escape(input.eventName)}</strong></p>
         </td></tr>
         <tr><td style="padding:24px 32px 28px;font-size:12px;color:#8a93ab">Adana Alparslan Türkeş Bilim ve Teknoloji Üniversitesi · Veri Bilimi ve Analitiği Bölümü</td></tr>
         <tr><td style="background:#13224b;height:6px;font-size:0;line-height:0">&nbsp;</td></tr>
@@ -77,14 +84,14 @@ export async function sendCertificateMail(input: {
   </table>
 </body></html>`;
 
-  const text = [t.greeting(input.name), "", t.body, talkLine, `${t.number}: ${input.certificateNo}`, "", t.closing, "DSATalks"]
+  const text = [t.greeting(input.name), "", t.body(input.eventName), talkLine, `${t.number}: ${input.certificateNo}`, "", t.closing, input.eventName]
     .filter((line, index, lines) => line !== "" || lines[index - 1] !== "")
     .join("\n");
 
   await transport().sendMail({
-    from: process.env.MAIL_FROM || "DSATalks <confdsa@atu.edu.tr>",
+    from: process.env.MAIL_FROM || "CONFDSA <confdsa@atu.edu.tr>",
     to: { name: input.name, address: input.to },
-    subject: t.subject,
+    subject: t.subject(input.eventName),
     text,
     html,
     attachments: [

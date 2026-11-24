@@ -1,5 +1,6 @@
 import { ArrowDown, ArrowUp, Pencil, Plus, Trash2 } from "lucide-react";
 import { requireAdmin } from "@/lib/admin";
+import { adminEdition } from "@/lib/editions";
 import type { Question } from "@prisma/client";
 import { getQuestions } from "@/lib/survey";
 import { Badge, Card, EmptyState, PageHeader } from "@/components/admin/ui";
@@ -24,12 +25,13 @@ const editable = (q: Question) => ({
 
 export default async function QuestionsPage() {
   await requireAdmin();
-  const questions = await getQuestions();
+  const edition = await adminEdition();
+  const questions = await getQuestions(edition.id);
 
   return (
     <>
       <PageHeader
-        title="Anket Soruları"
+        title={`Anket Soruları · ${edition.event.name} ${edition.year}`}
         description="Etkinlik Memnuniyet Anketi’ndeki sorular. Değişiklikler anket sayfasına hemen yansır; verilmiş yanıtlar soru metniyle birlikte saklandığı için bozulmaz."
       />
 

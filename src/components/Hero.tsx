@@ -3,7 +3,7 @@
 import { MotionConfig, motion } from "motion/react";
 import { ArrowDown, CalendarDays, Clock, MapPin } from "lucide-react";
 import Constellation from "./Constellation";
-import { Container } from "./ui";
+import { Container, splitName } from "./ui";
 import { useLanguage } from "@/i18n/LanguageProvider";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -50,7 +50,8 @@ export default function Hero() {
               variants={rise}
               className="text-[clamp(4.6rem,14vw,12rem)] font-black leading-[0.86] tracking-[-0.055em] lg:whitespace-nowrap lg:text-[clamp(6rem,min(10vw,18svh),11rem)]"
             >
-              <span className="text-white">DSA</span><span className="text-ink">Talks</span>
+              <span className="text-white">{splitName(m.meta.name)[0]}</span>
+              <span className="text-ink">{splitName(m.meta.name)[1]}</span>
             </motion.h1>
 
             <motion.span

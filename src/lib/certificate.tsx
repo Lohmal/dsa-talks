@@ -9,6 +9,8 @@ import QRCode from "qrcode";
 // red/navy frame with corner stripes, the logos, the participant's name and the event.
 
 export type CertificateData = {
+  eventName: string; // printed in red in the sentence, e.g. "DSATalks"
+  logo: string | null; // second logo next to the university's (data: URL), or none
   name: string;
   certificateNo: string;
   certificateDate: string; // "4–5 November 2026"
@@ -28,7 +30,7 @@ const assets = join(process.cwd(), "src/assets");
 
 type Assets = {
   fonts: { name: string; data: Buffer; weight: 400 | 500 | 600 | 700 | 900; style: "normal" | "italic" }[];
-  logos: string[];
+  universityLogo: string;
 };
 
 let loaded: Promise<Assets> | null = null;
@@ -38,7 +40,7 @@ function loadAssets(): Promise<Assets> {
     const font = (file: string) => readFile(join(assets, "fonts", file));
     const logo = async (file: string) =>
       `data:image/png;base64,${(await readFile(join(assets, "certificate", file))).toString("base64")}`;
-    const [regular, medium, semibold, bold, black, boldItalic, mediumItalic, ...logos] = await Promise.all([
+    const [regular, medium, semibold, bold, black, boldItalic, mediumItalic, universityLogo] = await Promise.all([
       font("Poppins-Regular.ttf"),
       font("Poppins-Medium.ttf"),
       font("Poppins-SemiBold.ttf"),
@@ -47,7 +49,6 @@ function loadAssets(): Promise<Assets> {
       font("Poppins-BoldItalic.ttf"),
       font("Poppins-MediumItalic.ttf"),
       logo("atu.png"),
-      logo("dsa-talks.png"),
     ]);
     return {
       fonts: [
@@ -59,7 +60,7 @@ function loadAssets(): Promise<Assets> {
         { name: "Poppins", data: boldItalic, weight: 700, style: "italic" },
         { name: "Poppins", data: mediumItalic, weight: 500, style: "italic" },
       ],
-      logos,
+      universityLogo,
     };
   })().catch((error) => {
     loaded = null;
@@ -79,7 +80,7 @@ function sentence(data: CertificateData): Token[] {
       .map((word) => ({ text: word, tone }));
 
   const ending = [
-    { text: "DSATalks", tone: "brand" as const, suffix: "," },
+    { text: data.eventName, tone: "brand" as const, suffix: "," },
     ...words(`held on ${data.certificateDate} and organized by ${ORGANIZER}.`),
   ];
 
@@ -272,10 +273,11 @@ function Certificate({ data, logos, qr }: { data: CertificateData; logos: string
 }
 
 export async function renderCertificatePng(data: CertificateData) {
-  const [{ fonts, logos }, qr] = await Promise.all([
+  const [{ fonts, universityLogo }, qr] = await Promise.all([
     loadAssets(),
     QRCode.toDataURL(data.verifyUrl, { margin: 0, width: 224, errorCorrectionLevel: "M", color: { dark: NAVY, light: "#ffffff" } }),
   ]);
+  const logos = [universityLogo, ...(data.logo ? [data.logo] : [])];
   const image = new ImageResponse(<Certificate data={data} logos={logos} qr={qr} />, { width: W, height: H, fonts });
   return new Uint8Array(await image.arrayBuffer());
 }
@@ -284,9 +286,9 @@ export async function renderCertificatePng(data: CertificateData) {
 export async function renderCertificatePdf(data: CertificateData) {
   const png = await renderCertificatePng(data);
   const pdf = await PDFDocument.create();
-  pdf.setTitle(`DSATalks Certificate – ${data.name}`);
+  pdf.setTitle(`${data.eventName} Certificate – ${data.name}`);
   pdf.setAuthor(UNIVERSITY);
-  pdf.setCreator("DSATalks");
+  pdf.setCreator(data.eventName);
   const page = pdf.addPage([841.89, 595.28]);
   const image = await pdf.embedPng(png);
   page.drawImage(image, { x: 0, y: 0, width: page.getWidth(), height: page.getHeight() });
@@ -294,5 +296,5 @@ export async function renderCertificatePdf(data: CertificateData) {
 }
 
 export function certificateFileName(certificateNo: string, extension: "pdf" | "png") {
-  return `DSATalks-Certificate-${certificateNo}.${extension}`;
+  return `Certificate-${certificateNo}.${extension}`;
 }

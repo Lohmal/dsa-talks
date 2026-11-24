@@ -1,12 +1,14 @@
 "use client";
 
 import Link, { useLinkStatus } from "next/link";
-import { usePathname } from "next/navigation";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { useCallback, useEffect, useRef, useState, useTransition } from "react";
 import { useFormStatus } from "react-dom";
 import { AnimatePresence, motion } from "motion/react";
 import {
+  CalendarRange,
   ExternalLink,
+  Globe,
   LayoutDashboard,
   ListChecks,
   Loader2,
@@ -19,24 +21,41 @@ import {
   X,
   type LucideIcon,
 } from "lucide-react";
-import { logout } from "@/app/(event)/admin/actions";
+import { logout, selectEdition } from "@/app/(event)/admin/actions";
+import Select from "./Select";
 
-const items = [
-  { href: "/admin", label: "Genel Bakış", icon: LayoutDashboard },
-  { href: "/admin/responses", label: "Yanıtlar", icon: MessageSquareText },
-  { href: "/admin/settings", label: "Anket Ayarları", icon: Settings2 },
-  { href: "/admin/questions", label: "Sorular", icon: ListChecks },
-  { href: "/admin/users", label: "Yöneticiler", icon: Users },
-  { href: "/admin/qr", label: "QR Kod", icon: QrCode },
+// The first group works on the event year chosen at the top; the second on the whole site.
+const groups = [
+  {
+    title: "Seçili yıl",
+    items: [
+      { href: "/admin", label: "Genel Bakış", icon: LayoutDashboard },
+      { href: "/admin/responses", label: "Yanıtlar", icon: MessageSquareText },
+      { href: "/admin/settings", label: "Anket Ayarları", icon: Settings2 },
+      { href: "/admin/questions", label: "Sorular", icon: ListChecks },
+      { href: "/admin/qr", label: "QR Kod", icon: QrCode },
+    ],
+  },
+  {
+    title: "Genel",
+    items: [
+      { href: "/admin/events", label: "Etkinlikler ve Yıllar", icon: CalendarRange },
+      { href: "/admin/users", label: "Yöneticiler", icon: Users },
+    ],
+  },
 ];
+
+export type EditionChoice = { id: string; label: string };
+export type CurrentEdition = EditionChoice & { siteHref: string; surveyHref: string };
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
 type User = { name: string; email: string };
+type Props = { user: User; editions: EditionChoice[]; current: CurrentEdition };
 
 // Navy sidebar, fixed on large screens. On phones and tablets a top bar with a menu button
 // opens the same sidebar as a drawer from the left.
-export default function AdminNav({ user }: { user: User }) {
+export default function AdminNav(props: Props) {
   const [open, setOpen] = useState(false);
   const menuButton = useRef<HTMLButtonElement>(null);
 
@@ -64,17 +83,17 @@ export default function AdminNav({ user }: { user: User }) {
       </header>
 
       <aside className="relative hidden bg-ink text-white lg:sticky lg:top-0 lg:flex lg:h-svh lg:flex-col">
-        <SidebarContent user={user} />
+        <SidebarContent {...props} />
       </aside>
 
       <AnimatePresence>
-        {open && <Drawer key="drawer" user={user} onClose={close} />}
+        {open && <Drawer key="drawer" {...props} onClose={close} />}
       </AnimatePresence>
     </>
   );
 }
 
-function Drawer({ user, onClose }: { user: User; onClose: () => void }) {
+function Drawer({ onClose, ...props }: Props & { onClose: () => void }) {
   const closeButton = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
@@ -122,7 +141,7 @@ function Drawer({ user, onClose }: { user: User; onClose: () => void }) {
         >
           <X className="size-5" />
         </button>
-        <SidebarContent user={user} onNavigate={onClose} />
+        <SidebarContent {...props} onNavigate={onClose} />
       </motion.aside>
     </div>
   );
@@ -132,7 +151,7 @@ function Brand() {
   return (
     <Link href="/admin" className="relative block">
       <span className="text-2xl font-black tracking-[-0.04em]">
-        DSA<span className="text-brand">Talks</span>
+        CONF<span className="text-brand">DSA</span>
       </span>
       <span className="mt-0.5 block text-[0.65rem] font-bold uppercase tracking-[0.3em] text-white/50">
         Yönetim Paneli
@@ -141,7 +160,7 @@ function Brand() {
   );
 }
 
-function SidebarContent({ user, onNavigate }: { user: User; onNavigate?: () => void }) {
+function SidebarContent({ user, editions, current, onNavigate }: Props & { onNavigate?: () => void }) {
   const pathname = usePathname();
   const isActive = (href: string) => (href === "/admin" ? pathname === href : pathname.startsWith(href));
 
@@ -149,36 +168,50 @@ function SidebarContent({ user, onNavigate }: { user: User; onNavigate?: () => v
     <>
       <span aria-hidden className="absolute inset-y-0 left-0 w-1.5 bg-brand" />
 
-      <div className="px-6 py-7">
+      <div className="space-y-5 px-6 py-7">
         <Brand />
+        <EditionPicker editions={editions} current={current} />
       </div>
 
-      <nav aria-label="Yönetim" className="flex-1 overflow-y-auto px-3">
-        <ul className="space-y-1">
-          {items.map(({ href, label, icon: Icon }) => {
-            const active = isActive(href);
-            return (
-              <li key={href}>
-                <Link
-                  href={href}
-                  onClick={onNavigate}
-                  aria-current={active ? "page" : undefined}
-                  className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition-colors ${
-                    active ? "bg-white/12 text-white" : "text-white/70 hover:bg-white/6 hover:text-white"
-                  }`}
-                >
-                  <NavIcon icon={Icon} active={active} />
-                  {label}
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
+      <nav aria-label="Yönetim" className="flex-1 space-y-6 overflow-y-auto px-3">
+        {groups.map((group) => (
+          <div key={group.title}>
+            <p className="mb-2 px-3 text-[0.65rem] font-bold uppercase tracking-[0.25em] text-white/40">{group.title}</p>
+            <ul className="space-y-1">
+              {group.items.map(({ href, label, icon: Icon }) => {
+                const active = isActive(href);
+                return (
+                  <li key={href}>
+                    <Link
+                      href={href}
+                      onClick={onNavigate}
+                      aria-current={active ? "page" : undefined}
+                      className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition-colors ${
+                        active ? "bg-white/12 text-white" : "text-white/70 hover:bg-white/6 hover:text-white"
+                      }`}
+                    >
+                      <NavIcon icon={Icon} active={active} />
+                      {label}
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        ))}
       </nav>
 
       <div className="space-y-3 border-t border-white/10 px-6 py-5">
         <Link
-          href="/anket"
+          href={current.siteHref}
+          target="_blank"
+          className="flex items-center gap-2 text-sm font-semibold text-white/70 hover:text-white"
+        >
+          <Globe className="size-4" />
+          Sayfayı aç
+        </Link>
+        <Link
+          href={current.surveyHref}
           target="_blank"
           className="flex items-center gap-2 text-sm font-semibold text-white/70 hover:text-white"
         >
@@ -194,6 +227,30 @@ function SidebarContent({ user, onNavigate }: { user: User; onNavigate?: () => v
         </form>
       </div>
     </>
+  );
+}
+
+// Which event year the "Seçili yıl" pages work on; the choice is kept in a cookie.
+function EditionPicker({ editions, current }: { editions: EditionChoice[]; current: CurrentEdition }) {
+  const router = useRouter();
+  const [pending, startTransition] = useTransition();
+  return (
+    <div>
+      <p className="mb-1.5 text-[0.65rem] font-bold uppercase tracking-[0.25em] text-white/40">Etkinlik ve yıl</p>
+      <Select
+        label="Etkinlik ve yıl"
+        value={current.id}
+        options={editions.map(({ id, label }) => ({ value: id, label }))}
+        loading={pending}
+        disabled={pending}
+        onChange={(id) =>
+          startTransition(async () => {
+            await selectEdition(id);
+            router.refresh();
+          })
+        }
+      />
+    </div>
   );
 }
 

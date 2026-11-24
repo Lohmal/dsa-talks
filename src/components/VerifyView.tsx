@@ -7,6 +7,7 @@ import PublicShell from "./PublicShell";
 import { useLanguage } from "@/i18n/LanguageProvider";
 
 export type VerifiedCertificate = {
+  event: string; // event and year, e.g. "DSATalks 2026"
   name: string;
   certificateNo: string;
   date: string;
@@ -72,7 +73,7 @@ export default function VerifyView({ query, certificate }: { query: string; cert
               {[
                 { label: t.name, value: <span className="text-lg font-extrabold">{certificate.name}</span> },
                 { label: t.number, value: <span className="font-mono">{certificate.certificateNo}</span> },
-                { label: t.event, value: "DSATalks" },
+                { label: t.event, value: certificate.event },
                 ...(certificate.talks.length
                   ? [
                       {

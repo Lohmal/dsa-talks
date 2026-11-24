@@ -1,39 +1,36 @@
 import "server-only";
 import { cache } from "react";
-import type { Settings, SurveySession } from "@prisma/client";
+import type { Edition, SurveySession } from "@prisma/client";
 import { db } from "./db";
-import { ensureDefaults } from "./bootstrap";
 
 // A form opened inside a speaker window can still be sent this long after the window ends,
 // so nobody loses their answers while finishing the last questions.
 export const GRACE_MS = 15 * 60 * 1000;
 
+// The survey settings (switch, mode, event details) are fields of the year (Edition).
 export type SurveyState =
-  | { status: "closed"; settings: Settings }
-  | { status: "waiting"; settings: Settings; next: SurveySession | null }
-  | { status: "open"; settings: Settings; session: SurveySession | null };
+  | { status: "closed"; settings: Edition }
+  | { status: "waiting"; settings: Edition; next: SurveySession | null }
+  | { status: "open"; settings: Edition; session: SurveySession | null };
 
-// cache(): pages, layouts and helpers asking for the same data in one request share one query.
-export const getSettings = cache(async () => {
-  await ensureDefaults();
-  return db.settings.findUniqueOrThrow({ where: { key: "main" } });
-});
-
-// Is the survey taking answers right now, and for which speaker window? The three lookups
-// run together (one database round trip instead of three in a row).
-export async function getSurveyState(now = new Date()): Promise<SurveyState> {
-  const [settings, session, next] = await Promise.all([
-    getSettings(),
-    db.surveySession.findFirst({ where: { startsAt: { lte: now }, endsAt: { gt: now } }, orderBy: { startsAt: "asc" } }),
-    db.surveySession.findFirst({ where: { startsAt: { gt: now } }, orderBy: { startsAt: "asc" } }),
+// Is this year's survey taking answers right now, and for which speaker window? Both window
+// lookups run together.
+export async function getSurveyState(edition: Edition, now = new Date()): Promise<SurveyState> {
+  const where = { editionId: edition.id };
+  const [session, next] = await Promise.all([
+    db.surveySession.findFirst({ where: { ...where, startsAt: { lte: now }, endsAt: { gt: now } }, orderBy: { startsAt: "asc" } }),
+    db.surveySession.findFirst({ where: { ...where, startsAt: { gt: now } }, orderBy: { startsAt: "asc" } }),
   ]);
-  if (!settings.isOpen) return { status: "closed", settings };
-  if (settings.mode === "EVENT") return { status: "open", settings, session: null };
-  if (session) return { status: "open", settings, session };
-  return { status: "waiting", settings, next };
+  if (!edition.isOpen) return { status: "closed", settings: edition };
+  if (edition.mode === "EVENT") return { status: "open", settings: edition, session: null };
+  if (session) return { status: "open", settings: edition, session };
+  return { status: "waiting", settings: edition, next };
 }
 
-export const getQuestions = cache(() => db.question.findMany({ orderBy: { order: "asc" } }));
+// cache(): pages and helpers asking for the same questions in one request share one query.
+export const getQuestions = cache((editionId: string) =>
+  db.question.findMany({ where: { editionId }, orderBy: { order: "asc" } }),
+);
 
 // "volkan KIVANÇ" → "Volkan Kıvanç": words typed all in lower or upper case get a capital
 // first letter; words with their own mixed casing (e.g. "McDonald") are kept as typed.

@@ -3,20 +3,20 @@ import type { Prisma, Question, Response } from "@prisma/client";
 import { db } from "./db";
 import { responseTalks, speakerNames, talkTitles } from "./talks";
 
-// Which responses an admin page, chart or Excel export looks at:
+// Which responses of a year an admin page, chart or Excel export looks at:
 // "all", "event" (EVENT mode) or a speaker window id.
 export type Scope = string;
 
-export function scopeWhere(scope: Scope | undefined): Prisma.ResponseWhereInput {
-  if (!scope || scope === "all") return {};
-  if (scope === "event") return { scope: "event" };
-  return /^[a-f0-9]{24}$/.test(scope) ? { sessionId: scope } : { id: "000000000000000000000000" };
+export function scopeWhere(editionId: string, scope: Scope | undefined): Prisma.ResponseWhereInput {
+  if (!scope || scope === "all") return { editionId };
+  if (scope === "event") return { editionId, scope: "event" };
+  return /^[a-f0-9]{24}$/.test(scope) ? { editionId, sessionId: scope } : { id: "000000000000000000000000" };
 }
 
-export async function scopeOptions() {
+export async function scopeOptions(editionId: string) {
   const [sessions, eventCount] = await Promise.all([
-    db.surveySession.findMany({ orderBy: { startsAt: "asc" } }),
-    db.response.count({ where: { scope: "event" } }),
+    db.surveySession.findMany({ where: { editionId }, orderBy: { startsAt: "asc" } }),
+    db.response.count({ where: { editionId, scope: "event" } }),
   ]);
   return { sessions, eventCount };
 }

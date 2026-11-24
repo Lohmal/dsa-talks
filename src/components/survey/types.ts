@@ -1,4 +1,4 @@
-// Plain data passed from the /anket page (server) to the survey UI (client).
+// Plain data passed from a survey page (server) to the survey UI (client).
 
 type Bilingual = { tr: string; en: string };
 
@@ -27,6 +27,7 @@ export type SurveyProps =
   | { status: "waiting"; next: { talks: SurveyTalk[]; dateTime: Bilingual } | null }
   | {
       status: "open";
+      editionId: string; // the event year this survey belongs to
       mode: "EVENT" | "SESSION";
       sessionId: string | null;
       info: SurveyInfo;

@@ -1,12 +1,7 @@
 import type { Metadata } from "next";
-import EventFrame from "@/components/EventFrame";
-import { loadEventYear } from "@/lib/eventPages";
-import { connection } from "next/server";
-import SurveyView from "@/components/survey/SurveyView";
-import type { SurveyProps } from "@/components/survey/types";
-import { getQuestions, getSurveyState } from "@/lib/survey";
-import { formatRange } from "@/lib/time";
-import { sessionTalks, speakerNames, type TalkData } from "@/lib/talks";
+import { notFound } from "next/navigation";
+import SurveyPage from "@/components/survey/SurveyPage";
+import { findEdition } from "@/lib/editions";
 
 export const metadata: Metadata = {
   title: "Etkinlik Memnuniyet Anketi | DSATalks",
@@ -14,57 +9,10 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-const range = (start: Date, end: Date) => ({ tr: formatRange(start, end, "tr"), en: formatRange(start, end, "en") });
-const toSurveyTalks = (talks: TalkData[]) =>
-  talks.map((talk) => ({ speaker: talk.speaker, title: { tr: talk.titleTr, en: talk.titleEn } }));
-
-// Reached by QR code only; it is not linked from the site. Whether the form is open is
-// decided per request (admin switch, mode and speaker time windows).
-export default async function SurveyPage() {
-  await connection();
-  // Both lookups at once: one database round trip.
-  const [state, questions] = await Promise.all([getSurveyState(), getQuestions()]);
-  let props: SurveyProps;
-
-  if (state.status === "closed") {
-    props = { status: "closed" };
-  } else if (state.status === "waiting") {
-    const next = state.next;
-    props = {
-      status: "waiting",
-      next: next ? { talks: toSurveyTalks(sessionTalks(next)), dateTime: range(next.startsAt, next.endsAt) } : null,
-    };
-  } else {
-    const { settings, session } = state;
-    const talks = session ? sessionTalks(session) : [];
-    props = {
-      status: "open",
-      mode: settings.mode,
-      sessionId: session?.id ?? null,
-      info: {
-        eventName: settings.eventName,
-        speaker: session ? speakerNames(talks) : settings.speakersText,
-        talks: toSurveyTalks(talks),
-        dateTime: session ? range(session.startsAt, session.endsAt) : { tr: settings.eventDateTr, en: settings.eventDateEn },
-        venue: { tr: settings.venueTr, en: settings.venueEn },
-      },
-      questions: questions.map(({ id, type, textTr, textEn, required, options, allowOther }) => ({
-        id,
-        type,
-        textTr,
-        textEn,
-        required,
-        options: options.map(({ tr, en }) => ({ tr, en })),
-        allowOther,
-      })),
-    };
-  }
-
-  // The QR codes printed for DSATalks 2026 point here.
-  const { content, base } = await loadEventYear("dsatalks", "2026");
-  return (
-    <EventFrame content={content} base={base}>
-      <SurveyView {...props} />
-    </EventFrame>
-  );
+// The QR codes printed for DSATalks 2026 point here; later years have their own address
+// (/etkinlikler/<event>/<year>/anket).
+export default async function Page() {
+  const edition = await findEdition("dsatalks", 2026);
+  if (!edition) notFound();
+  return <SurveyPage edition={edition} />;
 }

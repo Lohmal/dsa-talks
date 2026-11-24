@@ -2,16 +2,21 @@
 
 import bcrypt from "bcryptjs";
 import { revalidatePath } from "next/cache";
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { signOut } from "@/auth";
 import { db } from "@/lib/db";
 import { requireAdmin } from "@/lib/admin";
+import { ADMIN_EDITION_COOKIE, adminEdition, getEdition } from "@/lib/editions";
 import { fromIstanbul } from "@/lib/time";
 import { queueCertificateMail, requeueFailedMails } from "@/lib/mailQueue";
 import type { ActionState } from "@/components/admin/forms";
 
-// Every action re-checks the admin session first; the forms live in src/app/admin/(panel).
+// Every action re-checks the admin session first; the forms live in src/app/(event)/admin/(panel).
+// Survey settings, windows, questions and responses belong to the event year chosen at the top
+// of the panel (adminEdition); changes by id also check that year, so a form left open while
+// another year was chosen cannot touch the wrong one.
 
 const ok = (message: string): ActionState => {
   revalidatePath("/admin", "layout");
@@ -22,19 +27,30 @@ const text = (formData: FormData, key: string) => String(formData.get(key) ?? ""
 const objectId = z.string().regex(/^[a-f0-9]{24}$/);
 const firstError = (error: z.ZodError) => error.issues[0]?.message ?? "Geçersiz değer.";
 
+// ── Event year shown in the panel ─────────────────────────────────────────────────────
+
+export async function selectEdition(id: string) {
+  await requireAdmin();
+  if (!(await getEdition(id))) return;
+  (await cookies()).set(ADMIN_EDITION_COOKIE, id, { httpOnly: true, sameSite: "lax", path: "/admin", maxAge: 60 * 60 * 24 * 365 });
+  revalidatePath("/admin", "layout");
+}
+
 // ── Survey switch, mode and event details ────────────────────────────────────────────
 
 export async function setSurveyOpen(_: ActionState, formData: FormData) {
   await requireAdmin();
+  const edition = await adminEdition();
   const isOpen = formData.get("open") === "1";
-  await db.settings.update({ where: { key: "main" }, data: { isOpen } });
+  await db.edition.update({ where: { id: edition.id }, data: { isOpen } });
   return ok(isOpen ? "Anket açıldı; yanıt alınıyor." : "Anket kapatıldı; artık yanıt alınmıyor.");
 }
 
 export async function setMode(_: ActionState, formData: FormData) {
   await requireAdmin();
+  const edition = await adminEdition();
   const mode = formData.get("mode") === "SESSION" ? "SESSION" : "EVENT";
-  await db.settings.update({ where: { key: "main" }, data: { mode } });
+  await db.edition.update({ where: { id: edition.id }, data: { mode } });
   return ok(mode === "EVENT" ? "Toplantı bazında moda geçildi." : "Konuşmacı bazında moda geçildi.");
 }
 
@@ -52,7 +68,8 @@ export async function saveEventInfo(_: ActionState, formData: FormData) {
   await requireAdmin();
   const parsed = eventInfo.safeParse(Object.fromEntries(Object.keys(eventInfo.shape).map((k) => [k, text(formData, k)])));
   if (!parsed.success) return fail(firstError(parsed.error));
-  await db.settings.update({ where: { key: "main" }, data: parsed.data });
+  const edition = await adminEdition();
+  await db.edition.update({ where: { id: edition.id }, data: parsed.data });
   return ok("Etkinlik bilgileri kaydedildi.");
 }
 
@@ -79,20 +96,21 @@ async function readSession(formData: FormData) {
   return { data: { talks, speaker: null, titleTr: null, titleEn: null, startsAt, endsAt } };
 }
 
-async function overlaps(startsAt: Date, endsAt: Date, exceptId?: string) {
+async function overlaps(editionId: string, startsAt: Date, endsAt: Date, exceptId?: string) {
   return db.surveySession.findFirst({
-    where: { startsAt: { lt: endsAt }, endsAt: { gt: startsAt }, ...(exceptId && { id: { not: exceptId } }) },
+    where: { editionId, startsAt: { lt: endsAt }, endsAt: { gt: startsAt }, ...(exceptId && { id: { not: exceptId } }) },
   });
 }
 
 export async function createSession(_: ActionState, formData: FormData) {
   await requireAdmin();
+  const edition = await adminEdition();
   const result = await readSession(formData);
   if (!result.data) return fail(result.error!);
-  if (await overlaps(result.data.startsAt, result.data.endsAt)) {
+  if (await overlaps(edition.id, result.data.startsAt, result.data.endsAt)) {
     return fail("Bu saat aralığı başka bir oturumla çakışıyor.");
   }
-  await db.surveySession.create({ data: result.data });
+  await db.surveySession.create({ data: { ...result.data, editionId: edition.id } });
   return ok("Oturum eklendi.");
 }
 
@@ -100,12 +118,13 @@ export async function updateSession(_: ActionState, formData: FormData) {
   await requireAdmin();
   const id = objectId.safeParse(text(formData, "id"));
   if (!id.success) return fail("Oturum bulunamadı.");
+  const edition = await adminEdition();
   const result = await readSession(formData);
   if (!result.data) return fail(result.error!);
-  if (await overlaps(result.data.startsAt, result.data.endsAt, id.data)) {
+  if (await overlaps(edition.id, result.data.startsAt, result.data.endsAt, id.data)) {
     return fail("Bu saat aralığı başka bir oturumla çakışıyor.");
   }
-  await db.surveySession.update({ where: { id: id.data }, data: result.data });
+  await db.surveySession.updateMany({ where: { id: id.data, editionId: edition.id }, data: result.data });
   return ok("Oturum güncellendi.");
 }
 
@@ -114,7 +133,8 @@ export async function deleteSession(_: ActionState, formData: FormData) {
   const id = objectId.safeParse(text(formData, "id"));
   if (!id.success) return fail("Oturum bulunamadı.");
   // Responses keep their own copy of the speaker and talk, so they stay intact.
-  await db.surveySession.delete({ where: { id: id.data } }).catch(() => null);
+  const edition = await adminEdition();
+  await db.surveySession.deleteMany({ where: { id: id.data, editionId: edition.id } });
   return ok("Oturum silindi.");
 }
 
@@ -164,10 +184,11 @@ function readQuestion(formData: FormData) {
 
 export async function createQuestion(_: ActionState, formData: FormData) {
   await requireAdmin();
+  const edition = await adminEdition();
   const result = readQuestion(formData);
   if (!result.data) return fail(result.error!);
-  const last = await db.question.findFirst({ orderBy: { order: "desc" }, select: { order: true } });
-  await db.question.create({ data: { ...result.data, order: (last?.order ?? -1) + 1 } });
+  const last = await db.question.findFirst({ where: { editionId: edition.id }, orderBy: { order: "desc" }, select: { order: true } });
+  await db.question.create({ data: { ...result.data, editionId: edition.id, order: (last?.order ?? -1) + 1 } });
   return ok("Soru eklendi.");
 }
 
@@ -177,7 +198,8 @@ export async function updateQuestion(_: ActionState, formData: FormData) {
   if (!id.success) return fail("Soru bulunamadı.");
   const result = readQuestion(formData);
   if (!result.data) return fail(result.error!);
-  await db.question.update({ where: { id: id.data }, data: result.data });
+  const edition = await adminEdition();
+  await db.question.updateMany({ where: { id: id.data, editionId: edition.id }, data: result.data });
   return ok("Soru güncellendi.");
 }
 
@@ -186,7 +208,8 @@ export async function deleteQuestion(_: ActionState, formData: FormData) {
   const id = objectId.safeParse(text(formData, "id"));
   if (!id.success) return fail("Soru bulunamadı.");
   // Answers already given keep the question text, so results stay readable.
-  await db.question.delete({ where: { id: id.data } }).catch(() => null);
+  const edition = await adminEdition();
+  await db.question.deleteMany({ where: { id: id.data, editionId: edition.id } });
   return ok("Soru silindi.");
 }
 
@@ -194,7 +217,8 @@ export async function moveQuestion(_: ActionState, formData: FormData) {
   await requireAdmin();
   const id = text(formData, "id");
   const direction = formData.get("direction") === "up" ? -1 : 1;
-  const questions = await db.question.findMany({ orderBy: { order: "asc" }, select: { id: true } });
+  const edition = await adminEdition();
+  const questions = await db.question.findMany({ where: { editionId: edition.id }, orderBy: { order: "asc" }, select: { id: true } });
   const index = questions.findIndex((q) => q.id === id);
   const target = index + direction;
   if (index < 0 || target < 0 || target >= questions.length) return null;
@@ -287,7 +311,7 @@ export async function resendCertificate(_: ActionState, formData: FormData) {
 
 export async function resendFailedCertificates() {
   await requireAdmin();
-  const count = await requeueFailedMails();
+  const count = await requeueFailedMails((await adminEdition()).id);
   return ok(count ? `${count} başarısız e-posta yeniden sıraya alındı.` : "Başarısız e-posta yok.");
 }
 

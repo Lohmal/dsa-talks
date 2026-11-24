@@ -9,11 +9,11 @@ import { formatDateTime, formatRange } from "./time";
 const NAVY = "FF13224B";
 const RED = "FFD7182A";
 
-// The Excel file behind “Excel olarak indir”: every response plus a summary sheet.
-export async function buildResponsesWorkbook(scope: string) {
+// The Excel file behind “Excel olarak indir”: every response of a year plus a summary sheet.
+export async function buildResponsesWorkbook(editionId: string, scope: string) {
   const [responses, questions] = await Promise.all([
-    db.response.findMany({ where: scopeWhere(scope), orderBy: { createdAt: "asc" } }),
-    getQuestions(),
+    db.response.findMany({ where: scopeWhere(editionId, scope), orderBy: { createdAt: "asc" } }),
+    getQuestions(editionId),
   ]);
 
   // Columns: current questions in their order, then questions that were deleted later.
@@ -25,7 +25,7 @@ export async function buildResponsesWorkbook(scope: string) {
   const questionColumns = [...columns.entries()];
 
   const workbook = new ExcelJS.Workbook();
-  workbook.creator = "DSATalks";
+  workbook.creator = "CONFDSA";
   workbook.created = new Date();
 
   // Sheet 1 – every response.

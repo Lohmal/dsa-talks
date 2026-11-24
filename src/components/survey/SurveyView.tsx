@@ -65,6 +65,7 @@ function Notice(props: Extract<SurveyProps, { status: "closed" | "waiting" }>) {
 }
 
 function SurveyForm({
+  editionId,
   mode,
   sessionId,
   info,
@@ -123,6 +124,7 @@ function SurveyForm({
   return (
     <form onSubmit={onSubmit} noValidate className="space-y-6">
       <input type="hidden" name="locale" value={locale} />
+      <input type="hidden" name="editionId" value={editionId} />
       <input type="hidden" name="mode" value={mode} />
       <input type="hidden" name="sessionId" value={sessionId ?? ""} />
       {/* Honeypot: hidden from people, filled in by bots. */}

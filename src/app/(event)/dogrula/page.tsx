@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import EventFrame from "@/components/EventFrame";
 import { loadEventYear } from "@/lib/eventPages";
 import { db } from "@/lib/db";
+import { getEdition } from "@/lib/editions";
 import { responseTalks } from "@/lib/talks";
 import { formatDate } from "@/lib/time";
 import VerifyView, { type VerifiedCertificate } from "@/components/VerifyView";
@@ -12,7 +13,8 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-// /dogrula?no=DSAT-2026-XXXXXX – linked from the QR code and the number on each certificate.
+// /dogrula?no=DSAT-2026-XXXXXX – linked from the QR code and the number on each certificate of
+// every event and year.
 // Shows only what is printed on the certificate itself (no e-mail or answers).
 export default async function VerifyPage({ searchParams }: PageProps<"/dogrula">) {
   const raw = (await searchParams).no;
@@ -23,6 +25,7 @@ export default async function VerifyPage({ searchParams }: PageProps<"/dogrula">
     const response = await db.response.findUnique({
       where: { certificateNo: query },
       select: {
+        editionId: true,
         name: true,
         certificateNo: true,
         certificateDate: true,
@@ -34,7 +37,9 @@ export default async function VerifyPage({ searchParams }: PageProps<"/dogrula">
       },
     });
     if (response) {
+      const edition = await getEdition(response.editionId);
       certificate = {
+        event: edition ? `${edition.eventName || edition.event.name} ${edition.year}` : "",
         name: response.name,
         certificateNo: response.certificateNo,
         date: response.certificateDate,

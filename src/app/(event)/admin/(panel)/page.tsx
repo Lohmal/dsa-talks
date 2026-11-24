@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { requireAdmin } from "@/lib/admin";
+import { adminEdition } from "@/lib/editions";
 import { ArrowRight, CircleDot, Mail, MessageSquareText, Star } from "lucide-react";
 import { db } from "@/lib/db";
 import { getQuestions, getSurveyState } from "@/lib/survey";
@@ -16,13 +17,14 @@ export const metadata = { title: "Genel Bakış" };
 
 export default async function Dashboard({ searchParams }: PageProps<"/admin">) {
   await requireAdmin();
+  const edition = await adminEdition();
   const scope = readScope((await searchParams).scope);
   const [state, questions, responses, sessions, options] = await Promise.all([
-    getSurveyState(),
-    getQuestions(),
-    db.response.findMany({ where: scopeWhere(scope), orderBy: { createdAt: "desc" } }),
-    db.surveySession.findMany({ orderBy: { startsAt: "asc" } }),
-    scopeSelectOptions(),
+    getSurveyState(edition),
+    getQuestions(edition.id),
+    db.response.findMany({ where: scopeWhere(edition.id, scope), orderBy: { createdAt: "desc" } }),
+    db.surveySession.findMany({ where: { editionId: edition.id }, orderBy: { startsAt: "asc" } }),
+    scopeSelectOptions(edition.id),
   ]);
 
   const stats = ratingStats(responses, questions);
@@ -42,7 +44,7 @@ export default async function Dashboard({ searchParams }: PageProps<"/admin">) {
   return (
     <>
       <PageHeader
-        title="Genel Bakış"
+        title={`Genel Bakış · ${edition.event.name} ${edition.year}`}
         description="Anket yanıtları, memnuniyet ortalamaları ve sertifika gönderimleri."
         actions={
           <>

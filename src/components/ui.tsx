@@ -8,12 +8,22 @@ export function Container({ children, className = "" }: { children: React.ReactN
   return <div className={`mx-auto w-full max-w-7xl px-5 sm:px-8 ${className}`}>{children}</div>;
 }
 
-// "DSATalks" set in the poster's colors; stands in for a logo until there is one.
+// The event name in two colours, like "DSATalks" on the poster: "DSA" + "Talks", otherwise the
+// first word + the rest.
+export function splitName(name: string): [string, string] {
+  if (name.startsWith("DSA")) return ["DSA", name.slice(3)];
+  const space = name.indexOf(" ");
+  return space < 0 ? [name, ""] : [name.slice(0, space), name.slice(space)];
+}
+
+// The event name set in the poster's colours; stands in for a logo.
 export function Wordmark({ light = false, className = "" }: { light?: boolean; className?: string }) {
+  const { m } = useLanguage();
+  const [head, tail] = splitName(m.meta.name);
   return (
     <span className={`font-black tracking-[-0.04em] ${className}`}>
-      <span className={light ? "text-white" : "text-brand"}>DSA</span>
-      <span className={light ? "text-brand" : "text-ink"}>Talks</span>
+      <span className={light ? "text-white" : "text-brand"}>{head}</span>
+      <span className={light ? "text-brand" : "text-ink"}>{tail}</span>
     </span>
   );
 }

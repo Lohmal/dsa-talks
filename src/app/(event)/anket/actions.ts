@@ -2,7 +2,8 @@
 
 import { z } from "zod";
 import { db } from "@/lib/db";
-import { getQuestions, getSettings, GRACE_MS, tidyName } from "@/lib/survey";
+import { getQuestions, GRACE_MS, tidyName } from "@/lib/survey";
+import { getEdition } from "@/lib/editions";
 import { formatDate } from "@/lib/time";
 import { newCertificateNo, newCertificateToken } from "@/lib/certificates";
 import { queueCertificateMail } from "@/lib/mailQueue";
@@ -27,15 +28,15 @@ export async function submitSurvey(formData: FormData): Promise<SubmitResult> {
   const now = new Date();
 
   try {
-    // 1. Is the survey still open for what this visitor was shown?
-    const settings = await getSettings();
+    // 1. Is the survey of this year still open for what this visitor was shown?
+    const settings = await getEdition(String(formData.get("editionId") ?? ""));
     const sessionId = String(formData.get("sessionId") ?? "") || null;
-    if (!settings.isOpen) return { status: "error", code: "closed" };
+    if (!settings?.isOpen) return { status: "error", code: "closed" };
 
     let session = null;
     if (settings.mode === "SESSION") {
       session = sessionId && /^[a-f0-9]{24}$/.test(sessionId)
-        ? await db.surveySession.findUnique({ where: { id: sessionId } })
+        ? await db.surveySession.findFirst({ where: { id: sessionId, editionId: settings.id } })
         : null;
       const inWindow =
         session && session.startsAt <= now && now.getTime() < session.endsAt.getTime() + GRACE_MS;
@@ -52,7 +53,7 @@ export async function submitSurvey(formData: FormData): Promise<SubmitResult> {
       for (const issue of parsed.error.issues) fields.push(String(issue.path[0]));
     }
 
-    const questions = await getQuestions();
+    const questions = await getQuestions(settings.id);
     const answers = questions.map((question) => {
       const raw = formData.get(`q_${question.id}`);
       const base = { questionId: question.id, type: question.type, textTr: question.textTr, textEn: question.textEn };
@@ -87,12 +88,14 @@ export async function submitSurvey(formData: FormData): Promise<SubmitResult> {
     const scope = session ? `session:${session.id}` : "event";
     const duplicate = session ? "duplicateSession" : "duplicate";
 
-    if (await db.response.findUnique({ where: { email_scope: { email, scope } }, select: { id: true } })) {
+    const editionId = settings.id;
+    if (await db.response.findUnique({ where: { editionId_email_scope: { editionId, email, scope } }, select: { id: true } })) {
       return { status: "error", code: duplicate };
     }
 
-    // 3. Save. The unique index (email + scope) is the real guard against double submissions.
+    // 3. Save. The unique index (year + email + scope) is the real guard against double submissions.
     const data = {
+      editionId,
       name: tidyName(parsed.data.name, locale),
       email,
       scope,
@@ -110,7 +113,7 @@ export async function submitSurvey(formData: FormData): Promise<SubmitResult> {
     let response = null;
     for (let attempt = 0; !response && attempt < 5; attempt++) {
       try {
-        response = await db.response.create({ data: { ...data, certificateNo: newCertificateNo() } });
+        response = await db.response.create({ data: { ...data, certificateNo: newCertificateNo(settings) } });
       } catch (error) {
         if (isUniqueError(error, "email")) return { status: "error", code: duplicate };
         if (!isUniqueError(error, "certificateNo")) throw error;

@@ -3,9 +3,9 @@ import { scopeOptions } from "./stats";
 import { formatRange } from "./time";
 import { sessionTalks, speakerNames } from "./talks";
 
-// Options for the "Kapsam" filter: everything, the whole-event survey, each speaker window.
-export async function scopeSelectOptions() {
-  const { sessions, eventCount } = await scopeOptions();
+// Options for the "Kapsam" filter of a year: everything, the whole-event survey, each speaker window.
+export async function scopeSelectOptions(editionId: string) {
+  const { sessions, eventCount } = await scopeOptions(editionId);
   return [
     { value: "all", label: "Tüm yanıtlar" },
     ...(eventCount ? [{ value: "event", label: "Toplantı bazında (tüm etkinlik)" }] : []),
