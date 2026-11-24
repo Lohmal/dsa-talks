@@ -102,6 +102,7 @@ export const labels: Record<string, string> = {
   localCommittee: "Düzenleme Kurulu (üyeler)",
 
   // Names, dates and places
+  year: "Yıl (logo ve alt bilgi)",
   shortName: "Kısa ad",
   conferenceName: "Konferansın adı",
   tagline: "Slogan / alt yazı",

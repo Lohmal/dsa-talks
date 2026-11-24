@@ -100,7 +100,7 @@ export default function Footer() {
       <div className="border-t border-white/10">
         <Container className="flex flex-col gap-1 py-5 text-xs text-white/60 md:flex-row md:justify-between">
           <span>
-            © 2026 {m.meta.university}. {m.footer.rights}
+            © {m.meta.year} {m.meta.university}. {m.footer.rights}
           </span>
         </Container>
       </div>

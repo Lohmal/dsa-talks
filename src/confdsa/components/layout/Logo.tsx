@@ -1,8 +1,12 @@
+"use client";
+
 import Image from "next/image";
+import { useLanguage } from "@/confdsa/i18n/LanguageProvider";
 import Link from "@/confdsa/components/ui/Link";
 
 // Official ConfDSA badge (public/brand) with the wordmark beside it.
 export default function Logo({ light = false, size = 44 }: { light?: boolean; size?: number }) {
+  const { m } = useLanguage();
   return (
     <Link href="/" className="flex shrink-0 items-center gap-3 whitespace-nowrap" aria-label="CONFDSA – Home">
       {/* unoptimized: plain static file, so the site also works as a static export */}
@@ -17,7 +21,7 @@ export default function Logo({ light = false, size = 44 }: { light?: boolean; si
       />
       <span className={`text-lg tracking-tight ${light ? "text-white" : "text-navy"}`}>
         <span className="font-extrabold uppercase">
-          Conf<span className="text-red-600">DSA</span> 2026
+          Conf<span className="text-red-600">DSA</span> {m.meta.year}
         </span>
       </span>
     </Link>
