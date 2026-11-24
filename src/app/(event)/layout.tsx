@@ -11,9 +11,10 @@ const poppins = Poppins({
   weight: ["300", "400", "500", "600", "700", "800", "900"],
 });
 
-const title = "DSATalks – Data Science and Analytics";
+// Fallbacks only: every event page takes its title and description from its year's texts.
+const title = "CONFDSA – Events";
 const description =
-  "Two days of talks on data science, biostatistics, machine learning and AI. 4–5 November 2026, ATÜ Library Conference Hall, Adana.";
+  "Events of the Department of Data Science and Analytics, Adana Alparslan Türkeş Science and Technology University.";
 
 // Root of the event template pages (/etkinlikler/<event>, the survey, the certificate check,
 // the KVKK notice) and the admin panel. Each page brings its event texts (EventFrame).
@@ -22,16 +23,15 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title,
   description,
-  applicationName: "DSATalks",
+  applicationName: "CONFDSA",
   keywords: [
+    "CONFDSA",
     "DSATalks",
-    "DSA Talks",
     "data science",
     "data analytics",
     "biostatistics",
     "machine learning",
     "artificial intelligence",
-    "MATLAB",
     "veri bilimi",
     "veri analitiği",
     "yapay zekâ",
@@ -42,7 +42,7 @@ export const metadata: Metadata = {
   authors: [{ name: "ATÜ Veri Bilimi ve Analitiği Bölümü", url: site.departmentUrl }],
   openGraph: {
     type: "website",
-    siteName: "DSATalks",
+    siteName: "CONFDSA",
     title,
     description,
     locale: "en_US",

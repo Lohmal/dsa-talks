@@ -16,7 +16,7 @@ function download(dataUrl: string, fileName: string) {
 }
 
 // A print-ready poster: wordmark, title, the QR code and the address underneath.
-async function posterPng(url: string) {
+async function posterPng(url: string, name: string) {
   const width = 1200;
   const height = 1500;
   const canvas = document.createElement("canvas");
@@ -35,14 +35,16 @@ async function posterPng(url: string) {
   ctx.textAlign = "center";
   ctx.textBaseline = "alphabetic";
   ctx.font = `900 96px ${font}`;
-  const dsa = ctx.measureText("DSA").width;
-  const talks = ctx.measureText("Talks").width;
-  const left = (width - dsa - talks) / 2;
+  // The event name as on the site: "DSA" + "Talks", otherwise the first word in red.
+  const split = name.startsWith("DSA") ? 3 : name.indexOf(" ") < 0 ? name.length : name.indexOf(" ");
+  const [head, tail] = [name.slice(0, split), name.slice(split)];
+  const headWidth = ctx.measureText(head).width;
+  const left = (width - headWidth - ctx.measureText(tail).width) / 2;
   ctx.textAlign = "left";
   ctx.fillStyle = RED;
-  ctx.fillText("DSA", left, 190);
+  ctx.fillText(head, left, 190);
   ctx.fillStyle = NAVY;
-  ctx.fillText("Talks", left + dsa, 190);
+  ctx.fillText(tail, left + headWidth, 190);
 
   ctx.textAlign = "center";
   ctx.fillStyle = NAVY;
@@ -66,7 +68,7 @@ async function posterPng(url: string) {
   return canvas.toDataURL("image/png");
 }
 
-export default function QrCard({ url }: { url: string }) {
+export default function QrCard({ url, name, fileName }: { url: string; name: string; fileName: string }) {
   const [preview, setPreview] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
 
@@ -117,14 +119,14 @@ export default function QrCard({ url }: { url: string }) {
           <button
             type="button"
             disabled={!preview}
-            onClick={() => preview && download(preview, "DSATalks-anket-qr.png")}
+            onClick={() => preview && download(preview, `${fileName}-anket-qr.png`)}
             className={buttonClass("primary")}
           >
             <Download className="size-4" /> Sadece QR (PNG)
           </button>
           <button
             type="button"
-            onClick={async () => download(await posterPng(url), "DSATalks-anket-afis.png")}
+            onClick={async () => download(await posterPng(url, name), `${fileName}-anket-afis.png`)}
             className={buttonClass("navy")}
           >
             <ImageDown className="size-4" /> Başlıklı afiş (PNG)

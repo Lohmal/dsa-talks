@@ -49,7 +49,7 @@ export default async function ResponsePage({ params }: PageProps<"/admin/respons
         description={avg === null ? "Puanlı soru yanıtı yok." : `Ortalama puan: ${avg.toFixed(2)} / 5`}
         actions={
           <>
-            <DownloadButton href={`${certificate}?download=1`} fileName={`DSATalks-Certificate-${response.certificateNo}.pdf`}>
+            <DownloadButton href={`${certificate}?download=1`} fileName={`Certificate-${response.certificateNo}.pdf`}>
               Sertifikayı indir (PDF)
             </DownloadButton>
             <a href={`${certificate}?format=png`} target="_blank" className={buttonClass("outline")}>

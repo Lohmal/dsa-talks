@@ -9,4 +9,7 @@ export const site = {
   departmentUrl: "https://vba.atu.edu.tr",
   // Used for the map and the "Get directions" link.
   mapQuery: "Adana Alparslan Türkeş Bilim ve Teknoloji Üniversitesi Kütüphane",
+  // KVKK page: the university's data protection page and its general notice (PDF).
+  kvkkUrl: "https://kvk.atu.edu.tr",
+  kvkkNoticeUrl: "https://kvk.atu.edu.tr/Upload/Dosyalar/Icerik/Dosya/446/02022021110942_Icerik_D_446.pdf",
 };

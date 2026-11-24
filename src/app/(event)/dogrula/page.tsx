@@ -8,8 +8,8 @@ import { formatDate } from "@/lib/time";
 import VerifyView, { type VerifiedCertificate } from "@/components/VerifyView";
 
 export const metadata: Metadata = {
-  title: "Sertifika Doğrulama | DSATalks",
-  description: "DSATalks sertifika doğrulama – Certificate verification",
+  title: "Sertifika Doğrulama | CONFDSA",
+  description: "CONFDSA ve etkinlik sertifikalarının doğrulanması – Certificate verification",
   robots: { index: false, follow: false },
 };
 

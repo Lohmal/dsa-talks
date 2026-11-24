@@ -5,7 +5,7 @@ import AuthShell from "@/components/admin/AuthShell";
 import LoginForm from "./LoginForm";
 
 export const metadata: Metadata = {
-  title: "Yönetim Girişi | DSATalks",
+  title: "Yönetim Girişi | CONFDSA",
   robots: { index: false, follow: false },
 };
 

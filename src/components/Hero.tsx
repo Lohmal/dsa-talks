@@ -117,7 +117,7 @@ function DateBadge({ className = "" }: { className?: string }) {
         className="absolute inset-3 rounded-full border-2 border-dashed border-white/25 motion-safe:animate-spin-slow"
       />
       <div>
-        <p className="text-7xl font-black leading-none tracking-tighter text-white">4–5</p>
+        <p className="text-7xl font-black leading-none tracking-tighter text-white">{m.hero.badgeDate}</p>
         <p className="mt-3 text-lg font-extrabold uppercase tracking-[0.22em] text-brand-soft">{m.hero.badgeMonth}</p>
         <p className="mt-2 text-xs font-semibold uppercase tracking-[0.4em] text-white/70">{m.hero.badgeDays}</p>
       </div>
@@ -131,7 +131,7 @@ function InfoStrip() {
   const items = [
     { icon: CalendarDays, label: m.info.date, value: m.meta.dateRange, detail: m.meta.weekdays },
     { icon: MapPin, label: m.info.venue, value: m.meta.venue, detail: m.meta.venueDetail },
-    { icon: Clock, label: m.info.start, value: "09:30", detail: m.info.startValue },
+    { icon: Clock, label: m.info.start, value: m.info.startTime, detail: m.info.startValue },
   ];
 
   return (

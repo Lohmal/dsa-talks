@@ -312,7 +312,7 @@ function Success({ result }: { result: Extract<SubmitResult, { status: "success"
       {/* eslint-disable-next-line @next/next/no-img-element -- generated on request, not a static asset */}
       <img
         src={`${base}?format=png`}
-        alt={`DSATalks certificate – ${result.name}`}
+        alt={`${m.meta.name} certificate – ${result.name}`}
         width={2000}
         height={1414}
         className="mt-8 h-auto w-full rounded-xl shadow-card ring-1 ring-ink/10"

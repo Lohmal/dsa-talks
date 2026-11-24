@@ -3,7 +3,7 @@ import AuthShell from "@/components/admin/AuthShell";
 import ForgotPasswordForm from "./ForgotPasswordForm";
 
 export const metadata: Metadata = {
-  title: "Şifremi unuttum | DSATalks",
+  title: "Şifremi unuttum | CONFDSA",
   robots: { index: false, follow: false },
 };
 

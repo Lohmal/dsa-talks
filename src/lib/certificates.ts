@@ -3,9 +3,10 @@ import { randomBytes, randomInt } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import { join, normalize } from "node:path";
 import type { Response } from "@prisma/client";
-import { renderCertificatePdf, type CertificateData } from "./certificate";
-import { getEdition, type EditionWithEvent } from "./editions";
-import { sendCertificateMail } from "./mail";
+import { renderCertificatePdf, type CertificateData, type CertificateTexts } from "./certificate";
+import { conferenceContent, eventContent, getEdition, type EditionWithEvent } from "./editions";
+import { sendCertificateMail, type MailTexts } from "./mail";
+import { localize, type Locale } from "./bilingual";
 import { verifyUrl } from "./origin";
 import { readAsset } from "./assets";
 import { responseTalks, talkTitles } from "./talks";
@@ -47,10 +48,17 @@ async function certificateLogo(edition: EditionWithEvent) {
   return null;
 }
 
+// The certificate and e-mail texts of a year, in one language (the certificate is English).
+function textsOf(edition: EditionWithEvent, locale: Locale) {
+  const content = edition.event.template === "CONFERENCE" ? conferenceContent(edition) : eventContent(edition);
+  return localize<{ certificate: CertificateTexts; mail: MailTexts }>(content.messages, locale);
+}
+
 export async function certificateDataOf(response: Response): Promise<CertificateData> {
   const edition = await getEdition(response.editionId);
   if (!edition) throw new Error(`Response ${response.id} has no event year`);
   return {
+    texts: textsOf(edition, "en").certificate,
     eventName: edition.eventName || edition.event.name,
     logo: await certificateLogo(edition),
     name: response.name,
@@ -66,7 +74,9 @@ export async function certificateDataOf(response: Response): Promise<Certificate
 export async function sendCertificate(response: Response) {
   const data = await certificateDataOf(response);
   const pdf = await renderCertificatePdf(data);
+  const edition = await getEdition(response.editionId);
   await sendCertificateMail({
+    texts: textsOf(edition!, response.locale === "en" ? "en" : "tr").mail,
     eventName: data.eventName,
     to: response.email,
     name: response.name,

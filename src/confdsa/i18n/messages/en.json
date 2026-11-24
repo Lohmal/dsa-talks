@@ -399,5 +399,30 @@
         }
       ]
     }
+  },
+  "certificate": {
+    "university": "Adana Alparslan Türkeş Science and Technology University",
+    "title": "CERTIFICATE",
+    "subtitle": "OF PARTICIPATION",
+    "presentedTo": "This certificate is presented to",
+    "participation": "in recognition of participation in",
+    "attendingTalk": "in recognition of attending the talk",
+    "attendingTalks": "in recognition of attending the talks",
+    "by": "by",
+    "and": "and",
+    "at": "at",
+    "ending": "held on {date} and organized by the Department of Data Science and Analytics at Adana Alparslan Türkeş Science and Technology University.",
+    "number": "Certificate No:",
+    "verifyAt": "Verify at",
+    "slogan": "For a Better Future"
+  },
+  "mail": {
+    "subject": "Your {event} certificate of participation",
+    "greeting": "Dear {name},",
+    "body": "Thank you for completing the Event Satisfaction Survey. Your {event} certificate of participation is attached.",
+    "talk": "Talk",
+    "number": "Certificate number",
+    "closing": "For a better future,",
+    "footer": "Adana Alparslan Türkeş Science and Technology University · Department of Data Science and Analytics"
   }
 }

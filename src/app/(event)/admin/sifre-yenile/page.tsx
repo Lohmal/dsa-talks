@@ -6,7 +6,7 @@ import { resetLinkOwner } from "@/lib/passwordReset";
 import NewPasswordForm from "./NewPasswordForm";
 
 export const metadata: Metadata = {
-  title: "Yeni şifre | DSATalks",
+  title: "Yeni şifre | CONFDSA",
   robots: { index: false, follow: false },
 };
 

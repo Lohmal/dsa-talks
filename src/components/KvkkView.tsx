@@ -2,16 +2,15 @@
 
 import { ExternalLink, FileText, Mail } from "lucide-react";
 import PublicShell from "./PublicShell";
-import { kvkk, KVKK_LINKS } from "@/content/kvkk";
 import { useLanguage } from "@/i18n/LanguageProvider";
 
 // The KVKK information notice for the survey and certificates, in the visitor's language.
 export default function KvkkView() {
-  const { m, locale, site } = useLanguage();
-  const notice = kvkk[locale];
+  const { m, site } = useLanguage();
+  const notice = m.kvkk.notice;
   const links = [
-    { href: KVKK_LINKS.university, label: m.kvkk.universityPage, icon: ExternalLink },
-    { href: KVKK_LINKS.notice, label: m.kvkk.fullNotice, icon: FileText },
+    { href: site.kvkkUrl, label: m.kvkk.universityPage, icon: ExternalLink },
+    { href: site.kvkkNoticeUrl, label: m.kvkk.fullNotice, icon: FileText },
     { href: `mailto:${site.email}`, label: `${m.kvkk.eventEmail}: ${site.email}`, icon: Mail },
   ];
 

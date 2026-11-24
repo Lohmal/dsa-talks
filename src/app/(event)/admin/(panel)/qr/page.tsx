@@ -15,7 +15,7 @@ export default async function QrPage() {
         title={`QR Kod · ${edition.event.name} ${edition.year}`}
         description="Okutulduğunda bu yılın Etkinlik Memnuniyet Anketi sayfasını açan QR kod. Salona asmak veya slayta koymak için PNG olarak indirin."
       />
-      <QrCard url={`${siteUrl}${surveyPath(edition)}`} />
+      <QrCard url={`${siteUrl}${surveyPath(edition)}`} name={edition.eventName || edition.event.name} fileName={`${edition.event.name}-${edition.year}`.replace(/[^\w.-]+/g, "-")} />
     </>
   );
 }

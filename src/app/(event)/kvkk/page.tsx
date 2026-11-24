@@ -4,8 +4,8 @@ import { loadEventYear } from "@/lib/eventPages";
 import KvkkView from "@/components/KvkkView";
 
 export const metadata: Metadata = {
-  title: "KVKK Aydınlatma Metni | DSATalks",
-  description: "DSATalks anketi ve sertifikaları için kişisel verilerin korunması aydınlatma metni.",
+  title: "KVKK Aydınlatma Metni | CONFDSA",
+  description: "CONFDSA ve etkinliklerinin anket ve sertifikaları için kişisel verilerin korunması aydınlatma metni.",
   alternates: { canonical: "/kvkk" },
 };
 

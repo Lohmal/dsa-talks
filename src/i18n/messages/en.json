@@ -1,6 +1,7 @@
 {
   "meta": {
     "name": "DSATalks",
+    "year": "2026",
     "slogan": "Where data turns into decisions.",
     "university": "Adana Alparslan Türkeş Science and Technology University",
     "universityShort": "ATÜ",
@@ -26,6 +27,7 @@
     "line1": "Where data turns",
     "line2": "into",
     "highlight": "decisions.",
+    "badgeDate": "4–5",
     "intro": "Two days of talks on data science, biostatistics, machine learning and artificial intelligence, given by speakers from academia and industry.",
     "ctaSpeakers": "Meet the speakers",
     "ctaProgram": "View the program",
@@ -36,6 +38,7 @@
     "date": "Date",
     "venue": "Venue",
     "start": "Doors open",
+    "startTime": "09:30",
     "startValue": "Opening remarks"
   },
   "about": {
@@ -222,7 +225,100 @@
     "eventEmail": "Event contact address",
     "link": "KVKK Information Notice",
     "ack": "I have read the {link}.",
-    "ackError": "Please confirm that you have read the information notice."
+    "ackError": "Please confirm that you have read the information notice.",
+    "notice": {
+      "updated": "Last updated: October 2026",
+      "intro": "This notice explains, under Article 10 of the Turkish Personal Data Protection Law No. 6698 (KVKK), how the personal data of people who complete the Event Satisfaction Survey of CONFDSA or of an event of the Department of Data Science and Analytics (e.g. DSATalks) and receive a certificate of participation are processed.",
+      "sections": [
+        {
+          "title": "1. Data controller",
+          "paragraphs": [
+            "Your personal data are processed by Adana Alparslan Türkeş Science and Technology University (the “University”) as data controller, through the Department of Data Science and Analytics, which organizes the event.",
+            "Address: Balcalı Mah. Güney Kampüs 10 Sokak No:1U, Sarıçam/Adana, Türkiye"
+          ],
+          "items": [],
+          "after": []
+        },
+        {
+          "title": "2. Personal data processed",
+          "paragraphs": [],
+          "items": [
+            "Identity: first name and surname",
+            "Contact: e-mail address",
+            "Survey answers: your evaluation of the event, topics of interest, comments and suggestions",
+            "Transaction details: date and time of submission, the session attended, certificate number"
+          ],
+          "after": [
+            "Your IP address and location are not recorded with the survey."
+          ]
+        },
+        {
+          "title": "3. Purposes",
+          "paragraphs": [],
+          "items": [
+            "Issuing your certificate of participation and sending it to your e-mail address",
+            "Allowing certificates to be verified by their number",
+            "Evaluating the event and planning future events and topics",
+            "Preventing the same person from receiving more than one certificate for the same session"
+          ],
+          "after": []
+        },
+        {
+          "title": "4. Collection method and legal basis",
+          "paragraphs": [
+            "Your data are collected electronically and directly from you through the survey forms on the CONFDSA website (confdsa.atu.edu.tr).",
+            "They are processed on the legal grounds set out in Article 5(2) of the KVKK: processing being directly related to the performance of a contract (issuing the certificate you request), being necessary for the University to fulfil its legal obligations (carrying out educational and scientific activities), and being necessary for the legitimate interests of the University (evaluating the event), provided that your fundamental rights and freedoms are not harmed."
+          ],
+          "items": [],
+          "after": []
+        },
+        {
+          "title": "5. Transfers",
+          "paragraphs": [
+            "Within the University, your data are only accessed by the authorized people organizing the event; they are not shared with third parties or used for commercial purposes.",
+            "To send certificates and run the system, your data may be processed on the hosting and e-mail services used by the University, in line with Articles 8 and 9 of the KVKK. They may be disclosed to public authorities where required and permitted by law."
+          ],
+          "items": [],
+          "after": []
+        },
+        {
+          "title": "6. Retention",
+          "paragraphs": [
+            "Your data are kept for as long as necessary for the purposes above. So that certificates can be verified, the name, surname and certificate number are kept for as long as the verification service runs. Afterwards the data are erased, destroyed or anonymized."
+          ],
+          "items": [],
+          "after": []
+        },
+        {
+          "title": "7. Cookies",
+          "paragraphs": [
+            "The CONFDSA website does not use advertising or tracking (analytics) cookies.",
+            "Your chosen language is stored only in your browser and is not sent to the server. A strictly necessary cookie keeps authorized administrators signed in to the admin panel.",
+            "The Google Maps map in the Venue section uses Google’s own cookies, so it only loads if you choose “Accept” in the cookie notice shown on your first visit; Google’s cookie and privacy policies then apply. Your choice is stored in your browser and can be changed at any time with the “Cookie preferences” link at the bottom of the site."
+          ],
+          "items": [],
+          "after": []
+        },
+        {
+          "title": "8. Your rights and how to apply",
+          "paragraphs": [
+            "Under Article 11 of the KVKK you have the right to:"
+          ],
+          "items": [
+            "learn whether your personal data are processed and request information about it,",
+            "learn the purpose of the processing and whether the data are used accordingly,",
+            "know the third parties in Türkiye or abroad to whom the data are transferred,",
+            "request correction of incomplete or inaccurate data, and erasure or destruction under Article 7 of the KVKK, and that these actions be notified to third parties the data were transferred to,",
+            "object to a result against you arising solely from automated analysis,",
+            "claim compensation for damage caused by unlawful processing."
+          ],
+          "after": [
+            "You can send requests concerning these rights in writing using the Data Subject Application Form on the University’s Personal Data Protection page, in person or through a notary to Balcalı Mah. Güney Kampüs 10 Sokak No:1U Sarıçam/Adana, or with a secure electronic signature to the registered e-mail (KEP) address atu@hs01.kep.tr. Applications are answered free of charge within thirty days at the latest.",
+            "If you only want your survey response and certificate deleted, you can also write to the event’s contact address, quoting your certificate number."
+          ]
+        }
+      ]
+    }
   },
   "cookies": {
     "title": "Cookie preferences",
@@ -230,5 +326,30 @@
     "accept": "Accept",
     "reject": "Reject",
     "settings": "Cookie preferences"
+  },
+  "certificate": {
+    "university": "Adana Alparslan Türkeş Science and Technology University",
+    "title": "CERTIFICATE",
+    "subtitle": "OF PARTICIPATION",
+    "presentedTo": "This certificate is presented to",
+    "participation": "in recognition of participation in",
+    "attendingTalk": "in recognition of attending the talk",
+    "attendingTalks": "in recognition of attending the talks",
+    "by": "by",
+    "and": "and",
+    "at": "at",
+    "ending": "held on {date} and organized by the Department of Data Science and Analytics at Adana Alparslan Türkeş Science and Technology University.",
+    "number": "Certificate No:",
+    "verifyAt": "Verify at",
+    "slogan": "For a Better Future"
+  },
+  "mail": {
+    "subject": "Your {event} certificate of participation",
+    "greeting": "Dear {name},",
+    "body": "Thank you for completing the Event Satisfaction Survey. Your {event} certificate of participation is attached.",
+    "talk": "Talk",
+    "number": "Certificate number",
+    "closing": "For a better future,",
+    "footer": "Adana Alparslan Türkeş Science and Technology University · Department of Data Science and Analytics"
   }
 }

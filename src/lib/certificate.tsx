@@ -8,7 +8,26 @@ import QRCode from "qrcode";
 // The participation certificate (English only), drawn after the approved design:
 // red/navy frame with corner stripes, the logos, the participant's name and the event.
 
+// The printed sentences, from the year's texts (İçerik → Metinler → Sertifika yazıları).
+export type CertificateTexts = {
+  university: string;
+  title: string;
+  subtitle: string;
+  presentedTo: string;
+  participation: string;
+  attendingTalk: string;
+  attendingTalks: string;
+  by: string;
+  and: string;
+  at: string;
+  ending: string; // {date} = the certificate date
+  number: string;
+  verifyAt: string;
+  slogan: string;
+};
+
 export type CertificateData = {
+  texts: CertificateTexts;
   eventName: string; // printed in red in the sentence, e.g. "DSATalks"
   logo: string | null; // second logo next to the university's (data: URL), or none
   name: string;
@@ -23,8 +42,6 @@ const H = 1414;
 const NAVY = "#13224b";
 const RED = "#c8102e";
 const MUTED = "#4a5578";
-const UNIVERSITY = "Adana Alparslan Türkeş Science and Technology University";
-const ORGANIZER = `the Department of Data Science and Analytics at ${UNIVERSITY}`;
 
 const assets = join(process.cwd(), "src/assets");
 
@@ -73,6 +90,7 @@ type Token = { text: string; tone?: "brand" | "talk"; suffix?: string };
 
 // Satori wraps flex items, not inline text runs, so the sentence is laid out word by word.
 function sentence(data: CertificateData): Token[] {
+  const t = data.texts;
   const words = (text: string, tone?: Token["tone"]) =>
     text
       .split(" ")
@@ -81,22 +99,22 @@ function sentence(data: CertificateData): Token[] {
 
   const ending = [
     { text: data.eventName, tone: "brand" as const, suffix: "," },
-    ...words(`held on ${data.certificateDate} and organized by ${ORGANIZER}.`),
+    ...words(t.ending.replaceAll("{date}", data.certificateDate)),
   ];
 
   const talks = data.talks ?? [];
   if (talks.length) {
     // “A” by X · “A” by X and “B” by Y · “A” by X, “B” by Y and “C” by Z
     const list = talks.flatMap((talk, i) => [
-      ...(i === 0 ? [] : words(i === talks.length - 1 ? "and" : "")),
+      ...(i === 0 ? [] : words(i === talks.length - 1 ? t.and : "")),
       ...words(`“${talk.title}”`, "talk"),
-      ...words("by"),
+      ...words(t.by),
       // The speaker stays on one line ("Prof. Dr. …" never splits).
       { text: talk.speaker, suffix: i < talks.length - 2 ? "," : undefined },
     ]);
-    return [...words(`in recognition of attending the ${talks.length > 1 ? "talks" : "talk"}`), ...list, ...words("at"), ...ending];
+    return [...words(talks.length > 1 ? t.attendingTalks : t.attendingTalk), ...list, ...words(t.at), ...ending];
   }
-  return [...words("in recognition of participation in"), ...ending];
+  return [...words(t.participation), ...ending];
 }
 
 function Corner({ flip = false }: { flip?: boolean }) {
@@ -157,17 +175,17 @@ function Certificate({ data, logos, qr }: { data: CertificateData; logos: string
         </div>
 
         <div style={{ marginTop: 28, fontSize: 26, fontWeight: 700, letterSpacing: 9, textTransform: "uppercase" }}>
-          {UNIVERSITY}
+          {data.texts.university}
         </div>
 
         <div style={{ marginTop: 44, fontSize: 116, fontWeight: 900, letterSpacing: 26, lineHeight: 1, paddingLeft: 26 }}>
-          CERTIFICATE
+          {data.texts.title}
         </div>
         <div style={{ marginTop: 34, fontSize: 40, fontWeight: 700, letterSpacing: 18, color: RED, paddingLeft: 18 }}>
-          OF PARTICIPATION
+          {data.texts.subtitle}
         </div>
 
-        <div style={{ marginTop: 52, fontSize: 31, color: MUTED }}>This certificate is presented to</div>
+        <div style={{ marginTop: 52, fontSize: 31, color: MUTED }}>{data.texts.presentedTo}</div>
 
         <div
           style={{
@@ -243,7 +261,7 @@ function Certificate({ data, logos, qr }: { data: CertificateData; logos: string
           }}
         >
           <div style={{ width: 64, height: 6, borderRadius: 3, background: RED }} />
-          For a Better Future
+          {data.texts.slogan}
           <div style={{ width: 64, height: 6, borderRadius: 3, background: RED }} />
         </div>
       </div>
@@ -264,8 +282,8 @@ function Certificate({ data, logos, qr }: { data: CertificateData; logos: string
         {/* eslint-disable-next-line @next/next/no-img-element -- Satori renders plain <img> */}
         <img src={qr} width={112} height={112} alt="" />
         <div style={{ display: "flex", flexDirection: "column", gap: 4, paddingBottom: 2 }}>
-          <span style={{ fontWeight: 600, color: NAVY, letterSpacing: 1 }}>{`Certificate No: ${data.certificateNo}`}</span>
-          <span>{`Verify at ${data.verifyUrl.replace(/^https?:\/\//, "").replace(/\?.*$/, "")}`}</span>
+          <span style={{ fontWeight: 600, color: NAVY, letterSpacing: 1 }}>{`${data.texts.number} ${data.certificateNo}`}</span>
+          <span>{`${data.texts.verifyAt} ${data.verifyUrl.replace(/^https?:\/\//, "").replace(/\?.*$/, "")}`}</span>
         </div>
       </div>
     </div>
@@ -287,7 +305,7 @@ export async function renderCertificatePdf(data: CertificateData) {
   const png = await renderCertificatePng(data);
   const pdf = await PDFDocument.create();
   pdf.setTitle(`${data.eventName} Certificate – ${data.name}`);
-  pdf.setAuthor(UNIVERSITY);
+  pdf.setAuthor(data.texts.university);
   pdf.setCreator(data.eventName);
   const page = pdf.addPage([841.89, 595.28]);
   const image = await pdf.embedPng(png);

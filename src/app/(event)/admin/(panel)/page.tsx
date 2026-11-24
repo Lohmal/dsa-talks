@@ -49,7 +49,7 @@ export default async function Dashboard({ searchParams }: PageProps<"/admin">) {
         actions={
           <>
             <ScopeSelect value={scope} options={options} />
-            <DownloadButton href={exportHref} fileName="DSATalks-anket.xlsx" tone="navy" icon="excel">
+            <DownloadButton href={exportHref} fileName={`${edition.event.name}-${edition.year}-anket.xlsx`} tone="navy" icon="excel">
               Excel
             </DownloadButton>
           </>
