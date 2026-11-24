@@ -33,7 +33,7 @@ export default function Program() {
 
                 <ol className="overflow-hidden rounded-3xl bg-white shadow-card ring-1 ring-ink/5">
                   {day.sessions.map((session) => {
-                    const speaker = speakerBySlug[session.speaker];
+                    const speaker = speakerBySlug[session.speaker] as (typeof speakers)[number] | undefined;
                     const [start, end] = session.time.split("–");
                     return (
                       <li
@@ -48,15 +48,20 @@ export default function Program() {
                           <span className="text-2xl font-black tracking-tight text-ink">{start}</span>
                           <span className="ml-1.5 text-sm font-semibold text-muted md:ml-0 md:block">– {end}</span>
                         </p>
-                        <div className="flex items-center gap-4 md:col-start-2 lg:col-start-auto">
-                          <div className="relative size-14 shrink-0 overflow-hidden rounded-full ring-[3px] ring-brand/80">
-                            <SpeakerPhoto speaker={speaker} sizes="56px" />
+                        {/* A session whose speaker is not in the list (e.g. removed in the panel) shows its title only. */}
+                        {speaker ? (
+                          <div className="flex items-center gap-4 md:col-start-2 lg:col-start-auto">
+                            <div className="relative size-14 shrink-0 overflow-hidden rounded-full ring-[3px] ring-brand/80">
+                              <SpeakerPhoto speaker={speaker} sizes="56px" />
+                            </div>
+                            <div className="min-w-0">
+                              <p className="font-extrabold leading-tight text-ink">{speaker.name}</p>
+                              <p className="mt-0.5 text-sm leading-snug text-muted">{speaker.affiliation[locale]?.[0]}</p>
+                            </div>
                           </div>
-                          <div className="min-w-0">
-                            <p className="font-extrabold leading-tight text-ink">{speaker.name}</p>
-                            <p className="mt-0.5 text-sm leading-snug text-muted">{speaker.affiliation[locale][0]}</p>
-                          </div>
-                        </div>
+                        ) : (
+                          <span className="hidden lg:block" />
+                        )}
                         <h4 className="text-lg font-bold leading-snug tracking-[-0.01em] text-ink md:col-start-2 lg:col-start-auto">
                           {session.title}
                         </h4>

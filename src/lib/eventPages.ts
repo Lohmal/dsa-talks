@@ -1,4 +1,5 @@
 import "server-only";
+import type { Metadata } from "next";
 import { cache } from "react";
 import { notFound } from "next/navigation";
 import { connection } from "next/server";
@@ -40,4 +41,19 @@ export async function loadEventCards(): Promise<EventCard[]> {
       },
     ];
   });
+}
+
+// Title, description and link preview text of an event page, from the year's own texts.
+export async function eventMetadata(slug: string, year?: string, page?: string): Promise<Metadata> {
+  const { content, base } = await loadEventYear(slug, year);
+  const en = localize<Messages>(content.messages, "en");
+  const title = page ? `${page} | ${en.meta.name}` : `${en.meta.name} – ${en.meta.dateRange}`;
+  const description = en.hero.intro;
+  return {
+    title,
+    description,
+    alternates: { canonical: page ? `${base}/kurullar` : base },
+    openGraph: { type: "website", siteName: en.meta.name, title, description, url: base },
+    twitter: { card: "summary_large_image", title, description },
+  };
 }

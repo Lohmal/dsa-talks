@@ -8,6 +8,16 @@ import type { Speaker } from "@/data/speakers";
 export default function SpeakerPhoto({ speaker, alt = "", sizes }: { speaker: Speaker; alt?: string; sizes: string }) {
   const { frame } = speaker;
 
+  // No photo yet (e.g. a speaker just added in the panel): the initials on the frame colour.
+  if (!speaker.photo) {
+    const initials = speaker.name.split(" ").filter((word) => word && !word.endsWith(".")).map((word) => word[0]).slice(0, 2).join("");
+    return (
+      <span aria-hidden className="absolute inset-0 grid place-items-center bg-ink font-black text-white">
+        {initials}
+      </span>
+    );
+  }
+
   if (!frame) {
     return <Image src={speaker.photo} alt={alt} fill sizes={sizes} unoptimized className="object-cover" />;
   }

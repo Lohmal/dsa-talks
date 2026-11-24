@@ -1,16 +1,26 @@
 import { ImageResponse } from "next/og";
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
+import { localize } from "@/lib/bilingual";
+import { loadEventYear } from "@/lib/eventPages";
+import type { Messages } from "@/i18n/LanguageProvider";
 
-// Link preview for WhatsApp, LinkedIn, X…: the poster's red band in 1200×630.
+// Link preview for WhatsApp, LinkedIn, X…: the poster's red band in 1200×630, with the name,
+// slogan, date and venue of the event's current year.
 
-export const alt = "DSATalks – Data Science and Analytics · 4–5 November 2026 · ATÜ Library Conference Hall, Adana";
+export const alt = "Event of the Department of Data Science and Analytics, ATÜ, Adana";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
 const fonts = join(process.cwd(), "src/assets/fonts");
 
-export default async function Image() {
+export default async function Image({ params }: { params: Promise<{ event: string }> }) {
+  const { content } = await loadEventYear((await params).event);
+  const m = localize<Messages>(content.messages, "en");
+  const name = m.meta.name;
+  // Two colours as on the poster: "DSA" + "Talks", otherwise the first word + the rest.
+  const space = name.indexOf(" ");
+  const [head, tail] = name.startsWith("DSA") ? ["DSA", name.slice(3)] : space < 0 ? [name, ""] : [name.slice(0, space), name.slice(space)];
   const [black, bold, medium] = await Promise.all(
     ["Poppins-Black.ttf", "Poppins-Bold.ttf", "Poppins-Medium.ttf"].map((file) => readFile(join(fonts, file))),
   );
@@ -54,12 +64,12 @@ export default async function Image() {
 
         <div style={{ display: "flex", flexDirection: "column" }}>
           <div style={{ display: "flex", fontSize: 190, fontWeight: 900, lineHeight: 0.9, letterSpacing: -10 }}>
-            <span>DSA</span>
-            <span style={{ color: "#13224b" }}>Talks</span>
+            <span>{head}</span>
+            <span style={{ color: "#13224b", whiteSpace: "pre" }}>{tail}</span>
           </div>
           <div style={{ width: 170, height: 12, borderRadius: 6, background: "#13224b", marginTop: 34 }} />
           <div style={{ display: "flex", alignItems: "center", fontSize: 50, fontWeight: 700, marginTop: 30 }}>
-            Where data turns into
+            {`${m.hero.line1} ${m.hero.line2}`}
             <span
               style={{
                 marginLeft: 16,
@@ -68,14 +78,14 @@ export default async function Image() {
                 background: "#13224b",
               }}
             >
-              decisions.
+              {m.hero.highlight}
             </span>
           </div>
         </div>
 
         <div style={{ display: "flex", gap: 56, fontSize: 28, fontWeight: 500 }}>
-          <span>4–5 November 2026</span>
-          <span style={{ opacity: 0.85 }}>ATÜ Library Conference Hall · Adana</span>
+          <span>{m.meta.dateRange}</span>
+          <span style={{ opacity: 0.85 }}>{m.meta.address}</span>
         </div>
       </div>
     ),

@@ -1,9 +1,11 @@
-import type { Metadata } from "next";
 import EventFrame from "@/components/EventFrame";
 import EventCommittees from "@/components/EventCommittees";
-import { loadEventYear } from "@/lib/eventPages";
+import { eventMetadata, loadEventYear } from "@/lib/eventPages";
 
-export const metadata: Metadata = { title: "Kurullar – Committees" };
+export async function generateMetadata({ params }: PageProps<"/etkinlikler/[event]/kurullar">) {
+  const p = await params;
+  return eventMetadata(p.event, undefined, "Kurullar – Committees");
+}
 
 export default async function CommitteesPage({ params }: PageProps<"/etkinlikler/[event]/kurullar">) {
   const { event } = await params;
