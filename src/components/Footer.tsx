@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Globe, Mail } from "lucide-react";
-import { sectionHref } from "./MobileMenu";
+import { sectionHref, useSections } from "./MobileMenu";
 import { setConsent } from "@/lib/consent";
 import { Container, LanguageSwitcher, Wordmark } from "./ui";
 import { useLanguage } from "@/i18n/LanguageProvider";
@@ -18,7 +18,6 @@ function InstagramIcon({ className = "size-5" }: { className?: string }) {
   );
 }
 
-const sections = ["about", "speakers", "program", "committees", "venue"] as const;
 
 function ColumnTitle({ children }: { children: React.ReactNode }) {
   return <h2 className="text-xs font-extrabold uppercase tracking-[0.3em] text-brand-soft">{children}</h2>;
@@ -28,6 +27,7 @@ function ColumnTitle({ children }: { children: React.ReactNode }) {
 // organizer, then a bottom row with the copyright, the poster's closing line and the language switch.
 export default function Footer() {
   const { m, site, base } = useLanguage();
+  const sections = useSections();
   const onHome = usePathname() === base;
   const contacts = [
     { href: `mailto:${site.email}`, icon: Mail, label: site.email },

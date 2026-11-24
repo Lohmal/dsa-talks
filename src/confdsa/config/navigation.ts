@@ -44,6 +44,7 @@ export const navigation: NavItem[] = [
   { key: "socialActivities", href: "/social-activities", enabled: false },
   { key: "awards", href: "/awards", enabled: false },
   { key: "paperPublications", href: "/paper-publications", enabled: false },
+  { key: "gallery", href: "/gallery", enabled: false },
   { key: "events", href: "/etkinlikler", enabled: true },
   { key: "contact", href: "/contact", enabled: true },
 ];

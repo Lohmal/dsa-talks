@@ -31,6 +31,7 @@
     "socialActivities": "Social Activities",
     "awards": "Awards",
     "paperPublications": "Paper Publications",
+    "gallery": "Gallery",
     "menu": "Menu",
     "closeMenu": "Close menu",
     "overview": "Overview"
@@ -424,5 +425,13 @@
     "number": "Certificate number",
     "closing": "For a better future,",
     "footer": "Adana Alparslan Türkeş Science and Technology University · Department of Data Science and Analytics"
+  },
+  "gallery": {
+    "intro": "Photos and videos from the conference.",
+    "empty": "Photos and videos will be shared here after the event.",
+    "close": "Close",
+    "previous": "Previous",
+    "next": "Next",
+    "play": "Play video"
   }
 }

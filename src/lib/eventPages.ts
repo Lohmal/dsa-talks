@@ -44,15 +44,16 @@ export async function loadEventCards(): Promise<EventCard[]> {
 }
 
 // Title, description and link preview text of an event page, from the year's own texts.
-export async function eventMetadata(slug: string, year?: string, page?: string): Promise<Metadata> {
+// page: a sub-page's title and address under the event ("kurullar", "galeri").
+export async function eventMetadata(slug: string, year?: string, page?: { title: string; path: string }): Promise<Metadata> {
   const { content, base } = await loadEventYear(slug, year);
   const en = localize<Messages>(content.messages, "en");
-  const title = page ? `${page} | ${en.meta.name}` : `${en.meta.name} – ${en.meta.dateRange}`;
+  const title = page ? `${page.title} | ${en.meta.name}` : `${en.meta.name} – ${en.meta.dateRange}`;
   const description = en.hero.intro;
   return {
     title,
     description,
-    alternates: { canonical: page ? `${base}/kurullar` : base },
+    alternates: { canonical: page ? `${base}/${page.path}` : base },
     openGraph: { type: "website", siteName: en.meta.name, title, description, url: base },
     twitter: { card: "summary_large_image", title, description },
   };

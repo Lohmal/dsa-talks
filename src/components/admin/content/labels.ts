@@ -7,6 +7,9 @@ export const labels: Record<string, string> = {
   speakers: "Konuşmacılar",
   committees: "Kurullar",
   pages: "Yayındaki sayfalar",
+  gallery: "Galeri",
+  video: "Video bağlantısı (YouTube / Vimeo; fotoğraf yerine kapak olarak da kullanılabilir)",
+  caption: "Açıklama",
 
   // Text groups
   meta: "Genel (ad, tarih, yer)",

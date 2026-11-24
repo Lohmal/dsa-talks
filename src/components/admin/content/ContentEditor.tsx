@@ -6,6 +6,7 @@ import { isPair } from "@/lib/bilingual";
 import { ActionForm, SubmitButton, type FormAction } from "@/components/admin/forms";
 import { inputClass } from "@/components/admin/ui";
 import { navigation, type NavItem } from "@/confdsa/config/navigation";
+import { emptyGalleryItem, videoEmbed } from "@/lib/gallery";
 import { fileKeys, labelOf } from "./labels";
 
 // One editor for everything a year shows: it walks the year's content tree and draws a field
@@ -59,7 +60,11 @@ function summaryOf(item: Json): string {
   const text = (value: Json | undefined) =>
     typeof value === "string" ? value : isPair(value) && typeof value.tr === "string" ? value.tr || String(value.en) : "";
   const person = [text(item.given), text(item.surname)].filter(Boolean).join(" ");
-  return person || text(item.name) || text(item.title) || text(item.label) || text(item.date) || text(item.time) || "";
+  const file = (value: Json | undefined) => (typeof value === "string" ? value.split("/").pop() ?? "" : "");
+  return (
+    person || text(item.name) || text(item.title) || text(item.label) || text(item.date) || text(item.time) ||
+    text(item.caption) || (item.video ? `Video: ${item.video}` : "") || file(item.image)
+  );
 }
 
 type Ctx = {
@@ -294,8 +299,14 @@ function Node({ ctx, path, value, template }: { ctx: Ctx; path: Path; value: Jso
   if (Array.isArray(value)) {
     // New items copy the shape of the first one, or of the first item in the code defaults.
     const fromDefaults = getAt(ctx.defaults, path.map((part) => (typeof part === "number" ? 0 : part)));
-    const itemTemplate = value[0] ?? (Array.isArray(fromDefaults) ? fromDefaults[0] : undefined);
-    return <List ctx={ctx} path={path} items={value} template={itemTemplate ?? template} label={label} />;
+    // The gallery starts empty, so its items get their shape here.
+    const itemTemplate = value[0] ?? (Array.isArray(fromDefaults) ? fromDefaults[0] : undefined) ?? (key === "gallery" ? emptyGalleryItem() : undefined);
+    return (
+      <>
+        {key === "gallery" && path.length === 1 && <GalleryHelp ctx={ctx} path={path} items={value} />}
+        <List ctx={ctx} path={path} items={value} template={itemTemplate ?? template} label={label} />
+      </>
+    );
   }
   if (isObject(value)) {
     return (
@@ -466,6 +477,65 @@ function IconButton({ label, onClick, disabled, children }: { label: string; onC
     >
       {children}
     </button>
+  );
+}
+
+// Above the gallery list: how it works, a check of the video links, and several photos at once.
+function GalleryHelp({ ctx, path, items }: { ctx: Ctx; path: Path; items: Json[] }) {
+  const input = useRef<HTMLInputElement>(null);
+  const [progress, setProgress] = useState("");
+  const [errors, setErrors] = useState<string[]>([]);
+  const badVideos = items.filter((item) => isObject(item) && typeof item.video === "string" && item.video && !videoEmbed(item.video)).length;
+
+  return (
+    <div className="mb-5 space-y-3 rounded-xl bg-surface p-4 text-sm text-muted ring-1 ring-line">
+      <p>
+        Fotoğrafları yükleyin (JPG, PNG, WebP; en çok 8 MB, otomatik küçültülür). Videoları önce YouTube’a (liste dışı da
+        olabilir) ya da Vimeo’ya yükleyip bağlantısını <strong>Video bağlantısı</strong> alanına yapıştırın. Video
+        dosyaları büyük olduğu için siteye doğrudan yüklenmez. Galeride en az bir öğe olunca sayfa menüde görünür
+        {ctx.pageLabels.gallery ? " (CONFDSA’da ayrıca “Yayındaki sayfalar”dan Galeri’yi açın)" : ""}.
+      </p>
+      {badVideos > 0 && (
+        <p className="font-semibold text-brand">{badVideos} video bağlantısı tanınmadı; YouTube ya da Vimeo bağlantısı olmalı.</p>
+      )}
+      <input
+        ref={input}
+        type="file"
+        multiple
+        accept="image/png,image/jpeg,image/webp"
+        className="hidden"
+        onChange={async (event) => {
+          const files = Array.from(event.target.files ?? []);
+          event.target.value = "";
+          const added: Json[] = [];
+          const failed: string[] = [];
+          for (const [index, file] of files.entries()) {
+            setProgress(`${index + 1} / ${files.length} yükleniyor…`);
+            const body = new FormData();
+            body.set("file", file);
+            const response = await fetch("/admin/upload", { method: "POST", body }).catch(() => null);
+            if (response?.ok) added.push({ ...emptyGalleryItem(), image: ((await response.json()) as { url: string }).url });
+            else failed.push(`${file.name}: ${(response && (await response.text())) || "yüklenemedi"}`);
+          }
+          setProgress("");
+          setErrors(failed);
+          if (added.length) ctx.update(path, [...items, ...added]);
+        }}
+      />
+      <button
+        type="button"
+        disabled={!!progress}
+        onClick={() => input.current?.click()}
+        className="inline-flex items-center gap-2 rounded-full bg-ink px-4 py-2 font-bold text-white disabled:opacity-60"
+      >
+        {progress ? <Loader2 className="size-4 animate-spin" /> : <Upload className="size-4" />}
+        {progress || "Birden çok fotoğraf yükle"}
+      </button>
+      {errors.map((error) => (
+        <p key={error} className="font-semibold text-brand">{error}</p>
+      ))}
+      <p className="text-xs">Yüklenenler listeye eklenir; kalıcı olması için en alttaki <strong>Kaydet</strong>’e basın.</p>
+    </div>
   );
 }
 

@@ -24,6 +24,7 @@ export {
   Funnel as FilterIcon,
   Globe as GlobeIcon,
   House as HomeIcon,
+  Images as ImagesIcon,
   Layers as LayersIcon,
   LayoutGrid as GridIcon,
   Lightbulb as LightbulbIcon,

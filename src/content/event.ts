@@ -5,6 +5,7 @@ import { defaultSpeakers } from "@/data/speakers";
 import { site } from "@/config/site";
 import { toBilingual } from "@/lib/bilingual";
 import type { Committees } from "@/data/committees";
+import type { GalleryItem } from "@/lib/gallery";
 
 // Everything an event year (the DSATalks template) shows: texts (as { tr, en } pairs),
 // contact details, speakers and committees. These are the defaults from the code; a year's
@@ -14,6 +15,7 @@ export const eventDefaults = () => ({
   site: { ...site },
   speakers: defaultSpeakers,
   committees: committees as Committees,
+  gallery: [] as GalleryItem[],
 });
 
 export type EventContent = ReturnType<typeof eventDefaults>;

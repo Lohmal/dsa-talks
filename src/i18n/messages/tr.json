@@ -19,6 +19,7 @@
     "program": "Program",
     "committees": "Kurullar",
     "venue": "Ulaşım",
+    "gallery": "Galeri",
     "menu": "Menü",
     "closeMenu": "Menüyü kapat",
     "language": "Dil"
@@ -351,5 +352,14 @@
     "number": "Sertifika numarası",
     "closing": "Daha iyi bir gelecek için,",
     "footer": "Adana Alparslan Türkeş Bilim ve Teknoloji Üniversitesi · Veri Bilimi ve Analitiği Bölümü"
+  },
+  "gallery": {
+    "title": "Galeri",
+    "intro": "Etkinlikten fotoğraflar ve videolar.",
+    "empty": "Fotoğraf ve videolar etkinlikten sonra burada paylaşılacaktır.",
+    "close": "Kapat",
+    "previous": "Önceki",
+    "next": "Sonraki",
+    "play": "Videoyu oynat"
   }
 }

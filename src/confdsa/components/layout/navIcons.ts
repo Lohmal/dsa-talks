@@ -17,6 +17,7 @@ import {
   UserPlusIcon,
   UsersIcon,
   BuildingIcon,
+  ImagesIcon,
   type IconComponent,
 } from "@/confdsa/components/ui/Icons";
 
@@ -41,4 +42,5 @@ export const navIcons: Record<NavKey, IconComponent> = {
   awards: TrophyIcon,
   paperPublications: BookIcon,
   events: CalendarIcon,
+  gallery: ImagesIcon,
 };

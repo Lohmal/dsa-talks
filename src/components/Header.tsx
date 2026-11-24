@@ -5,22 +5,28 @@ import { motion } from "motion/react";
 import { Menu } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import MobileMenu, { sectionHref, type SectionId } from "./MobileMenu";
+import MobileMenu, { sectionHref, useSections } from "./MobileMenu";
 import { Brand, Container, LanguageSwitcher } from "./ui";
 import { useLanguage } from "@/i18n/LanguageProvider";
 
-const sections: readonly SectionId[] = ["about", "speakers", "program", "committees", "venue"];
 
 // White bar with the poster's red top line. Highlights the section currently in view.
 export default function Header() {
   const { m, base } = useLanguage();
+  const sections = useSections();
   const pathname = usePathname();
   const onHome = pathname === base;
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [spied, setSpied] = useState<string | null>(null);
   // On the event page the section in view is highlighted; on its committees page, that link.
-  const current = onHome ? spied : pathname.startsWith(`${base}/kurullar`) ? "committees" : null;
+  const current = onHome
+    ? spied
+    : pathname.startsWith(`${base}/kurullar`)
+      ? "committees"
+      : pathname.startsWith(`${base}/galeri`)
+        ? "gallery"
+        : null;
   const menuButtonRef = useRef<HTMLButtonElement>(null);
 
   const closeMenu = useCallback(() => {
@@ -38,7 +44,7 @@ export default function Header() {
       },
       { rootMargin: "-45% 0px -50% 0px" },
     );
-    for (const id of sections) {
+    for (const id of ["about", "speakers", "program", "venue"]) {
       const element = document.getElementById(id);
       if (element) observer.observe(element);
     }

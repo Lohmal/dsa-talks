@@ -7,6 +7,7 @@ import { defaultPages } from "./config/navigation";
 import { toBilingual } from "@/lib/bilingual";
 import type { Speaker } from "./data/speakers";
 import type { CommitteeId, Member } from "./data/committees";
+import type { GalleryItem } from "@/lib/gallery";
 
 // Everything a CONFDSA year shows: texts (as { tr, en } pairs), contact details, speakers,
 // committees and which menu pages are published. These are the defaults from the code; a
@@ -17,6 +18,7 @@ export const conferenceDefaults = () => ({
   speakers: speakers as Speaker[],
   committees: committees as Record<CommitteeId, Member[]>,
   pages: defaultPages(),
+  gallery: [] as GalleryItem[],
 });
 
 export type ConferenceContent = ReturnType<typeof conferenceDefaults>;

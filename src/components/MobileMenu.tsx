@@ -3,16 +3,24 @@
 import { useEffect, useRef, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
 import { AnimatePresence, MotionConfig, motion } from "motion/react";
-import { CalendarDays, Globe, Info, Mail, MapPin, Mic, Users, X, type LucideIcon } from "lucide-react";
+import { CalendarDays, Globe, Images, Info, Mail, MapPin, Mic, Users, X, type LucideIcon } from "lucide-react";
 import { LanguageSwitcher, Wordmark } from "./ui";
 import { useLanguage } from "@/i18n/LanguageProvider";
 
-export type SectionId = "about" | "speakers" | "program" | "committees" | "venue";
+export type SectionId = "about" | "speakers" | "program" | "committees" | "venue" | "gallery";
+
+// The menu of an event page; the gallery only once it has photos or videos.
+export function useSections(): SectionId[] {
+  const { gallery } = useLanguage();
+  const base: SectionId[] = ["about", "speakers", "program", "committees", "venue"];
+  return gallery.length ? [...base, "gallery"] : base;
+}
 
 // Sections of the event page are anchors (#id there, <event page>/#id elsewhere); the
-// committees have a page of their own.
+// committees and the gallery have pages of their own.
 export function sectionHref(id: SectionId, onHome: boolean, base: string) {
   if (id === "committees") return `${base}/kurullar`;
+  if (id === "gallery") return `${base}/galeri`;
   return onHome ? `#${id}` : `${base}/#${id}`;
 }
 
@@ -22,6 +30,7 @@ const icons: Record<SectionId, LucideIcon> = {
   program: CalendarDays,
   committees: Users,
   venue: MapPin,
+  gallery: Images,
 };
 
 const EASE = [0.22, 1, 0.36, 1] as const;

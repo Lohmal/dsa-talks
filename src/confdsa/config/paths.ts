@@ -7,6 +7,7 @@ export const conferencePaths = [
   "awards",
   "committees",
   "contact",
+  "gallery",
   "important-dates",
   "paper-publications",
   "program",
