@@ -1,8 +1,7 @@
-import data from "./committees.json";
 import type { Locale } from "@/i18n/LanguageProvider";
 
-// Committee members (shared with the CONFDSA site): names, titles and affiliations in both
-// languages; photos in public/images/people.
+// Committee members of an event year: names, titles and affiliations in both languages;
+// photos in public/images/people. Default list: committees.json.
 
 export type Localized = { en: string; tr: string };
 
@@ -17,7 +16,7 @@ export type Member = {
 
 export type CommitteeId = "honoraryChairs" | "coChairs" | "programCommittee" | "localCommittee";
 
-export const committees = data as Record<CommitteeId, Member[]>;
+export type Committees = Record<CommitteeId, Member[]>;
 
 export function displayName(member: Member, locale: Locale) {
   const title = member.title?.[locale];

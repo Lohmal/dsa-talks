@@ -2,13 +2,14 @@
 
 import SpeakerPhoto from "./SpeakerPhoto";
 import { Container, FadeIn, SectionHeading } from "./ui";
-import { speakerBySlug } from "@/data/speakers";
+import { bySlug } from "@/data/speakers";
 import { useLanguage } from "@/i18n/LanguageProvider";
 
 // Both days stacked as an agenda: a large day label on the left, the sessions as rows
 // on the right (time · speaker · title).
 export default function Program() {
-  const { m, locale } = useLanguage();
+  const { m, locale, speakers } = useLanguage();
+  const speakerBySlug = bySlug(speakers);
 
   return (
     <section id="program" className="scroll-mt-24 bg-surface py-20 sm:py-28">

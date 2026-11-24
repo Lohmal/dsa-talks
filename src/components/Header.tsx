@@ -13,14 +13,14 @@ const sections: readonly SectionId[] = ["about", "speakers", "program", "committ
 
 // White bar with the poster's red top line. Highlights the section currently in view.
 export default function Header() {
-  const { m } = useLanguage();
+  const { m, base } = useLanguage();
   const pathname = usePathname();
-  const onHome = pathname === "/";
+  const onHome = pathname === base;
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [spied, setSpied] = useState<string | null>(null);
-  // On the home page the section in view is highlighted; on /kurullar, the committees link.
-  const current = onHome ? spied : pathname.startsWith("/kurullar") ? "committees" : null;
+  // On the event page the section in view is highlighted; on its committees page, that link.
+  const current = onHome ? spied : pathname.startsWith(`${base}/kurullar`) ? "committees" : null;
   const menuButtonRef = useRef<HTMLButtonElement>(null);
 
   const closeMenu = useCallback(() => {
@@ -55,7 +55,7 @@ export default function Header() {
       }`}
     >
       <Container className="flex h-16 items-center justify-between gap-6 sm:h-18">
-        <Link href={onHome ? "#top" : "/"} className="text-2xl sm:text-[1.7rem]">
+        <Link href={onHome ? "#top" : base} className="text-2xl sm:text-[1.7rem]">
           <Brand />
         </Link>
 
@@ -63,7 +63,7 @@ export default function Header() {
           {sections.map((id) => (
             <Link
               key={id}
-              href={sectionHref(id, onHome)}
+              href={sectionHref(id, onHome, base)}
               aria-current={current === id ? "true" : undefined}
               className={`relative rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
                 current === id ? "text-brand" : "text-ink/75 hover:text-ink"

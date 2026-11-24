@@ -4,13 +4,13 @@ import SpeakerPhoto from "./SpeakerPhoto";
 import { useEffect, useRef, useState } from "react";
 import { ArrowUpRight, BookOpenText, X } from "lucide-react";
 import { Container, FadeIn, SectionHeading } from "./ui";
-import { linkNames, slotLabel, speakers, talksOf, type Speaker } from "@/data/speakers";
+import { linkNames, slotLabel, talksOf, type Speaker } from "@/data/speakers";
 import { useLanguage } from "@/i18n/LanguageProvider";
 
 // Navy band with the three speakers, laid out like the poster: round photo, red time
 // badge, name, affiliation, a short red rule and the talk titles.
 export default function Speakers() {
-  const { m } = useLanguage();
+  const { m, speakers } = useLanguage();
   const [selected, setSelected] = useState<Speaker | null>(null);
 
   return (

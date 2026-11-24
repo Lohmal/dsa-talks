@@ -4,7 +4,7 @@ import { useRef, useState, useTransition } from "react";
 import { AlertCircle, CalendarClock, Check, CheckCircle2, Download, Loader2, Lock, Mail, Send } from "lucide-react";
 import PublicShell from "@/components/PublicShell";
 import { useLanguage, type Messages } from "@/i18n/LanguageProvider";
-import { submitSurvey } from "@/app/anket/actions";
+import { submitSurvey } from "@/app/(event)/anket/actions";
 import type { SubmitResult, SurveyProps, SurveyQuestion } from "./types";
 
 const RATINGS = [5, 4, 3, 2, 1] as const;

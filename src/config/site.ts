@@ -1,4 +1,5 @@
-// Language-independent event details. Texts live in src/i18n/messages/*.json.
+// Event details outside the texts (src/i18n/messages/*.json). Defaults; the admin panel
+// can change them per year.
 export const site = {
   // As on the speaker posters.
   websiteUrl: "https://confdsa.atu.edu.tr",
@@ -8,4 +9,4 @@ export const site = {
   departmentUrl: "https://vba.atu.edu.tr",
   // Used for the map and the "Get directions" link.
   mapQuery: "Adana Alparslan Türkeş Bilim ve Teknoloji Üniversitesi Kütüphane",
-} as const;
+};

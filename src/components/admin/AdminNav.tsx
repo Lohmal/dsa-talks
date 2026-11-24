@@ -19,7 +19,7 @@ import {
   X,
   type LucideIcon,
 } from "lucide-react";
-import { logout } from "@/app/admin/actions";
+import { logout } from "@/app/(event)/admin/actions";
 
 const items = [
   { href: "/admin", label: "Genel Bakış", icon: LayoutDashboard },

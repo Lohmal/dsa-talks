@@ -5,15 +5,15 @@ import { createPortal } from "react-dom";
 import { AnimatePresence, MotionConfig, motion } from "motion/react";
 import { CalendarDays, Globe, Info, Mail, MapPin, Mic, Users, X, type LucideIcon } from "lucide-react";
 import { LanguageSwitcher, Wordmark } from "./ui";
-import { site } from "@/config/site";
 import { useLanguage } from "@/i18n/LanguageProvider";
 
 export type SectionId = "about" | "speakers" | "program" | "committees" | "venue";
 
-// Sections of the home page are anchors (#id there, /#id elsewhere); the committees have a page.
-export function sectionHref(id: SectionId, onHome: boolean) {
-  if (id === "committees") return "/kurullar";
-  return onHome ? `#${id}` : `/#${id}`;
+// Sections of the event page are anchors (#id there, <event page>/#id elsewhere); the
+// committees have a page of their own.
+export function sectionHref(id: SectionId, onHome: boolean, base: string) {
+  if (id === "committees") return `${base}/kurullar`;
+  return onHome ? `#${id}` : `${base}/#${id}`;
 }
 
 const icons: Record<SectionId, LucideIcon> = {
@@ -82,7 +82,7 @@ function Drawer({
   current: string | null;
   onHome: boolean;
 }) {
-  const { m } = useLanguage();
+  const { m, site, base } = useLanguage();
   const closeRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
@@ -149,7 +149,7 @@ function Drawer({
                   transition={{ delay: 0.08 + index * 0.035, duration: 0.3, ease: EASE }}
                 >
                   <a
-                    href={sectionHref(id, onHome)}
+                    href={sectionHref(id, onHome, base)}
                     aria-current={active ? "true" : undefined}
                     className={`group flex items-center gap-3 rounded-xl px-2.5 py-2 font-semibold transition-colors ${
                       active ? "bg-white/10 text-white" : "text-white/85 hover:bg-white/6 hover:text-white"

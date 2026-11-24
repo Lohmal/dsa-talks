@@ -1,0 +1,260 @@
+{
+  "meta": {
+    "shortName": "CONFDSA",
+    "conferenceName": "International Conference on Data Science and Analytics",
+    "tagline": "A two-day academic conference on data science, analytics, and AI",
+    "university": "Adana Alparslan Türkeş Science and Technology University",
+    "department": "Department of Data Science and Analytics",
+    "dateRange": "04–05 November 2026",
+    "venue": "ATU Library Conference Hall",
+    "city": "Adana, Türkiye",
+    "universityShort": "ATÜ"
+  },
+  "nav": {
+    "home": "Home",
+    "committees": "Committees",
+    "honoraryChairs": "Honorary Committee",
+    "coChairs": "Co-Chairs",
+    "programCommittee": "Program Committee",
+    "localCommittee": "Organizing Committee",
+    "conferenceTopics": "Topics and Scopes",
+    "plenarySpeakers": "Keynote & Invited Speakers",
+    "conferenceProgram": "Program",
+    "registration": "Registration",
+    "abstractSubmission": "Abstract Submission",
+    "importantDates": "Important Dates",
+    "events": "Events",
+    "contact": "Contact",
+    "accommodation": "Accommodation",
+    "registrationFee": "Registration Fee",
+    "socialActivities": "Social Activities",
+    "awards": "Awards",
+    "paperPublications": "Paper Publications",
+    "menu": "Menu",
+    "closeMenu": "Close menu",
+    "overview": "Overview"
+  },
+  "common": {
+    "comingSoon": "Coming soon",
+    "comingSoonText": "Details for this section will be announced soon.",
+    "tba": "To be announced",
+    "language": "Language",
+    "notFoundTitle": "Page not found",
+    "notFoundText": "The page you are looking for does not exist or has been moved.",
+    "backHome": "Back to home"
+  },
+  "home": {
+    "ctaSubmit": "Submit Abstract",
+    "ctaProgram": "View Program",
+    "factDate": "Conference Dates",
+    "factVenue": "Venue",
+    "factOrganizer": "Organizer",
+    "welcomeTitle": "Welcome to CONFDSA",
+    "aboutText": [
+      "Data has become the foundation of decision-making in every field, from science and healthcare to industry and public services. CONFDSA brings together researchers, students and industry professionals on 4–5 November 2026 at Adana Alparslan Türkeş Science and Technology University to explore this transformation together.",
+      "Over two days, invited speakers from academia and industry will share their knowledge and experience across a wide range of topics, from the data science lifecycle and statistical modelling to machine learning, artificial intelligence applications and the tools data scientists use every day.",
+      "We look forward to welcoming you to a meeting built around knowledge sharing, new collaborations and inspiring discussions."
+    ],
+    "glanceTitle": "At a Glance",
+    "speakersTitle": "Keynote & Invited Speakers",
+    "speakersText": "Invited speakers from academia and industry",
+    "speakersAll": "View all speakers",
+    "programTitle": "Conference Program",
+    "organizerTitle": "Organized by",
+    "ctaTitle": "Contact us",
+    "ctaText": "For questions about the conference, collaboration or participation, send us an email and we will get back to you as soon as possible.",
+    "heroLine1": "International Conference on",
+    "heroLine2": "Data Science and Analytics",
+    "discover": "Discover the conference",
+    "ctaButton": "Send an Email",
+    "emailSubject": "CONFDSA",
+    "posterTitle": "CONFDSA Poster",
+    "posterText": "The program, the invited speakers, the dates and the venue, all on a single page.",
+    "posterDownload": "Download PDF",
+    "posterOther": "Turkish poster (PDF)",
+    "posterAlt": "CONFDSA conference poster in English",
+    "posterOpen": "Open full size"
+  },
+  "speakers": {
+    "talkLabel": "Talk",
+    "talksLabel": "Talks",
+    "viewProfile": "View profile",
+    "biography": "Biography",
+    "bioSoon": "The biography will be added soon.",
+    "talksInProgram": "Talks in the Program",
+    "profiles": "Academic profiles",
+    "allSpeakers": "All speakers",
+    "viewProgram": "View in program",
+    "institutionProfile": "Institutional profile",
+    "researchAreas": "Research Areas"
+  },
+  "program": {
+    "time": "Time",
+    "speaker": "Speaker",
+    "title": "Title",
+    "days": [
+      {
+        "label": "Day 1 – Wednesday, 4 November 2026",
+        "sessions": [
+          {
+            "time": "09.30–10.00",
+            "speaker": "Opening Remarks",
+            "affiliation": "",
+            "title": "Opening Remarks"
+          },
+          {
+            "time": "10.15–12.00",
+            "speaker": "Prof. Dr. İlker ÜNAL",
+            "affiliation": "Çukurova University, Faculty of Medicine, Department of Biostatistics",
+            "title": "From Healthcare Data to Clinical Decisions: Data Science at the Intersection of Biostatistics and Machine Learning",
+            "speakerId": "ilker-unal"
+          },
+          {
+            "time": "12.00–13.30",
+            "speaker": "Lunch Break",
+            "affiliation": "",
+            "title": "–",
+            "isBreak": true
+          },
+          {
+            "time": "14.00–15.00",
+            "speaker": "Dr. Recep EROL",
+            "affiliation": "Rice University, Center for Research and Computing",
+            "title": "Data Science from Yesterday to Tomorrow",
+            "speakerId": "recep-erol"
+          }
+        ]
+      },
+      {
+        "label": "Day 2 – Thursday, 5 November 2026",
+        "sessions": [
+          {
+            "time": "10.15–12.00",
+            "speaker": "Silvan Schwaller",
+            "affiliation": "FIGES – Academic Planning and Development Engineer",
+            "title": "Mastering the Matrix: MATLAB for Data Scientists",
+            "speakerId": "silvan-schwaller"
+          },
+          {
+            "time": "12.00–13.30",
+            "speaker": "Lunch Break",
+            "affiliation": "",
+            "title": "–",
+            "isBreak": true
+          },
+          {
+            "time": "14.00–15.00",
+            "speaker": "Dr. Recep EROL",
+            "affiliation": "Rice University, Center for Research and Computing",
+            "title": "Steps Into the Data Science Lifecycle and New Trends",
+            "speakerId": "recep-erol"
+          }
+        ]
+      }
+    ]
+  },
+  "abstract": {
+    "intro": "Prepare your abstract using the official template and submit it through the Microsoft CMT system.",
+    "templateTitle": "Abstract Template",
+    "templateText": "Download the template and follow its formatting rules.",
+    "templateButton": "Download Template",
+    "cmtTitle": "Submit via CMT",
+    "cmtText": "Abstracts are collected through the Microsoft CMT conference management system.",
+    "cmtButton": "Go to CMT",
+    "notAvailableYet": "Available soon"
+  },
+  "importantDates": {
+    "items": [
+      {
+        "label": "Abstract Submission Deadline",
+        "date": "To be announced"
+      },
+      {
+        "label": "Notification of Acceptance",
+        "date": "To be announced"
+      },
+      {
+        "label": "Registration Deadline",
+        "date": "To be announced"
+      },
+      {
+        "label": "Conference Days",
+        "date": "04–05 November 2026"
+      }
+    ]
+  },
+  "contact": {
+    "intro": "For questions about the conference, the program, abstract submission or collaboration, please get in touch. We will get back to you as soon as possible.",
+    "email": "E-mail",
+    "website": "Website",
+    "instagram": "Instagram",
+    "venue": "Venue",
+    "address": "Address",
+    "addressValue": "Balcalı Mah. Güney Kampüs 10 Sokak No:1U, Sarıçam, Adana, Türkiye",
+    "emailTitle": "Write to us",
+    "emailText": "The fastest way to reach the organizing committee.",
+    "sendEmail": "Send an Email",
+    "mapTitle": "Location",
+    "directions": "Get directions"
+  },
+  "footer": {
+    "quickLinks": "Quick Links",
+    "contact": "Contact",
+    "organizedBy": "Organized by",
+    "rights": "All rights reserved."
+  },
+  "committees": {
+    "intro": "The committees responsible for the scientific program and the organization of CONFDSA.",
+    "members": "members",
+    "view": "View committee",
+    "membersHeading": "Members"
+  },
+  "topics": {
+    "intro": "CONFDSA welcomes contributions across the full spectrum of data science and analytics, including but not limited to the following topics.",
+    "items": [
+      {
+        "icon": "dna",
+        "title": "Data Science for Bioinformatics"
+      },
+      {
+        "icon": "fingerprint",
+        "title": "Data Science for Forensics"
+      },
+      {
+        "icon": "barChart",
+        "title": "Statistical Data Analysis"
+      },
+      {
+        "icon": "database",
+        "title": "Data Mining"
+      },
+      {
+        "icon": "server",
+        "title": "Big Data Applications"
+      },
+      {
+        "icon": "filter",
+        "title": "Data Preprocessing and Sampling"
+      },
+      {
+        "icon": "sigma",
+        "title": "Probabilistic and Statistical Theories"
+      },
+      {
+        "icon": "pieChart",
+        "title": "Data Visualization and Storytelling"
+      },
+      {
+        "icon": "lightbulb",
+        "title": "Data Science for Business Innovation"
+      }
+    ]
+  },
+  "events": {
+    "title": "Events",
+    "intro": "Talks, workshops and other events organised by the Department of Data Science and Analytics.",
+    "view": "View event",
+    "past": "Earlier years",
+    "empty": "No events have been announced yet."
+  }
+}

@@ -1,0 +1,36 @@
+@import "tailwindcss";
+
+/* Brand colors taken from the conference poster */
+@theme {
+  --color-brand: #d7182a;
+  --color-brand-dark: #b01322;
+  --color-navy: #1e2b4f;
+  --color-navy-light: #2c3e6b;
+  --color-navy-deep: #090f26; /* bottom of the hero planet; the Welcome section continues it */
+  --color-mist: #8fa3c7;
+  --color-surface: #f5f7fa;
+  --color-line: #e4e8ef;
+  --color-muted: #5b6478;
+
+  /* Soft shadow for the white "sheet" cards on the home page */
+  --shadow-card: 0 14px 44px -20px rgba(9, 15, 38, 0.28);
+}
+
+@theme inline {
+  --font-sans: var(--font-montserrat), ui-sans-serif, system-ui, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: #ffffff;
+  color: var(--color-navy);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}

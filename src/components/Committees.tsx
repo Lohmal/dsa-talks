@@ -2,13 +2,13 @@
 
 import Image from "next/image";
 import { Container, FadeIn } from "./ui";
-import { committees, displayName, initials, type Member } from "@/data/committees";
+import { displayName, initials, type Member } from "@/data/committees";
 import { useLanguage } from "@/i18n/LanguageProvider";
 
 // The committees page: a red title band, quick links to each committee, then the members
 // as cards (photo or initials, name with title, affiliation).
 export default function Committees() {
-  const { m } = useLanguage();
+  const { m, committees } = useLanguage();
   const t = m.committees;
 
   const groups = [

@@ -1,0 +1,260 @@
+{
+  "meta": {
+    "shortName": "CONFDSA",
+    "conferenceName": "Uluslararası Veri Bilimi ve Analitiği Konferansı",
+    "tagline": "Veri bilimi, analitik ve yapay zekâ üzerine iki günlük akademik konferans",
+    "university": "Adana Alparslan Türkeş Bilim ve Teknoloji Üniversitesi",
+    "department": "Veri Bilimi ve Analitiği Bölümü",
+    "dateRange": "04–05 Kasım 2026",
+    "venue": "ATÜ Kütüphane Konferans Salonu",
+    "city": "Adana, Türkiye",
+    "universityShort": "ATÜ"
+  },
+  "nav": {
+    "home": "Ana Sayfa",
+    "committees": "Kurullar",
+    "honoraryChairs": "Onur Kurulu",
+    "coChairs": "Eş Başkanlar",
+    "programCommittee": "Program Kurulu",
+    "localCommittee": "Düzenleme Kurulu",
+    "conferenceTopics": "Konular ve Kapsam",
+    "plenarySpeakers": "Ana ve Davetli Konuşmacılar",
+    "conferenceProgram": "Program",
+    "registration": "Kayıt",
+    "abstractSubmission": "Özet Gönderimi",
+    "importantDates": "Önemli Tarihler",
+    "events": "Etkinlikler",
+    "contact": "İletişim",
+    "accommodation": "Konaklama",
+    "registrationFee": "Kayıt Ücreti",
+    "socialActivities": "Sosyal Etkinlikler",
+    "awards": "Ödüller",
+    "paperPublications": "Yayınlar",
+    "menu": "Menü",
+    "closeMenu": "Menüyü kapat",
+    "overview": "Genel Bakış"
+  },
+  "common": {
+    "comingSoon": "Çok yakında",
+    "comingSoonText": "Bu bölümün detayları yakında duyurulacaktır.",
+    "tba": "Daha sonra duyurulacak",
+    "language": "Dil",
+    "notFoundTitle": "Sayfa bulunamadı",
+    "notFoundText": "Aradığınız sayfa mevcut değil veya taşınmış olabilir.",
+    "backHome": "Ana sayfaya dön"
+  },
+  "home": {
+    "ctaSubmit": "Özet Gönder",
+    "ctaProgram": "Programı İncele",
+    "factDate": "Konferans Tarihi",
+    "factVenue": "Yer",
+    "factOrganizer": "Düzenleyen",
+    "welcomeTitle": "CONFDSA’ya Hoş Geldiniz",
+    "aboutText": [
+      "Veri; bilimden sağlığa, sanayiden kamu hizmetlerine kadar her alanda karar almanın temel dayanağı hâline geldi. CONFDSA, bu dönüşümü birlikte ele almak üzere araştırmacıları, öğrencileri ve sektör profesyonellerini 4–5 Kasım 2026’da Adana Alparslan Türkeş Bilim ve Teknoloji Üniversitesi’nde bir araya getiriyor.",
+      "İki gün sürecek konferansta akademiden ve sektörden davetli konuşmacılar; veri bilimi yaşam döngüsünden istatistiksel modellemeye, makine öğrenmesi ve yapay zekâ uygulamalarından veri bilimcilerin her gün kullandığı güncel araçlara uzanan geniş bir yelpazede bilgi ve deneyimlerini paylaşacak.",
+      "Bilgi paylaşımının, yeni iş birliklerinin ve ilham veren tartışmaların merkezinde olacak bu buluşmada sizi de aramızda görmekten mutluluk duyarız."
+    ],
+    "glanceTitle": "Kısaca Konferans",
+    "speakersTitle": "Ana ve Davetli Konuşmacılar",
+    "speakersText": "Akademi ve sektörden davetli konuşmacılar",
+    "speakersAll": "Tüm konuşmacılar",
+    "programTitle": "Konferans Programı",
+    "organizerTitle": "Düzenleyen",
+    "ctaTitle": "Bize ulaşın",
+    "ctaText": "Konferansla ilgili sorularınız, iş birliği ve katılım talepleriniz için bize e-posta gönderin; en kısa sürede dönüş yapalım.",
+    "heroLine1": "Uluslararası Veri Bilimi ve",
+    "heroLine2": "Analitiği Konferansı",
+    "discover": "Konferansı keşfedin",
+    "ctaButton": "E-posta Gönder",
+    "emailSubject": "CONFDSA",
+    "posterTitle": "CONFDSA Afişi",
+    "posterText": "Konferans programı, davetli konuşmacılar, tarih ve yer bilgileri tek sayfada.",
+    "posterDownload": "PDF olarak indir",
+    "posterOther": "İngilizce afiş (PDF)",
+    "posterAlt": "CONFDSA konferans afişi (Türkçe)",
+    "posterOpen": "Tam boyutta aç"
+  },
+  "speakers": {
+    "talkLabel": "Konuşma Konusu",
+    "talksLabel": "Konuşma Konuları",
+    "viewProfile": "Profili görüntüle",
+    "biography": "Özgeçmiş",
+    "bioSoon": "Özgeçmiş yakında eklenecek.",
+    "talksInProgram": "Programdaki Konuşmaları",
+    "profiles": "Akademik profiller",
+    "allSpeakers": "Tüm konuşmacılar",
+    "viewProgram": "Programda gör",
+    "institutionProfile": "Kurumsal profil",
+    "researchAreas": "Araştırma Alanları"
+  },
+  "program": {
+    "time": "Saat",
+    "speaker": "Konuşmacı",
+    "title": "Başlık",
+    "days": [
+      {
+        "label": "1. Gün – 4 Kasım 2026, Çarşamba",
+        "sessions": [
+          {
+            "time": "09.30–10.00",
+            "speaker": "Açılış Konuşmaları",
+            "affiliation": "",
+            "title": "Açılış Konuşmaları"
+          },
+          {
+            "time": "10.15–12.00",
+            "speaker": "Prof. Dr. İlker ÜNAL",
+            "affiliation": "Çukurova Üniversitesi, Tıp Fakültesi, Biyoistatistik Anabilim Dalı",
+            "title": "Sağlık Verilerinden Klinik Kararlara: Biyoistatistik ve Makine Öğrenmesinin Kesişiminde Veri Bilimi",
+            "speakerId": "ilker-unal"
+          },
+          {
+            "time": "12.00–13.30",
+            "speaker": "Öğle Arası",
+            "affiliation": "",
+            "title": "–",
+            "isBreak": true
+          },
+          {
+            "time": "14.00–15.00",
+            "speaker": "Dr. Recep EROL",
+            "affiliation": "Rice University, Center for Research and Computing",
+            "title": "Dünden Yarına Veri Bilimi",
+            "speakerId": "recep-erol"
+          }
+        ]
+      },
+      {
+        "label": "2. Gün – 5 Kasım 2026, Perşembe",
+        "sessions": [
+          {
+            "time": "10.15–12.00",
+            "speaker": "Silvan Schwaller",
+            "affiliation": "FİGES – Akademik Planlama ve Geliştirme Mühendisi",
+            "title": "Matrisi Çözmek: Veri Bilimciler İçin MATLAB",
+            "speakerId": "silvan-schwaller"
+          },
+          {
+            "time": "12.00–13.30",
+            "speaker": "Öğle Arası",
+            "affiliation": "",
+            "title": "–",
+            "isBreak": true
+          },
+          {
+            "time": "14.00–15.00",
+            "speaker": "Dr. Recep EROL",
+            "affiliation": "Rice University, Center for Research and Computing",
+            "title": "Veri Bilimi Yaşam Döngüsüne İlk Adımlar ve Yeni Trendler",
+            "speakerId": "recep-erol"
+          }
+        ]
+      }
+    ]
+  },
+  "abstract": {
+    "intro": "Özetinizi resmi şablonu kullanarak hazırlayın ve Microsoft CMT sistemi üzerinden gönderin.",
+    "templateTitle": "Özet Şablonu",
+    "templateText": "Şablonu indirin ve biçim kurallarına uyun.",
+    "templateButton": "Şablonu İndir",
+    "cmtTitle": "CMT ile Gönder",
+    "cmtText": "Özetler Microsoft CMT konferans yönetim sistemi üzerinden toplanmaktadır.",
+    "cmtButton": "CMT'ye Git",
+    "notAvailableYet": "Yakında"
+  },
+  "importantDates": {
+    "items": [
+      {
+        "label": "Özet Gönderimi Son Tarihi",
+        "date": "Daha sonra duyurulacak"
+      },
+      {
+        "label": "Kabul Bildirimi",
+        "date": "Daha sonra duyurulacak"
+      },
+      {
+        "label": "Kayıt Son Tarihi",
+        "date": "Daha sonra duyurulacak"
+      },
+      {
+        "label": "Konferans Günleri",
+        "date": "04–05 Kasım 2026"
+      }
+    ]
+  },
+  "contact": {
+    "intro": "Konferans, program, özet gönderimi ya da iş birliği ile ilgili sorularınız için bizimle iletişime geçebilirsiniz. En kısa sürede dönüş yapacağız.",
+    "email": "E-posta",
+    "website": "Web sitesi",
+    "instagram": "Instagram",
+    "venue": "Etkinlik yeri",
+    "address": "Adres",
+    "addressValue": "Balcalı Mah. Güney Kampüs 10 Sokak No:1U, Sarıçam, Adana",
+    "emailTitle": "Bize yazın",
+    "emailText": "Düzenleme kuruluna ulaşmanın en hızlı yolu.",
+    "sendEmail": "E-posta Gönder",
+    "mapTitle": "Konum",
+    "directions": "Yol tarifi al"
+  },
+  "footer": {
+    "quickLinks": "Hızlı Bağlantılar",
+    "contact": "İletişim",
+    "organizedBy": "Düzenleyen",
+    "rights": "Tüm hakları saklıdır."
+  },
+  "committees": {
+    "intro": "CONFDSA’nın bilimsel programından ve düzenlenmesinden sorumlu kurullar.",
+    "members": "üye",
+    "view": "Kurulu görüntüle",
+    "membersHeading": "Kurul Üyeleri"
+  },
+  "topics": {
+    "intro": "CONFDSA, veri bilimi ve analitiğin tüm alanlarından katkıları memnuniyetle karşılar. Konular bunlarla sınırlı olmamak üzere aşağıdaki başlıkları kapsar.",
+    "items": [
+      {
+        "icon": "dna",
+        "title": "Biyoinformatik için Veri Bilimi"
+      },
+      {
+        "icon": "fingerprint",
+        "title": "Adli Bilimler için Veri Bilimi"
+      },
+      {
+        "icon": "barChart",
+        "title": "İstatistiksel Veri Analizi"
+      },
+      {
+        "icon": "database",
+        "title": "Veri Madenciliği"
+      },
+      {
+        "icon": "server",
+        "title": "Büyük Veri Uygulamaları"
+      },
+      {
+        "icon": "filter",
+        "title": "Veri Ön İşleme ve Örnekleme"
+      },
+      {
+        "icon": "sigma",
+        "title": "Olasılık ve İstatistik Kuramları"
+      },
+      {
+        "icon": "pieChart",
+        "title": "Veri Görselleştirme ve Hikâye Anlatımı"
+      },
+      {
+        "icon": "lightbulb",
+        "title": "İş İnovasyonu için Veri Bilimi"
+      }
+    ]
+  },
+  "events": {
+    "title": "Etkinlikler",
+    "intro": "Veri Bilimi ve Analitiği Bölümü’nün düzenlediği söyleşiler, atölyeler ve diğer etkinlikler.",
+    "view": "Etkinliğe git",
+    "past": "Önceki yıllar",
+    "empty": "Henüz duyurulmuş bir etkinlik yok."
+  }
+}

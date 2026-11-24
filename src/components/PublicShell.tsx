@@ -16,13 +16,13 @@ export default function PublicShell({
   intro: string;
   children: React.ReactNode;
 }) {
-  const { m } = useLanguage();
+  const { m, base } = useLanguage();
 
   return (
     <div className="flex min-h-svh flex-col bg-surface">
       <header className="border-t-4 border-brand bg-white">
         <Container className="flex h-16 items-center justify-between">
-          <Link href="/" className="text-2xl">
+          <Link href={base} className="text-2xl">
             <Brand />
           </Link>
           <LanguageSwitcher />
@@ -50,7 +50,7 @@ export default function PublicShell({
       </main>
 
       <footer className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 border-t border-line bg-white px-4 py-6 text-center text-sm text-muted">
-        <Link href="/" className="font-semibold text-ink hover:text-brand">
+        <Link href={base} className="font-semibold text-ink hover:text-brand">
           {m.survey.backHome}
         </Link>
         <Link href="/kvkk" className="font-semibold text-muted hover:text-brand">

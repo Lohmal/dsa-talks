@@ -22,7 +22,8 @@ export const linkNames: Record<keyof Speaker["links"], string> = {
   wos: "Web of Science",
 };
 
-export const speakers: Speaker[] = [
+// The default speakers of a new event year (DSATalks 2026); each year keeps its own list.
+export const defaultSpeakers: Speaker[] = [
   {
     slug: "ilker-unal",
     name: "Prof. Dr. İlker Ünal",
@@ -99,7 +100,7 @@ export const speakers: Speaker[] = [
   },
 ];
 
-export const speakerBySlug = Object.fromEntries(speakers.map((s) => [s.slug, s]));
+export const bySlug = (speakers: Speaker[]) => Object.fromEntries(speakers.map((s) => [s.slug, s]));
 
 // The speaker's talks, taken from the program so titles and times live in one place.
 export function talksOf(slug: string, program: Messages["program"]) {

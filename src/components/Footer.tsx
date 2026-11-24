@@ -6,7 +6,6 @@ import { Globe, Mail } from "lucide-react";
 import { sectionHref } from "./MobileMenu";
 import { setConsent } from "@/lib/consent";
 import { Container, LanguageSwitcher, Wordmark } from "./ui";
-import { site } from "@/config/site";
 import { useLanguage } from "@/i18n/LanguageProvider";
 
 function InstagramIcon({ className = "size-5" }: { className?: string }) {
@@ -28,8 +27,8 @@ function ColumnTitle({ children }: { children: React.ReactNode }) {
 // Navy closing band: the wordmark with the slogan, page links, contact details and the
 // organizer, then a bottom row with the copyright, the poster's closing line and the language switch.
 export default function Footer() {
-  const { m } = useLanguage();
-  const onHome = usePathname() === "/";
+  const { m, site, base } = useLanguage();
+  const onHome = usePathname() === base;
   const contacts = [
     { href: `mailto:${site.email}`, icon: Mail, label: site.email },
     { href: site.websiteUrl, icon: Globe, label: site.websiteUrl.replace("https://", "") },
@@ -62,7 +61,7 @@ export default function Footer() {
             <ul className="mt-5 space-y-3">
               {sections.map((id) => (
                 <li key={id}>
-                  <Link href={sectionHref(id, onHome)} className="font-medium text-white/75 transition-colors hover:text-white">
+                  <Link href={sectionHref(id, onHome, base)} className="font-medium text-white/75 transition-colors hover:text-white">
                     {m.nav[id]}
                   </Link>
                 </li>

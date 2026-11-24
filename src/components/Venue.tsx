@@ -3,11 +3,10 @@
 import { setConsent, useConsent } from "@/lib/consent";
 import { CalendarDays, Globe, Mail, Map as MapIcon, MapPin, Navigation, type LucideIcon } from "lucide-react";
 import { Container, FadeIn, SectionHeading } from "./ui";
-import { site } from "@/config/site";
 import { useLanguage } from "@/i18n/LanguageProvider";
 
 export default function Venue() {
-  const { m, locale } = useLanguage();
+  const { m, locale, site } = useLanguage();
   const query = encodeURIComponent(site.mapQuery);
   const mapSrc = `https://maps.google.com/maps?q=${query}&hl=${locale}&z=16&output=embed`;
   const directions = `https://www.google.com/maps/dir/?api=1&destination=${query}`;

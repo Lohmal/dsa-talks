@@ -1,6 +1,19 @@
 import type { NextConfig } from "next";
+import { conferencePaths } from "./src/confdsa/config/paths";
 
 const nextConfig: NextConfig = {
+  // The CONFDSA pages live in app/(conference)/[year]; their usual addresses show the current
+  // year ("/program" → "/current/program"), "/2026/program" an earlier one. The events page
+  // takes the current year's menu and footer.
+  rewrites() {
+    return [
+      { source: "/", destination: "/current" },
+      { source: `/:page(${conferencePaths.join("|")})/:rest*`, destination: "/current/:page/:rest*" },
+      { source: "/etkinlikler", destination: "/current/etkinlikler" },
+    ];
+  },
+  // Two root layouts (CONFDSA and the event template), so unknown addresses get one 404 page.
+  experimental: { globalNotFound: true },
   // Certificate fonts and logos are read from disk at request time; make sure hosting
   // platforms that bundle each route separately (Vercel) ship them too.
   outputFileTracingIncludes: {
